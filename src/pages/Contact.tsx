@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
@@ -6,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, Send, Github, Linkedin, Shield, Lock, Terminal, Server } from "lucide-react";
 import { toast } from "sonner";
+
+const CONTACT_EDGE_FUNCTION_URL = "https://yxcobqgdvfyhupemlvfz.functions.supabase.co/send-contact-message";
 
 const Contact = () => {
   const [name, setName] = useState("");
@@ -16,17 +19,29 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
-    // Here you would typically send this data to your backend
-    // For now we'll just simulate a successful submission
+
+    // Send to Supabase Edge Function, which will email info@edjenuwa.tech
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      toast.success("Message sent successfully!");
-      setName("");
-      setEmail("");
-      setMessage("");
+      const res = await fetch(CONTACT_EDGE_FUNCTION_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, message }),
+      });
+
+      if (res.ok) {
+        toast.success("Your message has been sent successfully.");
+        setName("");
+        setEmail("");
+        setMessage("");
+      } else {
+        const error = await res.json().catch(() => ({}));
+        toast.error(
+          error?.error ||
+            "Failed to send message. Please try again or contact us directly at info@edjenuwa.tech"
+        );
+      }
     } catch (error) {
       toast.error("Failed to send message. Please try again.");
     } finally {
