@@ -1,3 +1,4 @@
+
 import { Card, CardContent } from "@/components/ui/card";
 import { BookOpen, Briefcase, Award, Shield, Network, Code, Cpu } from "lucide-react";
 import { TimelineItem } from "./TimelineItem";
@@ -13,15 +14,15 @@ export const ProfileContent = ({ profile }: ProfileContentProps) => (
       <CardContent className="pt-8 px-8 pb-6">
         <h2 className="text-3xl font-bold mb-6 font-mono">{profile.full_name || "About Me"}</h2>
         <div className="prose prose-invert max-w-none">
-          {profile.bio ? (
-            <p className="whitespace-pre-line text-lg">{profile.bio}</p>
-          ) : (
-            <p className="text-lg">
-              Cybersecurity expert with over 8 years of experience in securing network infrastructure and implementing 
-              AI-driven security solutions. Specializing in vulnerability assessment, penetration testing, and developing 
-              secure architectural designs for enterprise environments.
-            </p>
-          )}
+          <p className="whitespace-pre-line text-lg">
+            I am a dedicated Cybersecurity and Network Security Engineer with a strong foundation in designing, implementing, and securing enterprise-grade networks. With hands-on experience across both offensive and defensive security, I specialize in threat mitigation, penetration testing, and security protocol implementation.
+            <br /><br />
+            Currently working at MSV Sport, I lead security audits and deploy advanced security measures that protect sensitive infrastructures. Previously at EEW Technology, I engineered robust network environments for mid-sized businesses, ensuring seamless connectivity and resilience.
+            <br /><br />
+            I hold a B.Sc. in Cybersecurity from Teesside University, where I specialized in network security and penetration testing, and also completed a National Diploma in Computer Science from Biacom Ventures. My commitment to continuous learning is reflected in certifications such as the Teesside University Ethical Hacking Summer Program, Azure Fundamentals (AZ-900), and SC-900.
+            <br /><br />
+            With a passion for solving complex security challenges, I aim to contribute to safer digital environments through innovation, continuous improvement, and ethical practice.
+          </p>
         </div>
       </CardContent>
     </Card>
