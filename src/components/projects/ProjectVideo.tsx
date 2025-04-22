@@ -86,13 +86,8 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
       return;
     }
 
-    try {
-      // Simple but effective approach - open in current window
-      window.location.href = url;
-    } catch (error) {
-      console.error("Error opening video:", error);
-      toast.error("Failed to open video");
-    }
+    // Open YouTube video in a new tab
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   const videoId = getVideoId(url);
@@ -117,10 +112,11 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
   // For direct video files or external links, use a button for better clickability
   return (
     <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark">
-      <Button 
-        variant="ghost"
-        onClick={openVideo}
-        className="w-full h-full flex flex-col items-center justify-center space-y-4 hover:bg-cyber-dark/80"
+      <a 
+        href={url} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="w-full h-full flex flex-col items-center justify-center space-y-4 hover:bg-cyber-dark/80 block text-center p-8"
       >
         {isYouTubeUrl(url) ? (
           <>
@@ -133,7 +129,7 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
             <span className="text-lg text-muted-foreground">Click to watch demo video</span>
           </>
         )}
-      </Button>
+      </a>
     </div>
   );
 };
