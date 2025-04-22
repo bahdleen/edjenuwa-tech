@@ -8,85 +8,74 @@ interface ProjectVideoProps {
 
 export const ProjectVideo = ({ url }: ProjectVideoProps) => {
   const [videoError, setVideoError] = useState(false);
-  const [videoId, setVideoId] = useState<string>('');
+  const [videoId, setVideoId] = useState<string | null>(null);
   
   useEffect(() => {
     if (url) {
       try {
-        const id = getVideoId(url);
+        const id = extractYoutubeVideoId(url);
+        console.log("Extracted YouTube ID:", id, "from URL:", url);
         setVideoId(id);
-        console.log("YouTube video ID extracted:", id, "from URL:", url);
       } catch (error) {
         console.error("Error extracting video ID:", error);
       }
     }
   }, [url]);
 
-  const getVideoId = (url: string) => {
-    if (!url) return '';
+  const extractYoutubeVideoId = (url: string): string | null => {
+    if (!url) return null;
     
     try {
-      // Check if it's a YouTube URL
-      const urlObj = new URL(url);
+      // Handle youtu.be URLs
+      if (url.includes('youtu.be')) {
+        const segments = url.split('/');
+        const lastSegment = segments[segments.length - 1].split('?')[0];
+        console.log("youtu.be format detected, ID:", lastSegment);
+        return lastSegment;
+      }
       
-      // Standard YouTube URL patterns
-      if (urlObj.hostname.includes('youtube.com')) {
-        // Handle youtube.com/watch?v=VIDEO_ID
-        const searchParams = new URLSearchParams(urlObj.search);
-        const id = searchParams.get('v');
-        if (id) return id;
-        
-        // Handle youtube.com/live/VIDEO_ID format
-        if (urlObj.pathname.includes('/live/')) {
-          const pathSegments = urlObj.pathname.split('/');
-          const liveIndex = pathSegments.findIndex(seg => seg === 'live');
-          if (liveIndex >= 0 && liveIndex < pathSegments.length - 1) {
-            return pathSegments[liveIndex + 1];
-          }
-        }
-        
-        // Handle youtube.com/embed/VIDEO_ID
-        if (urlObj.pathname.includes('/embed/')) {
-          const pathSegments = urlObj.pathname.split('/');
-          const embedIndex = pathSegments.findIndex(seg => seg === 'embed');
-          if (embedIndex >= 0 && embedIndex < pathSegments.length - 1) {
-            return pathSegments[embedIndex + 1];
-          }
+      // Handle youtube.com/watch?v= format
+      if (url.includes('youtube.com/watch')) {
+        const urlObj = new URL(url);
+        const id = urlObj.searchParams.get('v');
+        console.log("youtube.com/watch format detected, ID:", id);
+        return id;
+      }
+      
+      // Handle youtube.com/live/ format
+      if (url.includes('youtube.com/live/')) {
+        const regex = /youtube\.com\/live\/([^?&]+)/;
+        const match = url.match(regex);
+        if (match && match[1]) {
+          console.log("youtube.com/live format detected, ID:", match[1]);
+          return match[1];
         }
       }
       
-      // Handle youtu.be/VIDEO_ID format
-      if (urlObj.hostname === 'youtu.be') {
-        const pathSegments = urlObj.pathname.split('/');
-        if (pathSegments.length > 1) {
-          return pathSegments[1]; // The ID is after the first slash
+      // Handle youtube.com/embed/ format
+      if (url.includes('youtube.com/embed/')) {
+        const regex = /youtube\.com\/embed\/([^?&]+)/;
+        const match = url.match(regex);
+        if (match && match[1]) {
+          console.log("youtube.com/embed format detected, ID:", match[1]);
+          return match[1];
         }
       }
       
-      // If we get here and didn't find a video ID, check for other patterns
-      if (urlObj.hostname.includes('youtube.com') && urlObj.pathname.includes('/live/')) {
-        const idMatch = url.match(/\/live\/([^?&]+)/);
-        if (idMatch && idMatch[1]) return idMatch[1];
-      }
-      
-      return '';
+      console.log("No YouTube ID pattern matched for URL:", url);
+      return null;
     } catch (error) {
       console.error("Error parsing YouTube URL:", error);
-      return '';
+      return null;
     }
   };
 
-  const isYouTubeUrl = (url: string) => {
-    try {
-      const urlObj = new URL(url);
-      return urlObj.hostname.includes('youtube.com') || urlObj.hostname === 'youtu.be';
-    } catch (error) {
-      console.error("Invalid YouTube URL:", url, error);
-      return false;
-    }
+  const isYouTubeUrl = (url: string): boolean => {
+    if (!url) return false;
+    return url.includes('youtube.com') || url.includes('youtu.be');
   };
 
-  const isDirectVideoUrl = (url: string) => {
+  const isDirectVideoUrl = (url: string): boolean => {
     if (!url) return false;
     try {
       const urlObj = new URL(url);
@@ -96,19 +85,13 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
              urlObj.hostname.includes('storage.googleapis.com') || 
              urlObj.hostname.includes('supabase');
     } catch (error) {
-      console.error("Invalid direct video URL:", url, error);
+      console.error("Error checking if direct video URL:", error);
       return false;
     }
   };
 
-  // Handle empty URL case
-  if (!url || url.trim() === '') {
-    console.log("No video URL provided");
-    return (
-      <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark flex items-center justify-center">
-        <span className="text-muted-foreground">No video available</span>
-      </div>
-    );
+  if (!url) {
+    return <div className="aspect-video w-full bg-cyber-dark flex items-center justify-center">No video available</div>;
   }
 
   console.log("Rendering video component with URL:", url);
@@ -116,9 +99,9 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
   console.log("Video ID:", videoId);
   console.log("Is Direct Video URL:", isDirectVideoUrl(url));
   
-  // If it's a YouTube video with valid ID, embed it
+  // For YouTube videos with valid ID
   if (videoId && isYouTubeUrl(url)) {
-    console.log("Embedding YouTube video with ID:", videoId);
+    console.log("Rendering YouTube embed with ID:", videoId);
     return (
       <div className="aspect-video w-full cyber-border p-1 shadow-[0_0_15px_rgba(0,255,0,0.1)]">
         <iframe
@@ -133,34 +116,33 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
         ></iframe>
       </div>
     );
-  // If we know it's a YouTube URL but couldn't extract ID, provide fallback
-  } else if (isYouTubeUrl(url) && !videoId) {
-    console.log("YouTube URL detected but couldn't extract ID, providing fallback link");
+  }
+  
+  // For YouTube URLs without extractable ID (fallback)
+  if (isYouTubeUrl(url) && !videoId) {
+    console.log("Rendering YouTube fallback link for URL:", url);
     return (
-      <a 
-        href={url} 
-        target="_blank" 
-        rel="noopener noreferrer"
-        className="block w-full h-full cursor-pointer"
-        onClick={(e) => {
-          console.log("External YouTube link clicked:", url);
-          e.preventDefault();
-          window.open(url, '_blank', 'noopener,noreferrer');
-        }}
-      >
-        <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark">
-          <div className="w-full h-full flex flex-col items-center justify-center space-y-4 hover:bg-cyber-dark/80 p-8">
-            <ExternalLink className="text-cyber h-16 w-16" />
-            <span className="text-lg text-muted-foreground">Click to watch video on YouTube</span>
-          </div>
-        </div>
-      </a>
+      <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark">
+        <a 
+          href={url} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="w-full h-full flex flex-col items-center justify-center space-y-4 hover:bg-cyber-dark/80 p-8 block"
+          onClick={(e) => {
+            console.log("External YouTube link clicked");
+            // Allow default behavior to open in new tab
+          }}
+        >
+          <ExternalLink className="text-cyber h-16 w-16" />
+          <span className="text-lg text-muted-foreground">Click to watch video on YouTube</span>
+        </a>
+      </div>
     );
   }
   
   // For direct video files
   if (isDirectVideoUrl(url)) {
-    console.log("Rendering direct video file:", url);
+    console.log("Rendering direct video player for URL:", url);
     return (
       <div className="aspect-video w-full cyber-border p-1 shadow-[0_0_15px_rgba(0,255,0,0.1)]">
         {!videoError ? (
@@ -178,18 +160,16 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
           </video>
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center bg-cyber-dark">
-            <Play className="text-cyber-red h-16 w-16 mb-4" />
             <a 
               href={url} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-lg text-muted-foreground hover:text-cyber underline"
-              onClick={(e) => {
-                console.log("Fallback video link clicked");
-                // Here we don't preventDefault to allow download or opening in new tab
-              }}
+              className="flex flex-col items-center justify-center space-y-4"
             >
-              Click to download video
+              <Play className="text-cyber-red h-16 w-16" />
+              <span className="text-lg text-muted-foreground hover:text-cyber underline">
+                Click to download video
+              </span>
             </a>
           </div>
         )}
@@ -197,35 +177,19 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
     );
   }
   
-  // For other types of links (fallback)
-  console.log("Rendering fallback video link UI for:", url);
+  // Fallback for any other URL type
+  console.log("Rendering generic fallback for URL:", url);
   return (
-    <a 
-      href={url} 
-      target="_blank" 
-      rel="noopener noreferrer"
-      className="block w-full h-full cursor-pointer"
-      onClick={(e) => {
-        console.log("External video link clicked:", url);
-        e.preventDefault();
-        window.open(url, '_blank', 'noopener,noreferrer');
-      }}
-    >
-      <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark">
-        <div className="w-full h-full flex flex-col items-center justify-center space-y-4 hover:bg-cyber-dark/80 p-8">
-          {isYouTubeUrl(url) ? (
-            <>
-              <ExternalLink className="text-cyber h-16 w-16" />
-              <span className="text-lg text-muted-foreground">Click to watch video on YouTube</span>
-            </>
-          ) : (
-            <>
-              <Play className="text-cyber-red h-16 w-16" />
-              <span className="text-lg text-muted-foreground">Click to watch demo video</span>
-            </>
-          )}
-        </div>
-      </div>
-    </a>
+    <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark">
+      <a 
+        href={url} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="w-full h-full flex flex-col items-center justify-center space-y-4 hover:bg-cyber-dark/80 p-8 block"
+      >
+        <Play className="text-cyber-red h-16 w-16" />
+        <span className="text-lg text-muted-foreground">Click to watch video</span>
+      </a>
+    </div>
   );
 };

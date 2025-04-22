@@ -16,7 +16,7 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
   if (!tutorialUrl && !demoVideoUrl && !configFileUrl) return null;
 
   const isValidUrl = (url: string | null | undefined): boolean => {
-    if (!url || url.trim() === '') return false;
+    if (!url) return false;
     try {
       new URL(url);
       return true;
@@ -26,29 +26,31 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
     }
   };
 
-  const handleTutorialClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    console.log("Documentation link clicked", tutorialUrl);
-    // For PDF or MD files, let browser handle download
-    if (tutorialUrl?.includes('.pdf') || tutorialUrl?.includes('.md')) {
-      // Don't prevent default to allow download
-      console.log("Downloading documentation");
+  const handleDocumentClick = () => {
+    console.log("Tutorial URL clicked:", tutorialUrl);
+    if (!tutorialUrl) return;
+    
+    // For PDF or MD files, trigger download
+    if (tutorialUrl.includes('.pdf') || tutorialUrl.includes('.md')) {
+      console.log("Downloading documentation file");
+      window.open(tutorialUrl, '_blank');
     } else {
       // For other types, open in new tab
-      e.preventDefault();
       console.log("Opening documentation in new tab");
       window.open(tutorialUrl, '_blank');
     }
   };
 
-  const handleDemoVideoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    console.log("Demo video link clicked", demoVideoUrl);
-    e.preventDefault();
+  const handleDemoVideoClick = () => {
+    console.log("Demo video clicked:", demoVideoUrl);
+    if (!demoVideoUrl) return;
     window.open(demoVideoUrl, '_blank');
   };
 
-  const handleConfigFileClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    console.log("Config file link clicked", configFileUrl);
-    // Let browser handle download behavior
+  const handleConfigFileClick = () => {
+    console.log("Config file clicked:", configFileUrl);
+    if (!configFileUrl) return;
+    window.open(configFileUrl, '_blank');
   };
 
   return (
@@ -64,21 +66,14 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
                 Documentation
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Detailed technical guide with step-by-step instructions</p>
-              <a 
-                href={tutorialUrl || "#"}
-                target="_blank"
-                rel="noopener noreferrer"
-                download={tutorialUrl?.includes('.pdf') || tutorialUrl?.includes('.md')}
-                onClick={handleTutorialClick}
+              <Button 
+                variant="outline" 
+                className="w-full py-8 h-auto text-lg font-medium border-cyber hover:bg-cyber/10 hover:text-cyber transition-all duration-200"
+                type="button"
+                onClick={handleDocumentClick}
               >
-                <Button 
-                  variant="outline" 
-                  className="w-full py-8 h-auto text-lg font-medium border-cyber hover:bg-cyber/10 hover:text-cyber transition-all duration-200"
-                  type="button"
-                >
-                  <FileText className="mr-2 h-6 w-6" /> View Documentation
-                </Button>
-              </a>
+                <FileText className="mr-2 h-6 w-6" /> View Documentation
+              </Button>
             </div>
           )}
           
@@ -95,20 +90,14 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
                 Demo Video
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Short demonstration of project capabilities</p>
-              <a 
-                href={demoVideoUrl || "#"}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Button 
+                variant="outline" 
+                className="w-full py-8 h-auto text-lg font-medium border-cyber-red hover:bg-cyber-red/10 hover:text-cyber-red transition-all duration-200"
+                type="button"
                 onClick={handleDemoVideoClick}
               >
-                <Button 
-                  variant="outline" 
-                  className="w-full py-8 h-auto text-lg font-medium border-cyber-red hover:bg-cyber-red/10 hover:text-cyber-red transition-all duration-200"
-                  type="button"
-                >
-                  <Video className="mr-2 h-6 w-6" /> Watch Demo
-                </Button>
-              </a>
+                <Video className="mr-2 h-6 w-6" /> Watch Demo
+              </Button>
             </div>
           )}
 
@@ -124,21 +113,14 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
                 Configuration Files
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Project configuration templates and setup files</p>
-              <a 
-                href={configFileUrl || "#"}
-                target="_blank"
-                rel="noopener noreferrer"
-                download
+              <Button 
+                variant="outline" 
+                className="w-full py-8 h-auto text-lg font-medium border-cyber-blue hover:bg-cyber-blue/10 hover:text-cyber-blue transition-all duration-200"
+                type="button"
                 onClick={handleConfigFileClick}
               >
-                <Button 
-                  variant="outline" 
-                  className="w-full py-8 h-auto text-lg font-medium border-cyber-blue hover:bg-cyber-blue/10 hover:text-cyber-blue transition-all duration-200"
-                  type="button"
-                >
-                  <Download className="mr-2 h-6 w-6" /> Download Files
-                </Button>
-              </a>
+                <Download className="mr-2 h-6 w-6" /> Download Files
+              </Button>
             </div>
           )}
         </div>
