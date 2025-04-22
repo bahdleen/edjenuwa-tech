@@ -155,7 +155,7 @@ const ProfileManagement = () => {
             <h1 className="text-4xl font-bold tracking-tight">
               <span className="text-green-500">{">"}</span> Profile Management
             </h1>
-            <p className="text-muted-foreground">Update your personal information</p>
+            <p className="text-muted-foreground">Update your personal information displayed on the About page</p>
           </div>
 
           <Card>

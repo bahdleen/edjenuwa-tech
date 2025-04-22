@@ -13,23 +13,36 @@ const About = () => {
   const { data: profile, isLoading, isError } = useQuery({
     queryKey: ['profile', 'public'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .limit(1);
-      
-      if (error) {
-        console.error("Error fetching profile:", error);
-        return null;
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .limit(1);
+        
+        if (error) {
+          console.error("Error fetching profile:", error);
+          toast.error("Failed to load profile data");
+          throw error;
+        }
+        
+        // Return first profile or default fallback data
+        return data?.length > 0 ? data[0] : {
+          full_name: "Anthony E. Edjenuwa",
+          avatar_url: null,
+          bio: "Cybersecurity expert with over 8 years of experience in securing network infrastructure and implementing AI-driven security solutions. Specializing in vulnerability assessment, penetration testing, and developing secure architectural designs for enterprise environments.",
+        };
+      } catch (error) {
+        console.error("Error in profile query:", error);
+        // Return fallback data on error
+        return {
+          full_name: "Anthony E. Edjenuwa",
+          avatar_url: null,
+          bio: "Cybersecurity expert with over 8 years of experience in securing network infrastructure and implementing AI-driven security solutions. Specializing in vulnerability assessment, penetration testing, and developing secure architectural designs for enterprise environments.",
+        };
       }
-      
-      // Return first profile or default fallback data
-      return data?.length > 0 ? data[0] : {
-        full_name: "Anthony E. Edjenuwa",
-        avatar_url: null,
-        bio: "Cybersecurity expert with over 8 years of experience in securing network infrastructure and implementing AI-driven security solutions. Specializing in vulnerability assessment, penetration testing, and developing secure architectural designs for enterprise environments.",
-      };
-    }
+    },
+    refetchOnWindowFocus: false,
+    retry: 2
   });
 
   return (
