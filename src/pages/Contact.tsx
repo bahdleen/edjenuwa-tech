@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
@@ -145,31 +146,29 @@ const Contact = () => {
                     <div>
                       <div className="flex items-center gap-2 mb-1">
                         <Github className="h-4 w-4 text-cyber" />
-                        <span className="font-medium font-mono">GitHub</span>
+                        <a 
+                          href="https://github.com/bahdleen" 
+                          target="_blank" 
+                          rel="noreferrer"
+                          className="text-muted-foreground hover:text-cyber transition-colors font-medium font-mono flex items-center gap-2"
+                        >
+                          github.com/bahdleen
+                        </a>
                       </div>
-                      <a 
-                        href="https://github.com/bahdleen" 
-                        target="_blank" 
-                        rel="noreferrer"
-                        className="text-muted-foreground hover:text-cyber transition-colors"
-                      >
-                        github.com/bahdleen
-                      </a>
                     </div>
                     
                     <div>
                       <div className="flex items-center gap-2 mb-1">
                         <Linkedin className="h-4 w-4 text-cyber" />
-                        <span className="font-medium font-mono">LinkedIn</span>
+                        <a 
+                          href="https://linkedin.com/in/anthony-e-358226253" 
+                          target="_blank" 
+                          rel="noreferrer"
+                          className="text-muted-foreground hover:text-cyber transition-colors font-medium font-mono flex items-center gap-2"
+                        >
+                          linkedin.com/in/anthony-e-358226253
+                        </a>
                       </div>
-                      <a 
-                        href="https://linkedin.com/in/anthony-e-358226253" 
-                        target="_blank" 
-                        rel="noreferrer"
-                        className="text-muted-foreground hover:text-cyber transition-colors"
-                      >
-                        linkedin.com/in/anthony-e-358226253
-                      </a>
                     </div>
                   </CardContent>
                 </Card>
