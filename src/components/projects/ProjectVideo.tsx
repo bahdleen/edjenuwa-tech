@@ -12,9 +12,13 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
   
   useEffect(() => {
     if (url) {
-      const id = getVideoId(url);
-      setVideoId(id);
-      console.log("YouTube video ID extracted:", id, "from URL:", url);
+      try {
+        const id = getVideoId(url);
+        setVideoId(id);
+        console.log("YouTube video ID extracted:", id, "from URL:", url);
+      } catch (error) {
+        console.error("Error extracting video ID:", error);
+      }
     }
   }, [url]);
 
@@ -57,6 +61,12 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
         if (pathSegments.length > 1) {
           return pathSegments[1]; // The ID is after the first slash
         }
+      }
+      
+      // If we get here and didn't find a video ID, check for other patterns
+      if (urlObj.hostname.includes('youtube.com') && urlObj.pathname.includes('/live/')) {
+        const idMatch = url.match(/\/live\/([^?&]+)/);
+        if (idMatch && idMatch[1]) return idMatch[1];
       }
       
       return '';
@@ -102,6 +112,9 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
   }
 
   console.log("Rendering video component with URL:", url);
+  console.log("Is YouTube URL:", isYouTubeUrl(url));
+  console.log("Video ID:", videoId);
+  console.log("Is Direct Video URL:", isDirectVideoUrl(url));
   
   // If it's a YouTube video with valid ID, embed it
   if (videoId && isYouTubeUrl(url)) {
@@ -119,6 +132,29 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
           className="rounded-sm"
         ></iframe>
       </div>
+    );
+  // If we know it's a YouTube URL but couldn't extract ID, provide fallback
+  } else if (isYouTubeUrl(url) && !videoId) {
+    console.log("YouTube URL detected but couldn't extract ID, providing fallback link");
+    return (
+      <a 
+        href={url} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="block w-full h-full cursor-pointer"
+        onClick={(e) => {
+          console.log("External YouTube link clicked:", url);
+          e.preventDefault();
+          window.open(url, '_blank', 'noopener,noreferrer');
+        }}
+      >
+        <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark">
+          <div className="w-full h-full flex flex-col items-center justify-center space-y-4 hover:bg-cyber-dark/80 p-8">
+            <ExternalLink className="text-cyber h-16 w-16" />
+            <span className="text-lg text-muted-foreground">Click to watch video on YouTube</span>
+          </div>
+        </div>
+      </a>
     );
   }
   
@@ -150,6 +186,7 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
               className="text-lg text-muted-foreground hover:text-cyber underline"
               onClick={(e) => {
                 console.log("Fallback video link clicked");
+                // Here we don't preventDefault to allow download or opening in new tab
               }}
             >
               Click to download video

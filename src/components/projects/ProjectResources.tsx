@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
-import { FileText, Video, Download } from "lucide-react";
+import { FileText, Video, Download, Youtube } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 
@@ -26,6 +26,31 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
     }
   };
 
+  const handleTutorialClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    console.log("Documentation link clicked", tutorialUrl);
+    // For PDF or MD files, let browser handle download
+    if (tutorialUrl?.includes('.pdf') || tutorialUrl?.includes('.md')) {
+      // Don't prevent default to allow download
+      console.log("Downloading documentation");
+    } else {
+      // For other types, open in new tab
+      e.preventDefault();
+      console.log("Opening documentation in new tab");
+      window.open(tutorialUrl, '_blank');
+    }
+  };
+
+  const handleDemoVideoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    console.log("Demo video link clicked", demoVideoUrl);
+    e.preventDefault();
+    window.open(demoVideoUrl, '_blank');
+  };
+
+  const handleConfigFileClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    console.log("Config file link clicked", configFileUrl);
+    // Let browser handle download behavior
+  };
+
   return (
     <Card className="cyber-panel border-cyber/20 h-full bg-cyber-dark/60 backdrop-blur-sm">
       <CardContent className="p-6">
@@ -40,19 +65,11 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Detailed technical guide with step-by-step instructions</p>
               <a 
-                href={tutorialUrl}
+                href={tutorialUrl || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
                 download={tutorialUrl?.includes('.pdf') || tutorialUrl?.includes('.md')}
-                onClick={(e) => {
-                  console.log("Documentation link clicked", tutorialUrl);
-                  // If it's a download, we'll allow the default behavior
-                  if (!(tutorialUrl?.includes('.pdf') || tutorialUrl?.includes('.md'))) {
-                    // For non-download links, open in a new tab
-                    e.preventDefault();
-                    window.open(tutorialUrl, '_blank', 'noopener,noreferrer');
-                  }
-                }}
+                onClick={handleTutorialClick}
               >
                 <Button 
                   variant="outline" 
@@ -79,14 +96,10 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Short demonstration of project capabilities</p>
               <a 
-                href={demoVideoUrl}
+                href={demoVideoUrl || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={(e) => {
-                  console.log("Demo video link clicked", demoVideoUrl);
-                  e.preventDefault();
-                  window.open(demoVideoUrl, '_blank', 'noopener,noreferrer');
-                }}
+                onClick={handleDemoVideoClick}
               >
                 <Button 
                   variant="outline" 
@@ -112,14 +125,11 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Project configuration templates and setup files</p>
               <a 
-                href={configFileUrl}
+                href={configFileUrl || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
                 download
-                onClick={(e) => {
-                  console.log("Config file link clicked", configFileUrl);
-                  // Allow default behavior for download
-                }}
+                onClick={handleConfigFileClick}
               >
                 <Button 
                   variant="outline" 
