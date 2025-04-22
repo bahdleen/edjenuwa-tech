@@ -46,10 +46,9 @@ const Auth = () => {
       
       if (error) throw error;
       
-      // Auth state change listener in AuthContext will handle the state update
-      // We don't need to manually set user state here
+      toast.success("Login successful! Redirecting to dashboard...");
       
-      // The redirect will be handled by the useEffect above
+      // The redirect will be handled by the useEffect hook that watches for user state changes
     } catch (error: any) {
       console.error("Login error:", error.message);
       toast.error(error.message || "Login failed");
@@ -137,8 +136,17 @@ const Auth = () => {
               className="w-full bg-cyber text-cyber-dark hover:bg-cyber/90 font-mono shadow-[0_0_10px_rgba(0,255,0,0.1)] hover:shadow-[0_0_15px_rgba(0,255,0,0.2)] transition-all" 
               disabled={authLoading}
             >
-              <Lock className="mr-2 h-4 w-4" />
-              {authLoading ? 'Authenticating...' : 'Access Dashboard'}
+              {authLoading ? (
+                <>
+                  <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
+                  Authenticating...
+                </>
+              ) : (
+                <>
+                  <Lock className="mr-2 h-4 w-4" />
+                  Access Dashboard
+                </>
+              )}
             </Button>
             
             <div className="text-center text-xs text-muted-foreground font-mono">

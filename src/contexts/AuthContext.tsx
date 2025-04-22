@@ -53,6 +53,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
       setLoading(false);
+    }).catch(error => {
+      console.error("Error getting session:", error);
+      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
@@ -64,6 +67,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       await supabase.auth.signOut();
       // The onAuthStateChange will handle updating the state
     } catch (error: any) {
+      console.error("Error signing out:", error);
       toast.error(error.message);
       setLoading(false);
     }
