@@ -11,7 +11,7 @@ interface ProfileSidebarProps {
 export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => (
   <div className="sticky top-10">
     <div className="mx-auto mb-8 flex justify-center">
-      <div className="w-64 h-64 rounded-full overflow-hidden border-4 border-cyber shadow-[0_0_15px_rgba(0,255,0,0.3)]">
+      <div className="w-72 h-72 rounded-full overflow-hidden border-4 border-cyber shadow-[0_0_15px_rgba(0,255,0,0.3)]">
         <Avatar className="w-full h-full">
           <AvatarImage 
             src={profile.avatar_url || "/placeholder.svg"} 
@@ -45,3 +45,4 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => (
     </div>
   </div>
 );
+
