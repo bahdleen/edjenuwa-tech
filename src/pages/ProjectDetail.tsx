@@ -64,7 +64,11 @@ const ProjectDetail = () => {
             ) : project ? (
               <>
                 <ProjectHeader title={project.title} />
-                <ProjectImage imageUrl={project.image_url} title={project.title} />
+                
+                {isValidUrl(project.image_url) && (
+                  <ProjectImage imageUrl={project.image_url} title={project.title} />
+                )}
+                
                 <ProjectDescription description={project.description} />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -76,7 +80,7 @@ const ProjectDetail = () => {
                       <div className="text-sm text-muted-foreground mb-4 bg-cyber-dark/30 p-3 rounded-md">
                         <strong className="text-cyber">Complete walkthrough</strong> of the project implementation
                       </div>
-                      <ProjectVideo url={project.youtube_url || ''} />
+                      <ProjectVideo url={project.youtube_url} />
                     </div>
                   )}
 

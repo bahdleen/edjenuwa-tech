@@ -11,7 +11,7 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
     if (!url) return '';
     
     try {
-      // Check if it's a YouTube URL first
+      // Check if it's a YouTube URL
       const urlObj = new URL(url);
       
       // Standard YouTube URL patterns
@@ -78,7 +78,7 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
     }
   };
 
-  // Make sure we have a valid URL
+  // Handle empty URL case
   if (!url || url.trim() === '') {
     return (
       <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark flex items-center justify-center">
@@ -106,13 +106,28 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
     );
   }
   
-  // For direct video files or external links, use a proper link
+  // For direct video files or external links
   return (
     <a 
       href={url} 
       target="_blank" 
       rel="noopener noreferrer"
       className="block w-full h-full cursor-pointer"
+      onClick={(e) => {
+        // Only open if URL is valid
+        if (!url || url.trim() === '') {
+          e.preventDefault();
+          return;
+        }
+        
+        // Try to validate URL
+        try {
+          new URL(url);
+        } catch (error) {
+          e.preventDefault();
+          console.error("Invalid URL:", url);
+        }
+      }}
     >
       <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark">
         <div className="w-full h-full flex flex-col items-center justify-center space-y-4 hover:bg-cyber-dark/80 p-8">

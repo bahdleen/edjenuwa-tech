@@ -12,6 +12,7 @@ interface ProjectResourcesProps {
 }
 
 export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: ProjectResourcesProps) => {
+  // Don't render if no resources are available
   if (!tutorialUrl && !demoVideoUrl && !configFileUrl) return null;
 
   const isValidUrl = (url: string | null | undefined): boolean => {
@@ -23,10 +24,6 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
       console.error("Invalid URL:", url, e);
       return false;
     }
-  };
-
-  const handleLinkClick = (url: string) => {
-    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -42,23 +39,14 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
                 Documentation
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Detailed technical guide with step-by-step instructions</p>
-              <a 
-                href={tutorialUrl || '#'} 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full"
-                onClick={(e) => {
-                  if (!tutorialUrl) e.preventDefault();
-                }}
+              <Button 
+                variant="outline" 
+                className="w-full py-8 h-auto text-lg font-medium border-cyber hover:bg-cyber/10 hover:text-cyber transition-all duration-200"
+                type="button"
+                onClick={() => window.open(tutorialUrl as string, '_blank', 'noopener,noreferrer')}
               >
-                <Button 
-                  variant="outline" 
-                  className="w-full py-8 h-auto text-lg font-medium border-cyber hover:bg-cyber/10 hover:text-cyber transition-all duration-200"
-                  type="button"
-                >
-                  <FileText className="mr-2 h-6 w-6" /> View Documentation
-                </Button>
-              </a>
+                <FileText className="mr-2 h-6 w-6" /> View Documentation
+              </Button>
             </div>
           )}
           
@@ -75,23 +63,14 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
                 Demo Video
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Short demonstration of project capabilities</p>
-              <a 
-                href={demoVideoUrl || '#'} 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full"
-                onClick={(e) => {
-                  if (!demoVideoUrl) e.preventDefault();
-                }}
+              <Button 
+                variant="outline" 
+                className="w-full py-8 h-auto text-lg font-medium border-cyber-red hover:bg-cyber-red/10 hover:text-cyber-red transition-all duration-200"
+                type="button"
+                onClick={() => window.open(demoVideoUrl as string, '_blank', 'noopener,noreferrer')}
               >
-                <Button 
-                  variant="outline" 
-                  className="w-full py-8 h-auto text-lg font-medium border-cyber-red hover:bg-cyber-red/10 hover:text-cyber-red transition-all duration-200"
-                  type="button"
-                >
-                  <Video className="mr-2 h-6 w-6" /> Watch Demo
-                </Button>
-              </a>
+                <Video className="mr-2 h-6 w-6" /> Watch Demo
+              </Button>
             </div>
           )}
 
@@ -107,23 +86,14 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
                 Configuration Files
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Project configuration templates and setup files</p>
-              <a 
-                href={configFileUrl || '#'} 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full"
-                onClick={(e) => {
-                  if (!configFileUrl) e.preventDefault();
-                }}
+              <Button 
+                variant="outline" 
+                className="w-full py-8 h-auto text-lg font-medium border-cyber-blue hover:bg-cyber-blue/10 hover:text-cyber-blue transition-all duration-200"
+                type="button"
+                onClick={() => window.open(configFileUrl as string, '_blank', 'noopener,noreferrer')}
               >
-                <Button 
-                  variant="outline" 
-                  className="w-full py-8 h-auto text-lg font-medium border-cyber-blue hover:bg-cyber-blue/10 hover:text-cyber-blue transition-all duration-200"
-                  type="button"
-                >
-                  <Download className="mr-2 h-6 w-6" /> Download Files
-                </Button>
-              </a>
+                <Download className="mr-2 h-6 w-6" /> Download Files
+              </Button>
             </div>
           )}
         </div>

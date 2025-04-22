@@ -31,6 +31,17 @@ export const ProjectResources = ({
   setImageFile,
   project
 }: ProjectResourcesProps) => {
+  // Function to open links in a new tab with proper safety checks
+  const safeOpenLink = (url?: string) => {
+    if (!url) return;
+    try {
+      new URL(url); // Validate URL
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } catch (error) {
+      console.error("Invalid URL:", url, error);
+    }
+  };
+
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -45,7 +56,10 @@ export const ProjectResources = ({
           />
           {project?.tutorial_url && (
             <p className="text-sm mt-1">
-              Current: <a href={project.tutorial_url} target="_blank" rel="noreferrer" className="text-cyber hover:underline">View file</a>
+              Current: <button 
+                onClick={() => safeOpenLink(project.tutorial_url)}
+                className="text-cyber hover:underline"
+              >View file</button>
             </p>
           )}
         </div>
@@ -61,7 +75,10 @@ export const ProjectResources = ({
           />
           {project?.config_file_url && (
             <p className="text-sm mt-1">
-              Current: <a href={project.config_file_url} target="_blank" rel="noreferrer" className="text-cyber hover:underline">View file</a>
+              Current: <button 
+                onClick={() => safeOpenLink(project.config_file_url)}
+                className="text-cyber hover:underline"
+              >View file</button>
             </p>
           )}
         </div>
@@ -79,7 +96,10 @@ export const ProjectResources = ({
           />
           {project?.demo_video_url && (
             <p className="text-sm mt-1">
-              Current: <a href={project.demo_video_url} target="_blank" rel="noreferrer" className="text-cyber hover:underline">View video</a>
+              Current: <button 
+                onClick={() => safeOpenLink(project.demo_video_url)}
+                className="text-cyber hover:underline"
+              >View video</button>
             </p>
           )}
         </div>
@@ -95,7 +115,10 @@ export const ProjectResources = ({
           />
           {project?.image_url && (
             <p className="text-sm mt-1">
-              Current: <a href={project.image_url} target="_blank" rel="noreferrer" className="text-cyber hover:underline">View image</a>
+              Current: <button 
+                onClick={() => safeOpenLink(project.image_url)}
+                className="text-cyber hover:underline"
+              >View image</button>
             </p>
           )}
         </div>
