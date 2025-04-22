@@ -54,63 +54,72 @@ const ProjectsManagement = () => {
 
   return (
     <MainLayout>
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-6xl mx-auto space-y-8">
-          <div className="flex justify-between items-center">
+      <div className="container mx-auto px-4 py-8 md:py-16">
+        <div className="max-w-6xl mx-auto space-y-6 md:space-y-8">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
             <div>
-              <h1 className="text-4xl font-bold tracking-tight">
+              <h1 className="text-2xl md:text-4xl font-bold tracking-tight">
                 <span className="text-green-500">{">"}</span> Projects
               </h1>
-              <p className="text-muted-foreground">Manage your project portfolio</p>
+              <p className="text-muted-foreground text-sm md:text-base">Manage your project portfolio</p>
             </div>
-            <Button onClick={() => navigate("/admin/projects/new")}>
+            <Button onClick={() => navigate("/admin/projects/new")} className="self-start md:self-auto">
               <Plus className="mr-2 h-4 w-4" /> New Project
             </Button>
           </div>
 
           <Card>
-            <CardHeader>
-              <CardTitle>All Projects</CardTitle>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base md:text-lg">All Projects</CardTitle>
             </CardHeader>
             <CardContent>
               {isLoading ? (
                 <div className="py-8 text-center">Loading projects...</div>
               ) : projects && projects.length > 0 ? (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Title</TableHead>
-                      <TableHead>Category</TableHead>
-                      <TableHead>Created</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {projects.map((project) => (
-                      <TableRow key={project.id}>
-                        <TableCell className="font-medium">{project.title}</TableCell>
-                        <TableCell>{project.category}</TableCell>
-                        <TableCell>{new Date(project.created_at).toLocaleDateString()}</TableCell>
-                        <TableCell className="text-right space-x-2">
-                          <Button variant="outline" size="sm" onClick={() => navigate(`/projects/${project.id}`)}>
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button variant="outline" size="sm" onClick={() => navigate(`/admin/projects/edit/${project.id}`)}>
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button 
-                            variant="destructive" 
-                            size="sm"
-                            disabled={deleting === project.id}
-                            onClick={() => handleDelete(project.id)}
-                          >
-                            <Trash className="h-4 w-4" />
-                          </Button>
-                        </TableCell>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Title</TableHead>
+                        <TableHead className="hidden md:table-cell">Category</TableHead>
+                        <TableHead className="hidden md:table-cell">Created</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {projects.map((project) => (
+                        <TableRow key={project.id}>
+                          <TableCell className="font-medium text-sm">
+                            <div className="md:hidden text-xs text-muted-foreground mb-1">{project.category}</div>
+                            {project.title}
+                            <div className="md:hidden text-xs text-muted-foreground mt-1">
+                              {new Date(project.created_at).toLocaleDateString()}
+                            </div>
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">{project.category}</TableCell>
+                          <TableCell className="hidden md:table-cell">{new Date(project.created_at).toLocaleDateString()}</TableCell>
+                          <TableCell className="text-right space-x-1 md:space-x-2">
+                            <Button variant="outline" size="sm" onClick={() => navigate(`/projects/${project.id}`)} className="h-7 w-7 md:h-8 md:w-8 p-0">
+                              <Eye className="h-3 w-3 md:h-4 md:w-4" />
+                            </Button>
+                            <Button variant="outline" size="sm" onClick={() => navigate(`/admin/projects/edit/${project.id}`)} className="h-7 w-7 md:h-8 md:w-8 p-0">
+                              <Edit className="h-3 w-3 md:h-4 md:w-4" />
+                            </Button>
+                            <Button 
+                              variant="destructive" 
+                              size="sm"
+                              disabled={deleting === project.id}
+                              onClick={() => handleDelete(project.id)}
+                              className="h-7 w-7 md:h-8 md:w-8 p-0"
+                            >
+                              <Trash className="h-3 w-3 md:h-4 md:w-4" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
               ) : (
                 <div className="py-8 text-center">
                   <p className="text-muted-foreground">No projects found. Create your first project!</p>
@@ -120,7 +129,7 @@ const ProjectsManagement = () => {
           </Card>
 
           <div className="mt-4">
-            <Button variant="outline" onClick={() => navigate('/admin')}>
+            <Button variant="outline" onClick={() => navigate('/admin')} className="text-sm">
               Back to Dashboard
             </Button>
           </div>
