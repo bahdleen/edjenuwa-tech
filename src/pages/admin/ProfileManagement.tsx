@@ -26,7 +26,6 @@ const ProfileManagement = () => {
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
 
-  // Initialize the form
   const form = useForm<ProfileFormValues>({
     defaultValues: {
       full_name: "",
@@ -44,10 +43,10 @@ const ProfileManagement = () => {
         .from('profiles')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
       
-      if (error && error.code !== 'PGRST116') throw error;
-      return data || null;
+      if (error) throw error;
+      return data;
     },
     enabled: !!user,
   });
@@ -128,28 +127,20 @@ const ProfileManagement = () => {
         bio: data.bio,
         avatar_url: avatarUrl,
         resume_url: resumeUrl,
+        updated_at: new Date().toISOString(),
       };
 
-      if (profile) {
-        // Update existing profile
-        const { error } = await supabase
-          .from('profiles')
-          .update(profileData)
-          .eq('user_id', user.id);
+      const { error } = await supabase
+        .from('profiles')
+        .upsert(profileData)
+        .eq('user_id', user.id);
 
-        if (error) throw error;
-      } else {
-        // Create new profile
-        const { error } = await supabase
-          .from('profiles')
-          .insert([profileData]);
-
-        if (error) throw error;
-      }
+      if (error) throw error;
 
       toast.success("Profile updated successfully");
       refetch();
     } catch (error: any) {
+      console.error('Error updating profile:', error);
       toast.error(error.message);
     } finally {
       setLoading(false);
