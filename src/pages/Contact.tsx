@@ -135,10 +135,10 @@ const Contact = () => {
                         <span className="font-medium font-mono">Email</span>
                       </div>
                       <a 
-                        href="mailto:contact@edjenuwa.tech" 
+                        href="mailto:info@edjenuwa.tech" 
                         className="text-muted-foreground hover:text-cyber transition-colors"
                       >
-                        contact@edjenuwa.tech
+                        info@edjenuwa.tech
                       </a>
                     </div>
                     
