@@ -65,6 +65,20 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
     }
   };
 
+  const isDirectVideoUrl = (url: string) => {
+    if (!url) return false;
+    try {
+      const urlObj = new URL(url);
+      const path = urlObj.pathname.toLowerCase();
+      return path.endsWith('.mp4') || path.endsWith('.webm') || path.endsWith('.mov') || 
+             path.endsWith('.avi') || path.endsWith('.mkv') || 
+             urlObj.hostname.includes('storage.googleapis.com') || 
+             urlObj.hostname.includes('supabase');
+    } catch (error) {
+      return false;
+    }
+  };
+
   const handleVideoClick = (e: React.MouseEvent) => {
     e.preventDefault();
     if (!url) {
@@ -96,6 +110,21 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
           allowFullScreen
           className="rounded-sm"
         ></iframe>
+      </div>
+    );
+  }
+  
+  // For direct video files, provide a clickable link
+  if (isDirectVideoUrl(url)) {
+    return (
+      <div 
+        onClick={handleVideoClick}
+        className="aspect-video w-full cyber-border p-1 bg-cyber-dark flex items-center justify-center hover:opacity-90 transition-opacity cursor-pointer"
+      >
+        <div className="flex flex-col items-center justify-center space-y-2">
+          <Play className="text-cyber-red h-8 w-8" />
+          <p className="text-muted-foreground">Click to watch demo video</p>
+        </div>
       </div>
     );
   }

@@ -28,12 +28,14 @@ const ProjectDetail = () => {
         .single();
       
       if (error) throw error;
+      console.log("Fetched project data:", data);
       return data;
     },
     enabled: !!id,
   });
 
   if (error) {
+    console.error("Error loading project:", error);
     toast.error("Failed to load project details");
   }
 
@@ -44,14 +46,9 @@ const ProjectDetail = () => {
       new URL(url);
       return true;
     } catch (e) {
+      console.error("Invalid URL:", url, e);
       return false;
     }
-  };
-
-  // Safe open URL in new tab
-  const openUrlInNewTab = (url: string | null | undefined) => {
-    if (!isValidUrl(url)) return;
-    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -79,12 +76,7 @@ const ProjectDetail = () => {
                       <div className="text-sm text-muted-foreground mb-4 bg-cyber-dark/30 p-3 rounded-md">
                         <strong className="text-cyber">Complete walkthrough</strong> of the project implementation
                       </div>
-                      <div 
-                        onClick={() => isValidUrl(project.youtube_url) && openUrlInNewTab(project.youtube_url)}
-                        className={isValidUrl(project.youtube_url) ? "cursor-pointer" : ""}
-                      >
-                        <ProjectVideo url={project.youtube_url || ''} />
-                      </div>
+                      <ProjectVideo url={project.youtube_url || ''} />
                     </div>
                   )}
 

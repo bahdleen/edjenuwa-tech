@@ -26,7 +26,7 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
     }
   };
 
-  // Handle direct download with validation
+  // Handle resource access with validation
   const handleResourceClick = (url: string | null | undefined, resourceType: string) => {
     if (!url) {
       toast.error(`No ${resourceType} URL provided`);
@@ -34,14 +34,8 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
     }
 
     try {
-      // Create a temporary anchor element to trigger download
-      const a = document.createElement('a');
-      a.href = url;
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      // Open URL in new tab to view/download the resource
+      window.open(url, '_blank', 'noopener,noreferrer');
     } catch (error) {
       console.error(`Error opening ${resourceType}:`, error);
       toast.error(`Failed to open ${resourceType}`);
@@ -110,7 +104,7 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
                 className="block w-full py-2 text-center rounded-md border-cyber-blue/50 text-cyber-blue hover:bg-cyber-blue/10 font-mono group-hover:shadow-[0_0_15px_rgba(62,142,255,0.2)] transition-all border"
               >
                 <span className="flex items-center justify-center">
-                  <Download className="mr-2" /> Download ZIP
+                  <Download className="mr-2" /> Download Files
                 </span>
               </button>
             </div>
