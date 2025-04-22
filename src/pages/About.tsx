@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { Download, BookOpen, Briefcase, Award, Shield, Database, Code, Cpu, Network } from "lucide-react";
+import { Download, BookOpen, Briefcase, Award, Shield, Database, Code, Cpu, Network, UserRound } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const About = () => {
