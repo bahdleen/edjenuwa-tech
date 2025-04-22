@@ -64,14 +64,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const signOut = async () => {
-    setLoading(true);
     try {
-      await supabase.auth.signOut();
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
       // The onAuthStateChange will handle updating the state
     } catch (error: any) {
       console.error("Error signing out:", error);
       toast.error(error.message);
-      setLoading(false);
+      throw error; // Rethrow to allow handling in components
     }
   };
 

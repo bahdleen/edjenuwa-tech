@@ -6,19 +6,17 @@ import MainLayout from "@/components/layout/MainLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import { FileText, FolderOpen, User, LogOut, Lock, Shield } from "lucide-react";
 
 const Admin = () => {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const handleSignOut = async () => {
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      await signOut();
       toast.success("Signed out successfully");
       navigate("/");
     } catch (error: any) {
@@ -26,6 +24,14 @@ const Admin = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleNavigateToProfile = () => {
+    navigate("/admin/profile");
+  };
+
+  const handleNavigateToProjects = () => {
+    navigate("/admin/projects");
   };
 
   return (
@@ -63,7 +69,7 @@ const Admin = () => {
                     Update your professional profile information, resume, and skills
                   </p>
                   <Button
-                    onClick={() => navigate("/admin/profile")}
+                    onClick={handleNavigateToProfile}
                     className="w-full bg-cyber text-cyber-dark hover:bg-cyber/90 group-hover:shadow-[0_0_10px_rgba(0,255,0,0.2)] transition-all text-xs md:text-sm"
                   >
                     <User className="mr-2 h-3 w-3 md:h-4 md:w-4" /> Manage Profile
@@ -83,7 +89,7 @@ const Admin = () => {
                     Add, edit, and delete your projects, including resources and media files
                   </p>
                   <Button
-                    onClick={() => navigate("/admin/projects")}
+                    onClick={handleNavigateToProjects}
                     className="w-full bg-cyber-blue text-white hover:bg-cyber-blue/90 group-hover:shadow-[0_0_10px_rgba(15,160,206,0.2)] transition-all text-xs md:text-sm"
                   >
                     <FileText className="mr-2 h-3 w-3 md:h-4 md:w-4" /> Manage Projects
