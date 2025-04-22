@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 import { BookOpen, Briefcase, Award, Shield, Network, Code, Cpu } from "lucide-react";
 import { TimelineItem } from "./TimelineItem";
@@ -37,16 +36,16 @@ export const ProfileContent = ({ profile }: ProfileContentProps) => (
         </div>
         <div className="space-y-6 backdrop-blur-sm bg-cyber-dark/30 p-6 rounded-md border border-cyber/10">
           <TimelineItem 
-            title="Senior Network Security Engineer"
-            organization="Tech Security Solutions"
-            date="2020 - Present"
+            title="Network Security Engineer"
+            organization="MSV Sport"
+            date="2023 – Present"
             icon={<Shield className="text-cyber-red" />}
             description="Implemented advanced network security protocols and led security audits for enterprise clients."
           />
           <TimelineItem 
             title="Network Engineer"
-            organization="Global Networks Inc."
-            date="2018 - 2020"
+            organization="EEW Technology"
+            date="2019 – 2022"
             icon={<Network className="text-cyber-blue" />}
             description="Designed and managed network infrastructure for mid-sized businesses."
           />
@@ -62,18 +61,18 @@ export const ProfileContent = ({ profile }: ProfileContentProps) => (
         </div>
         <div className="space-y-6 backdrop-blur-sm bg-cyber-dark/30 p-6 rounded-md border border-cyber/10">
           <TimelineItem 
-            title="M.S. in Cybersecurity"
-            organization="Tech University"
-            date="2016 - 2018"
+            title="B.Sc. in Cybersecurity"
+            organization="Teesside University, Middlesbrough"
+            date="2022 – 2026"
             icon={<Code className="text-cyber" />}
             description="Specialized in network security and penetration testing."
           />
           <TimelineItem 
-            title="B.S. in Computer Science"
-            organization="State University"
-            date="2012 - 2016"
+            title="National Diploma in Computer Science"
+            organization="Biacom Ventures"
+            date="2017 – 2019"
             icon={<Cpu className="text-cyber" />}
-            description="Focus on computer networks and systems programming."
+            description="Focused on computer networks and systems programming."
           />
         </div>
       </section>
@@ -87,21 +86,21 @@ export const ProfileContent = ({ profile }: ProfileContentProps) => (
         </div>
         <div className="space-y-6 backdrop-blur-sm bg-cyber-dark/30 p-6 rounded-md border border-cyber/10">
           <TimelineItem 
-            title="Certified Information Systems Security Professional (CISSP)"
-            organization="ISC²"
-            date="2019"
+            title="Teesside University Summer Program (Ethical Hacking)"
+            organization=""
+            date=""
             icon={<Shield className="text-cyber-red" />}
           />
           <TimelineItem 
-            title="Cisco Certified Network Professional (CCNP)"
-            organization="Cisco"
-            date="2018"
+            title="Azure Fundamentals (AZ-900)"
+            organization=""
+            date=""
             icon={<Network className="text-cyber-blue" />}
           />
           <TimelineItem 
-            title="Certified Ethical Hacker (CEH)"
-            organization="EC-Council"
-            date="2017"
+            title="Azure Fundamentals (SC-900)"
+            organization=""
+            date=""
             icon={<Code className="text-cyber" />}
           />
         </div>
