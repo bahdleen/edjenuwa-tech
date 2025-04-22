@@ -37,6 +37,13 @@ const ProjectDetail = () => {
     toast.error("Failed to load project details");
   }
 
+  const handleExternalVideoLink = (e: React.MouseEvent) => {
+    if (project?.youtube_url) {
+      e.preventDefault();
+      window.open(project.youtube_url, '_blank', 'noopener,noreferrer');
+    }
+  };
+
   return (
     <MainLayout>
       <div className="bg-gradient-to-b from-cyber-dark to-cyber-dark-blue py-16">
@@ -61,14 +68,12 @@ const ProjectDetail = () => {
                       <div className="text-sm text-muted-foreground mb-4 bg-cyber-dark/30 p-3 rounded-md">
                         <strong className="text-cyber">Complete walkthrough</strong> of the project implementation
                       </div>
-                      <a 
-                        href={project.youtube_url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="block hover:opacity-95 transition-opacity"
+                      <div 
+                        onClick={handleExternalVideoLink}
+                        className="cursor-pointer hover:opacity-95 transition-opacity"
                       >
                         <ProjectVideo url={project.youtube_url} />
-                      </a>
+                      </div>
                     </div>
                   )}
 

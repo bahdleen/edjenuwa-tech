@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { FileText, Youtube, ExternalLink, Download } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 interface ProjectResourcesProps {
   tutorialUrl?: string | null;
@@ -18,10 +19,19 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
   const isValidUrl = (url: string | null | undefined): boolean => {
     if (!url || url.trim() === '') return false;
     try {
-      new URL(url); // This will throw an error if the URL is invalid
+      new URL(url);
       return true;
     } catch (e) {
       return false;
+    }
+  };
+
+  const handleExternalLink = (url: string | null | undefined, actionName: string) => {
+    if (isValidUrl(url)) {
+      // Open in new tab
+      window.open(url as string, '_blank', 'noopener,noreferrer');
+    } else {
+      toast.error(`Invalid ${actionName} URL`);
     }
   };
 
@@ -38,27 +48,12 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
                 Technical Documentation
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Detailed technical guide with step-by-step instructions</p>
-              {isValidUrl(tutorialUrl) ? (
-                <a 
-                  href={tutorialUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block w-full"
-                >
-                  <button 
-                    className="w-full bg-gradient-to-r from-cyber/70 to-cyber text-cyber-dark hover:bg-cyber/90 font-mono group-hover:shadow-[0_0_15px_rgba(0,255,0,0.3)] transition-all p-2 rounded flex items-center justify-center"
-                  >
-                    <FileText className="mr-2" /> View Documentation
-                  </button>
-                </a>
-              ) : (
-                <button 
-                  className="w-full bg-gradient-to-r from-cyber/70 to-cyber text-cyber-dark hover:bg-cyber/90 font-mono group-hover:shadow-[0_0_15px_rgba(0,255,0,0.3)] transition-all p-2 rounded flex items-center justify-center opacity-50 cursor-not-allowed"
-                  onClick={() => toast.error("Documentation URL is invalid")}
-                >
-                  <FileText className="mr-2" /> View Documentation
-                </button>
-              )}
+              <Button 
+                className="w-full bg-gradient-to-r from-cyber/70 to-cyber text-cyber-dark hover:bg-cyber/90 font-mono group-hover:shadow-[0_0_15px_rgba(0,255,0,0.3)] transition-all"
+                onClick={() => handleExternalLink(tutorialUrl, 'documentation')}
+              >
+                <FileText className="mr-2" /> View Documentation
+              </Button>
             </div>
           )}
           
@@ -73,27 +68,13 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
                 Demo Video
               </h3>
               <p className="text-muted-foreground text-sm mb-3 font-medium">Short demonstration of project capabilities</p>
-              {isValidUrl(demoVideoUrl) ? (
-                <a 
-                  href={demoVideoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block w-full"
-                >
-                  <button 
-                    className="w-full border-cyber-red/50 text-cyber-red hover:bg-cyber-red/10 font-mono group-hover:shadow-[0_0_15px_rgba(255,62,62,0.2)] transition-all p-2 rounded flex items-center justify-center border"
-                  >
-                    <ExternalLink className="mr-2" /> Watch Demo
-                  </button>
-                </a>
-              ) : (
-                <button 
-                  className="w-full border-cyber-red/50 text-cyber-red hover:bg-cyber-red/10 font-mono group-hover:shadow-[0_0_15px_rgba(255,62,62,0.2)] transition-all p-2 rounded flex items-center justify-center border opacity-50 cursor-not-allowed"
-                  onClick={() => toast.error("Demo video URL is invalid")}
-                >
-                  <ExternalLink className="mr-2" /> Watch Demo
-                </button>
-              )}
+              <Button 
+                className="w-full border-cyber-red/50 text-cyber-red hover:bg-cyber-red/10 font-mono group-hover:shadow-[0_0_15px_rgba(255,62,62,0.2)] transition-all border"
+                variant="outline"
+                onClick={() => handleExternalLink(demoVideoUrl, 'demo video')}
+              >
+                <ExternalLink className="mr-2" /> Watch Demo
+              </Button>
             </div>
           )}
 
@@ -108,27 +89,13 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
                 Configuration Files
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Project configuration templates and setup files</p>
-              {isValidUrl(configFileUrl) ? (
-                <a 
-                  href={configFileUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block w-full"
-                >
-                  <button 
-                    className="w-full border-cyber-blue/50 text-cyber-blue hover:bg-cyber-blue/10 font-mono group-hover:shadow-[0_0_15px_rgba(62,142,255,0.2)] transition-all p-2 rounded flex items-center justify-center border"
-                  >
-                    <Download className="mr-2" /> Download ZIP
-                  </button>
-                </a>
-              ) : (
-                <button 
-                  className="w-full border-cyber-blue/50 text-cyber-blue hover:bg-cyber-blue/10 font-mono group-hover:shadow-[0_0_15px_rgba(62,142,255,0.2)] transition-all p-2 rounded flex items-center justify-center border opacity-50 cursor-not-allowed"
-                  onClick={() => toast.error("Configuration file URL is invalid")}
-                >
-                  <Download className="mr-2" /> Download ZIP
-                </button>
-              )}
+              <Button 
+                className="w-full border-cyber-blue/50 text-cyber-blue hover:bg-cyber-blue/10 font-mono group-hover:shadow-[0_0_15px_rgba(62,142,255,0.2)] transition-all border"
+                variant="outline"
+                onClick={() => handleExternalLink(configFileUrl, 'configuration file')}
+              >
+                <Download className="mr-2" /> Download ZIP
+              </Button>
             </div>
           )}
         </div>

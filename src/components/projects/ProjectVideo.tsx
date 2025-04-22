@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { toast } from "sonner";
+import { ExternalLink } from "lucide-react";
 
 interface ProjectVideoProps {
   url: string;
@@ -75,20 +76,24 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
     toast.error("Failed to load video. Please try again later.");
   };
 
+  const handleExternalVideoLink = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
   const videoId = getVideoId(url);
   
   if (!videoId) {
     return (
-      <a 
-        href={url} 
-        target="_blank" 
-        rel="noopener noreferrer" 
-        className="block w-full"
+      <div 
+        onClick={handleExternalVideoLink} 
+        className="cursor-pointer aspect-video w-full cyber-border p-1 bg-cyber-dark flex items-center justify-center hover:opacity-90 transition-opacity"
       >
-        <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark flex items-center justify-center hover:opacity-90 transition-opacity cursor-pointer">
+        <div className="flex flex-col items-center justify-center space-y-2">
+          <ExternalLink className="text-cyber h-6 w-6" />
           <p className="text-muted-foreground">Click to watch video on YouTube</p>
         </div>
-      </a>
+      </div>
     );
   }
   
