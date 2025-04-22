@@ -9,6 +9,39 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          resume_url: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          resume_url?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          resume_url?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       projects: {
         Row: {
           category: string
@@ -19,7 +52,9 @@ export type Database = {
           id: string
           image_url: string | null
           title: string
+          tutorial_url: string | null
           updated_at: string | null
+          user_id: string | null
           youtube_url: string | null
         }
         Insert: {
@@ -31,7 +66,9 @@ export type Database = {
           id?: string
           image_url?: string | null
           title: string
+          tutorial_url?: string | null
           updated_at?: string | null
+          user_id?: string | null
           youtube_url?: string | null
         }
         Update: {
@@ -43,7 +80,9 @@ export type Database = {
           id?: string
           image_url?: string | null
           title?: string
+          tutorial_url?: string | null
           updated_at?: string | null
+          user_id?: string | null
           youtube_url?: string | null
         }
         Relationships: []

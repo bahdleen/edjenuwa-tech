@@ -1,13 +1,39 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import MainLayout from "@/components/layout/MainLayout";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <MainLayout>
+      <div className="container mx-auto px-4 py-16">
+        <div className="max-w-3xl mx-auto space-y-8">
+          <div className="space-y-2">
+            <h1 className="text-4xl font-bold tracking-tight">
+              <span className="text-green-500">></span> Welcome to my Portfolio
+            </h1>
+            <p className="text-muted-foreground text-lg">
+              Cybersecurity | Networking | AI
+            </p>
+          </div>
+          
+          <div className="space-y-4">
+            <p className="text-lg">
+              Explore my projects and experiences in cybersecurity, networking, and artificial intelligence.
+            </p>
+            
+            <div className="flex gap-4">
+              <Button asChild>
+                <Link to="/projects">View Projects</Link>
+              </Button>
+              <Button variant="outline" asChild>
+                <Link to="/about">About Me</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </MainLayout>
   );
 };
 
