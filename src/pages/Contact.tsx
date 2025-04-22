@@ -8,7 +8,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Mail, Send, Github, Linkedin, Shield, Lock, Terminal, Server } from "lucide-react";
 import { toast } from "sonner";
 
-const CONTACT_EDGE_FUNCTION_URL = "https://yxcobqgdvfyhupemlvfz.functions.supabase.co/send-contact-message";
+// Update API endpoint to provided URL
+const CONTACT_API_ENDPOINT = "https://email-num2cpomh-anthonys-projects-aaa16846.vercel.app/api/send-email";
 
 const Contact = () => {
   const [name, setName] = useState("");
@@ -20,9 +21,9 @@ const Contact = () => {
     e.preventDefault();
     setLoading(true);
 
-    // Send to Supabase Edge Function, which will email info@edjenuwa.tech
+    // Send to the provided API endpoint
     try {
-      const res = await fetch(CONTACT_EDGE_FUNCTION_URL, {
+      const res = await fetch(CONTACT_API_ENDPOINT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -212,3 +213,4 @@ const Contact = () => {
 };
 
 export default Contact;
+
