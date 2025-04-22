@@ -29,18 +29,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const isAdmin = !!user;
 
   useEffect(() => {
+    console.log("Setting up auth state change listener");
+    
+    // Set up the auth state change listener first
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
+      (event, newSession) => {
+        console.log("Auth state changed:", event, newSession?.user?.email);
+        setSession(newSession);
+        setUser(newSession?.user ?? null);
         setLoading(false);
+        
+        if (event === 'SIGNED_IN') {
+          toast.success("Signed in successfully");
+        } else if (event === 'SIGNED_OUT') {
+          toast.success("Signed out successfully");
+        }
       }
     );
 
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
+    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      console.log("Initial session check:", currentSession?.user?.email);
+      setSession(currentSession);
+      setUser(currentSession?.user ?? null);
       setLoading(false);
     });
 
@@ -48,11 +59,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const signOut = async () => {
+    setLoading(true);
     try {
       await supabase.auth.signOut();
-      toast.success("Signed out successfully");
+      // The onAuthStateChange will handle updating the state
     } catch (error: any) {
       toast.error(error.message);
+      setLoading(false);
     }
   };
 

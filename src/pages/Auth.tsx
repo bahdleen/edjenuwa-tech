@@ -12,38 +12,65 @@ import { Lock, User, Shield, Key } from 'lucide-react';
 const Auth = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [authLoading, setAuthLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   
   // Get the page the user was trying to access before being redirected to login
   const from = location.state?.from?.pathname || '/admin';
 
   // If user is already logged in, redirect to intended destination or admin
   useEffect(() => {
-    if (user) {
-      navigate(from);
+    if (user && !loading) {
+      console.log("User is logged in, redirecting to:", from);
+      navigate(from, { replace: true });
     }
-  }, [user, navigate, from]);
+  }, [user, loading, navigate, from]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    
+    if (!email || !password) {
+      toast.error("Please enter both email and password");
+      return;
+    }
+    
+    setAuthLoading(true);
     try {
+      console.log("Attempting login with:", email);
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
+      
       if (error) throw error;
-      toast.success('Logged in successfully');
-      navigate(from);
+      
+      // The redirect will be handled by the useEffect above
     } catch (error: any) {
-      toast.error(error.message);
-    } finally {
-      setLoading(false);
+      console.error("Login error:", error.message);
+      toast.error(error.message || "Login failed");
+      setAuthLoading(false);
     }
   };
+
+  // If we're still checking authentication status, show a loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-cyber-dark to-cyber-dark-blue flex items-center justify-center">
+        <p className="text-cyber animate-pulse">Checking authentication status...</p>
+      </div>
+    );
+  }
+
+  // If user is already logged in, show a redirect message (the actual redirect is handled by useEffect)
+  if (user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-cyber-dark to-cyber-dark-blue flex items-center justify-center">
+        <p className="text-cyber">You are already logged in. Redirecting...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-cyber-dark to-cyber-dark-blue flex items-center justify-center p-4">
@@ -96,10 +123,10 @@ const Auth = () => {
             <Button 
               type="submit" 
               className="w-full bg-cyber text-cyber-dark hover:bg-cyber/90 font-mono shadow-[0_0_10px_rgba(0,255,0,0.1)] hover:shadow-[0_0_15px_rgba(0,255,0,0.2)] transition-all" 
-              disabled={loading}
+              disabled={authLoading}
             >
               <Lock className="mr-2 h-4 w-4" />
-              {loading ? 'Authenticating...' : 'Access Dashboard'}
+              {authLoading ? 'Authenticating...' : 'Access Dashboard'}
             </Button>
             
             <div className="text-center text-xs text-muted-foreground font-mono">
