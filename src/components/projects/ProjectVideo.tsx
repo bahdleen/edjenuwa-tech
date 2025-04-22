@@ -74,6 +74,22 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
     }
   };
 
+  const handleExternalClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    try {
+      // Make sure to use a properly formed URL
+      const safeUrl = isYouTubeUrl(url) 
+        ? url 
+        : `https://www.youtube.com/watch?v=${videoId}`;
+      
+      console.log("Opening external link:", safeUrl);
+      window.open(safeUrl, '_blank', 'noopener,noreferrer');
+    } catch (error) {
+      console.error("Error opening external link:", error);
+      toast.error("Failed to open video link");
+    }
+  };
+
   const isYouTubeUrl = (url: string): boolean => {
     return url.includes('youtube.com') || url.includes('youtu.be');
   };
@@ -140,6 +156,7 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
           href={url} 
           target="_blank" 
           rel="noopener noreferrer"
+          onClick={handleExternalClick}
           className="w-full h-full flex flex-col items-center justify-center space-y-4 hover:bg-cyber-dark/80 p-8 block"
         >
           <ExternalLink className="text-cyber h-16 w-16" />
@@ -195,6 +212,7 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
         href={url} 
         target="_blank" 
         rel="noopener noreferrer"
+        onClick={handleExternalClick}
         className="w-full h-full flex flex-col items-center justify-center space-y-4 hover:bg-cyber-dark/80 p-8 block"
       >
         <Play className="text-cyber-red h-16 w-16" />

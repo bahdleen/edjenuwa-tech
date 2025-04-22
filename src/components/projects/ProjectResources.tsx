@@ -47,6 +47,9 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
       console.log(`Opening ${type} URL: ${url}`);
       // Open the URL in a new tab
       window.open(url, '_blank', 'noopener,noreferrer');
+      
+      // Track click for analytics if needed
+      console.log(`Resource clicked: ${type}`);
     } catch (e) {
       console.error(`Error opening ${type} URL: ${url}`, e);
       toast.error(`Could not open ${type.toLowerCase()}: Invalid URL`);
