@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { FileText, Video, Download } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface ProjectResourcesProps {
   tutorialUrl?: string | null;
@@ -14,32 +15,60 @@ interface ProjectResourcesProps {
 export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: ProjectResourcesProps) => {
   // Don't render if no resources are available
   if (!tutorialUrl && !demoVideoUrl && !configFileUrl) {
+    console.log("No resources available, not rendering ProjectResources");
     return null;
   }
 
   const isValidUrl = (url: string | null | undefined): boolean => {
-    if (!url) return false;
+    if (!url || url.trim() === '') {
+      console.log(`URL is empty or null: ${url}`);
+      return false;
+    }
     try {
       new URL(url);
+      console.log(`Valid URL: ${url}`);
       return true;
     } catch (e) {
+      console.error(`Invalid URL: ${url}`, e);
       return false;
     }
   };
 
   const handleResourceClick = (url: string | null | undefined, type: string) => {
-    if (!url) return;
+    if (!url) {
+      console.error(`No URL provided for ${type}`);
+      toast.error(`Could not open ${type.toLowerCase()}`);
+      return;
+    }
     
-    // Open the URL in a new tab
-    window.open(url, '_blank', 'noopener,noreferrer');
+    try {
+      // Validate URL before opening
+      new URL(url);
+      console.log(`Opening ${type} URL: ${url}`);
+      // Open the URL in a new tab
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } catch (e) {
+      console.error(`Error opening ${type} URL: ${url}`, e);
+      toast.error(`Could not open ${type.toLowerCase()}: Invalid URL`);
+    }
   };
 
   const hasValidTutorial = isValidUrl(tutorialUrl);
   const hasValidDemo = isValidUrl(demoVideoUrl);
   const hasValidConfig = isValidUrl(configFileUrl);
 
+  console.log("Resource validation results:", {
+    tutorialUrl,
+    demoVideoUrl,
+    configFileUrl,
+    hasValidTutorial,
+    hasValidDemo,
+    hasValidConfig
+  });
+
   // If no valid resources, don't render anything
   if (!hasValidTutorial && !hasValidDemo && !hasValidConfig) {
+    console.log("No valid resources, not rendering ProjectResources");
     return null;
   }
 

@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ExternalLink, Play } from "lucide-react";
+import { toast } from "sonner";
 
 interface ProjectVideoProps {
   url: string;
@@ -13,7 +14,9 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
   useEffect(() => {
     if (url) {
       try {
+        console.log("Processing video URL:", url);
         const id = extractYoutubeVideoId(url);
+        console.log("Extracted YouTube video ID:", id);
         setVideoId(id);
       } catch (error) {
         console.error("Error processing video URL:", error);
@@ -24,32 +27,46 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
 
   // Extract YouTube video ID from various URL formats
   const extractYoutubeVideoId = (url: string): string | null => {
-    if (!url) return null;
+    if (!url) {
+      console.log("No URL provided to extract YouTube ID");
+      return null;
+    }
     
     try {
+      console.log("Attempting to extract YouTube ID from:", url);
+      
       // Handle youtu.be URLs
       if (url.includes('youtu.be')) {
         const segments = new URL(url).pathname.split('/');
-        return segments[segments.length - 1].split('?')[0];
+        const id = segments[segments.length - 1].split('?')[0];
+        console.log("Extracted ID from youtu.be URL:", id);
+        return id;
       }
       
       // Handle youtube.com/watch?v= format
       if (url.includes('youtube.com/watch')) {
-        return new URL(url).searchParams.get('v');
+        const id = new URL(url).searchParams.get('v');
+        console.log("Extracted ID from youtube.com/watch URL:", id);
+        return id;
       }
       
       // Handle youtube.com/live/ format
       if (url.includes('youtube.com/live/')) {
         const match = url.match(/youtube\.com\/live\/([^?&]+)/);
-        return match?.[1] || null;
+        const id = match?.[1] || null;
+        console.log("Extracted ID from youtube.com/live URL:", id);
+        return id;
       }
       
       // Handle youtube.com/embed/ format
       if (url.includes('youtube.com/embed/')) {
         const match = url.match(/youtube\.com\/embed\/([^?&]+)/);
-        return match?.[1] || null;
+        const id = match?.[1] || null;
+        console.log("Extracted ID from youtube.com/embed URL:", id);
+        return id;
       }
       
+      console.log("No YouTube ID extraction pattern matched");
       return null;
     } catch (error) {
       console.error("Error parsing YouTube URL:", error);
@@ -65,10 +82,20 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
     try {
       const urlObj = new URL(url);
       const path = urlObj.pathname.toLowerCase();
-      return path.endsWith('.mp4') || path.endsWith('.webm') || path.endsWith('.mov') || 
-             path.endsWith('.avi') || path.endsWith('.mkv') || 
-             urlObj.hostname.includes('storage.googleapis.com') || 
-             urlObj.hostname.includes('supabase');
+      const isVideoFile = path.endsWith('.mp4') || path.endsWith('.webm') || 
+                         path.endsWith('.mov') || path.endsWith('.avi') || 
+                         path.endsWith('.mkv');
+      const isStorageUrl = urlObj.hostname.includes('storage.googleapis.com') || 
+                          urlObj.hostname.includes('supabase');
+      
+      console.log("Direct video URL check:", { 
+        url, 
+        isVideoFile, 
+        isStorageUrl, 
+        result: isVideoFile || isStorageUrl 
+      });
+      
+      return isVideoFile || isStorageUrl;
     } catch (error) {
       console.error("Error checking if direct video URL:", error);
       return false;
@@ -76,11 +103,13 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
   };
 
   if (!url) {
+    console.log("No video URL provided");
     return <div className="aspect-video w-full bg-cyber-dark flex items-center justify-center">No video available</div>;
   }
 
   // For YouTube videos with valid ID
   if (videoId && isYouTubeUrl(url)) {
+    console.log("Rendering YouTube iframe with ID:", videoId);
     return (
       <div className="aspect-video w-full cyber-border p-1 shadow-[0_0_15px_rgba(0,255,0,0.1)]">
         <iframe
@@ -92,7 +121,11 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
           className="rounded-sm"
-          onError={() => setVideoError(true)}
+          onError={() => {
+            console.error("YouTube iframe error");
+            setVideoError(true);
+            toast.error("Failed to load YouTube video");
+          }}
         ></iframe>
       </div>
     );
@@ -100,6 +133,7 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
   
   // For YouTube URLs without extractable ID (fallback)
   if (isYouTubeUrl(url) && !videoId) {
+    console.log("Rendering YouTube fallback link");
     return (
       <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark">
         <a 
@@ -117,6 +151,7 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
   
   // For direct video files
   if (isDirectVideoUrl(url)) {
+    console.log("Rendering direct video player");
     return (
       <div className="aspect-video w-full cyber-border p-1 shadow-[0_0_15px_rgba(0,255,0,0.1)]">
         {!videoError ? (
@@ -125,7 +160,11 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
             controls
             className="w-full h-full rounded-sm"
             controlsList="nodownload"
-            onError={() => setVideoError(true)}
+            onError={() => {
+              console.error("Direct video error");
+              setVideoError(true);
+              toast.error("Failed to load video");
+            }}
           >
             Your browser does not support the video tag.
           </video>
@@ -149,6 +188,7 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
   }
   
   // Fallback for any other URL type
+  console.log("Rendering generic video link fallback");
   return (
     <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark">
       <a 

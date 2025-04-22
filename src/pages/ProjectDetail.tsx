@@ -19,28 +19,38 @@ const ProjectDetail = () => {
   const { data: project, isLoading, error } = useQuery({
     queryKey: ['project', 'detail', id],
     queryFn: async () => {
-      if (!id) throw new Error("Project ID is required");
+      if (!id) {
+        console.error("Project ID is missing");
+        toast.error("Missing project ID");
+        throw new Error("Project ID is required");
+      }
       
       console.log("Fetching project with ID:", id);
-      // Use maybeSingle instead of single to prevent errors if no project found
-      const { data, error } = await supabase
-        .from('projects')
-        .select('*')
-        .eq('id', id)
-        .maybeSingle();
       
-      if (error) {
-        console.error("Supabase error:", error);
-        throw error;
+      try {
+        // Use maybeSingle to prevent errors if no project found
+        const { data, error } = await supabase
+          .from('projects')
+          .select('*')
+          .eq('id', id)
+          .maybeSingle();
+        
+        if (error) {
+          console.error("Supabase error:", error);
+          throw error;
+        }
+        
+        if (!data) {
+          console.error("No project found with ID:", id);
+          return null;
+        }
+        
+        console.log("Fetched project data:", data);
+        return data;
+      } catch (fetchError) {
+        console.error("Error fetching project:", fetchError);
+        throw fetchError;
       }
-      
-      if (!data) {
-        console.error("No project found with ID:", id);
-        return null;
-      }
-      
-      console.log("Fetched project data:", data);
-      return data;
     },
     enabled: !!id,
     retry: 1, // Limit retries to avoid infinite loops
@@ -51,73 +61,44 @@ const ProjectDetail = () => {
     toast.error("Failed to load project details");
   }
 
-  // Moved isValidUrl function here for clarity
+  // Unified isValidUrl function
   const isValidUrl = (url: string | null | undefined): boolean => {
     if (!url || url.trim() === '') return false;
     try {
       new URL(url);
       return true;
     } catch (e) {
+      console.error("Invalid URL:", url, e);
       return false;
     }
   };
 
-  return (
-    <MainLayout>
-      <div className="bg-gradient-to-b from-cyber-dark to-cyber-dark-blue py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto space-y-10">
-            {isLoading ? (
+  // Handle loading state
+  if (isLoading) {
+    return (
+      <MainLayout>
+        <div className="bg-gradient-to-b from-cyber-dark to-cyber-dark-blue py-16">
+          <div className="container mx-auto px-4">
+            <div className="max-w-5xl mx-auto">
               <div className="py-20 text-center cyber-panel border-cyber/30">
                 <Loader2 className="h-8 w-8 animate-spin text-cyber mx-auto mb-4" />
                 <p className="text-muted-foreground">Loading project details...</p>
               </div>
-            ) : project ? (
-              <>
-                <ProjectHeader title={project.title} />
-                
-                {isValidUrl(project.image_url) && (
-                  <ProjectImage imageUrl={project.image_url} title={project.title} />
-                )}
-                
-                <ProjectDescription description={project.description} />
+            </div>
+          </div>
+        </div>
+      </MainLayout>
+    );
+  }
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {isValidUrl(project.youtube_url) && (
-                    <div className="space-y-4">
-                      <h2 className="text-2xl font-bold font-mono flex items-center gap-2">
-                        Watch
-                      </h2>
-                      <div className="text-sm text-muted-foreground mb-4 bg-cyber-dark/30 p-3 rounded-md">
-                        <strong className="text-cyber">Complete walkthrough</strong> of the project implementation
-                      </div>
-                      <ProjectVideo url={project.youtube_url} />
-                    </div>
-                  )}
-
-                  {/* Only render ProjectResources if at least one resource is valid */}
-                  {(isValidUrl(project.tutorial_url) || 
-                    isValidUrl(project.demo_video_url) || 
-                    isValidUrl(project.config_file_url)) && (
-                    <ProjectResources 
-                      tutorialUrl={project.tutorial_url}
-                      demoVideoUrl={project.demo_video_url}
-                      configFileUrl={project.config_file_url}
-                    />
-                  )}
-                </div>
-                
-                <div className="mt-8">
-                  <Button 
-                    variant="outline" 
-                    onClick={() => navigate('/projects')}
-                    className="border-cyber/50 text-cyber hover:bg-cyber/10"
-                  >
-                    <ArrowLeft size={16} className="mr-1" /> Back to Projects
-                  </Button>
-                </div>
-              </>
-            ) : (
+  // Handle project not found
+  if (!project) {
+    console.error("Project not found with ID:", id);
+    return (
+      <MainLayout>
+        <div className="bg-gradient-to-b from-cyber-dark to-cyber-dark-blue py-16">
+          <div className="container mx-auto px-4">
+            <div className="max-w-5xl mx-auto">
               <div className="py-20 text-center cyber-panel border-cyber/30 backdrop-blur-sm bg-cyber-dark/70">
                 <p className="text-muted-foreground">Project not found</p>
                 <Button 
@@ -128,7 +109,55 @@ const ProjectDetail = () => {
                   <ArrowLeft size={16} className="mr-1" /> Back to Projects
                 </Button>
               </div>
+            </div>
+          </div>
+        </div>
+      </MainLayout>
+    );
+  }
+
+  return (
+    <MainLayout>
+      <div className="bg-gradient-to-b from-cyber-dark to-cyber-dark-blue py-16">
+        <div className="container mx-auto px-4">
+          <div className="max-w-5xl mx-auto space-y-10">
+            <ProjectHeader title={project.title} />
+            
+            {isValidUrl(project.image_url) && (
+              <ProjectImage imageUrl={project.image_url} title={project.title} />
             )}
+            
+            <ProjectDescription description={project.description} />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {isValidUrl(project.youtube_url) && (
+                <div className="space-y-4">
+                  <h2 className="text-2xl font-bold font-mono flex items-center gap-2">
+                    Watch
+                  </h2>
+                  <div className="text-sm text-muted-foreground mb-4 bg-cyber-dark/30 p-3 rounded-md">
+                    <strong className="text-cyber">Complete walkthrough</strong> of the project implementation
+                  </div>
+                  <ProjectVideo url={project.youtube_url} />
+                </div>
+              )}
+
+              <ProjectResources 
+                tutorialUrl={project.tutorial_url}
+                demoVideoUrl={project.demo_video_url}
+                configFileUrl={project.config_file_url}
+              />
+            </div>
+            
+            <div className="mt-8">
+              <Button 
+                variant="outline" 
+                onClick={() => navigate('/projects')}
+                className="border-cyber/50 text-cyber hover:bg-cyber/10"
+              >
+                <ArrowLeft size={16} className="mr-1" /> Back to Projects
+              </Button>
+            </div>
           </div>
         </div>
       </div>
