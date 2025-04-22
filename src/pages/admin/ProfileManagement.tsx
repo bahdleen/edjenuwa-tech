@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -14,6 +13,10 @@ import { ProfileAvatarUpload } from "@/components/profile/ProfileAvatarUpload";
 import { ProfileFormFields } from "@/components/profile/ProfileFormFields";
 import { ProfileResumeUpload } from "@/components/profile/ProfileResumeUpload";
 import { useFileUpload } from "@/hooks/useFileUpload";
+import { ExperienceForm } from "@/components/profile/ExperienceForm";
+import { EducationForm } from "@/components/profile/EducationForm";
+import { CertificationForm } from "@/components/profile/CertificationForm";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type ProfileFormValues = {
   full_name: string;
@@ -128,53 +131,76 @@ const ProfileManagement = () => {
   return (
     <MainLayout>
       <div className="container mx-auto px-4 py-16">
-        <div className="max-w-3xl mx-auto space-y-8">
+        <div className="max-w-4xl mx-auto space-y-8">
           <div>
             <h1 className="text-4xl font-bold tracking-tight">
               <span className="text-green-500">{">"}</span> Profile Management
             </h1>
-            <p className="text-muted-foreground">Update your personal information displayed on the About page</p>
+            <p className="text-muted-foreground">Update your personal information and professional background</p>
           </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Your Profile</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {profileLoading ? (
-                <div className="text-center py-4">Loading profile data...</div>
-              ) : (
-                <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                    <ProfileAvatarUpload 
-                      avatarPreview={avatarPreview} 
-                      onAvatarChange={handleAvatarChange}
-                    />
-                    
-                    <ProfileFormFields form={form} />
-                    
-                    <ProfileResumeUpload
-                      onResumeChange={(e) => setResumeFile(e.target.files?.[0] || null)}
-                      currentResumeUrl={profile?.resume_url}
-                    />
+          <Tabs defaultValue="profile" className="space-y-8">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="profile">Basic Info</TabsTrigger>
+              <TabsTrigger value="experience">Experience</TabsTrigger>
+              <TabsTrigger value="education">Education</TabsTrigger>
+              <TabsTrigger value="certifications">Certifications</TabsTrigger>
+            </TabsList>
 
-                    <div className="flex gap-4 justify-end">
-                      <Button 
-                        type="button" 
-                        variant="outline"
-                        onClick={() => navigate("/admin")}
-                      >
-                        Cancel
-                      </Button>
-                      <Button type="submit" disabled={loading}>
-                        {loading ? "Saving..." : "Save Profile"}
-                      </Button>
-                    </div>
-                  </form>
-                </Form>
-              )}
-            </CardContent>
-          </Card>
+            <TabsContent value="profile">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Your Profile</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {profileLoading ? (
+                    <div className="text-center py-4">Loading profile data...</div>
+                  ) : (
+                    <Form {...form}>
+                      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                        <ProfileAvatarUpload 
+                          avatarPreview={avatarPreview} 
+                          onAvatarChange={handleAvatarChange}
+                        />
+                        
+                        <ProfileFormFields form={form} />
+                        
+                        <ProfileResumeUpload
+                          onResumeChange={(e) => setResumeFile(e.target.files?.[0] || null)}
+                          currentResumeUrl={profile?.resume_url}
+                        />
+
+                        <div className="flex gap-4 justify-end">
+                          <Button 
+                            type="button" 
+                            variant="outline"
+                            onClick={() => navigate("/admin")}
+                          >
+                            Cancel
+                          </Button>
+                          <Button type="submit" disabled={loading}>
+                            {loading ? "Saving..." : "Save Profile"}
+                          </Button>
+                        </div>
+                      </form>
+                    </Form>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="experience">
+              <ExperienceForm />
+            </TabsContent>
+
+            <TabsContent value="education">
+              <EducationForm />
+            </TabsContent>
+
+            <TabsContent value="certifications">
+              <CertificationForm />
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </MainLayout>
