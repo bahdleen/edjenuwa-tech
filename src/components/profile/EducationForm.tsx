@@ -7,16 +7,17 @@ import { useProfileForm } from "@/hooks/useProfileForm";
 import { ProfileFormFields } from "./shared/ProfileFormFields";
 import { ProfileListItem } from "./shared/ProfileListItem";
 
-type Education = {
+interface Education {
   id: string;
   degree: string;
   institution: string;
   start_date: string;
   end_date?: string;
   description?: string;
-};
-
-type EducationFormValues = Omit<Education, 'id'>;
+  created_at: string;
+  updated_at: string;
+  user_id: string;
+}
 
 export const EducationForm = () => {
   const {

@@ -16,7 +16,7 @@ export function useProfileForm<T extends { id?: string }>(config: FormConfig) {
   const form = useForm<Omit<T, "id">>();
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  const { data: items, refetch } = useQuery({
+  const { data: items = [], refetch } = useQuery({
     queryKey: [config.queryKey, user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -25,7 +25,7 @@ export function useProfileForm<T extends { id?: string }>(config: FormConfig) {
         .order('start_date', { ascending: false });
       
       if (error) throw error;
-      return data;
+      return data as T[];
     },
   });
 

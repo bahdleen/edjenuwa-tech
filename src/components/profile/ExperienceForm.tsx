@@ -7,16 +7,17 @@ import { useProfileForm } from "@/hooks/useProfileForm";
 import { ProfileFormFields } from "./shared/ProfileFormFields";
 import { ProfileListItem } from "./shared/ProfileListItem";
 
-type WorkExperience = {
+interface WorkExperience {
   id: string;
   title: string;
   organization: string;
   start_date: string;
   end_date?: string;
   description?: string;
-};
-
-type ExperienceFormValues = Omit<WorkExperience, 'id'>;
+  created_at: string;
+  updated_at: string;
+  user_id: string;
+}
 
 export const ExperienceForm = () => {
   const {

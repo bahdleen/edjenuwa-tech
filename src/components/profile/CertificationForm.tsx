@@ -7,16 +7,17 @@ import { useProfileForm } from "@/hooks/useProfileForm";
 import { ProfileFormFields } from "./shared/ProfileFormFields";
 import { ProfileListItem } from "./shared/ProfileListItem";
 
-type Certification = {
+interface Certification {
   id: string;
   title: string;
   organization: string;
   issue_date: string;
   expiry_date?: string;
   description?: string;
-};
-
-type CertificationFormValues = Omit<Certification, 'id'>;
+  created_at: string;
+  updated_at: string;
+  user_id: string;
+}
 
 export const CertificationForm = () => {
   const {
