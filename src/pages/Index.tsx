@@ -10,7 +10,7 @@ const Index = () => {
         <div className="max-w-3xl mx-auto space-y-8">
           <div className="space-y-2">
             <h1 className="text-4xl font-bold tracking-tight">
-              <span className="text-green-500">></span> Welcome to my Portfolio
+              <span className="text-green-500">{">"}</span> Welcome to my Portfolio
             </h1>
             <p className="text-muted-foreground text-lg">
               Cybersecurity | Networking | AI
