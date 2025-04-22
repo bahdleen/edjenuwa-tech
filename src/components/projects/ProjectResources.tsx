@@ -12,8 +12,13 @@ interface ProjectResourcesProps {
 }
 
 export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: ProjectResourcesProps) => {
+  console.log("ProjectResources props:", { tutorialUrl, demoVideoUrl, configFileUrl });
+  
   // Don't render if no resources are available
-  if (!tutorialUrl && !demoVideoUrl && !configFileUrl) return null;
+  if (!tutorialUrl && !demoVideoUrl && !configFileUrl) {
+    console.log("No resources available, not rendering");
+    return null;
+  }
 
   const isValidUrl = (url: string | null | undefined): boolean => {
     if (!url) return false;
@@ -26,15 +31,27 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
     }
   };
 
-  const handleResourceClick = (url: string | null | undefined) => {
+  const handleResourceClick = (url: string | null | undefined, type: string) => {
     if (!url) {
-      console.error("No URL provided");
+      console.error(`No URL provided for ${type}`);
       return;
     }
     
-    console.log("Opening resource URL:", url);
-    window.open(url, '_blank', 'noopener,noreferrer');
+    console.log(`Opening ${type} resource URL:`, url);
+    
+    // Force the link to open in a new tab with security attributes
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.click();
   };
+
+  const hasValidTutorial = isValidUrl(tutorialUrl);
+  const hasValidDemo = isValidUrl(demoVideoUrl);
+  const hasValidConfig = isValidUrl(configFileUrl);
+
+  console.log("Valid resources:", { hasValidTutorial, hasValidDemo, hasValidConfig });
 
   return (
     <Card className="cyber-panel border-cyber/20 h-full bg-cyber-dark/60 backdrop-blur-sm">
@@ -42,7 +59,7 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
         <h2 className="text-2xl font-bold mb-6 tracking-tight text-foreground">Project Resources</h2>
         
         <div className="space-y-6">
-          {isValidUrl(tutorialUrl) && (
+          {hasValidTutorial && (
             <div className="group">
               <h3 className="text-lg mb-2 flex items-center gap-2 text-foreground tracking-wide">
                 <FileText className="text-cyber" />
@@ -52,20 +69,20 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
               <Button 
                 variant="outline" 
                 className="w-full py-8 h-auto text-lg font-medium border-cyber hover:bg-cyber/10 hover:text-cyber transition-all duration-200"
-                onClick={() => handleResourceClick(tutorialUrl)}
+                onClick={() => handleResourceClick(tutorialUrl, 'Documentation')}
               >
                 <FileText className="mr-2 h-6 w-6" /> View Documentation
               </Button>
             </div>
           )}
           
-          {((isValidUrl(tutorialUrl) && isValidUrl(demoVideoUrl)) || 
-            (isValidUrl(tutorialUrl) && isValidUrl(configFileUrl)) || 
-            (isValidUrl(demoVideoUrl) && isValidUrl(configFileUrl))) && (
+          {((hasValidTutorial && hasValidDemo) || 
+            (hasValidTutorial && hasValidConfig) || 
+            (hasValidDemo && hasValidConfig)) && (
             <Separator className="bg-cyber/10" />
           )}
           
-          {isValidUrl(demoVideoUrl) && (
+          {hasValidDemo && (
             <div className="group">
               <h3 className="text-lg mb-2 flex items-center gap-2 text-foreground tracking-wide">
                 <Video className="text-cyber-red" />
@@ -75,19 +92,19 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
               <Button 
                 variant="outline" 
                 className="w-full py-8 h-auto text-lg font-medium border-cyber-red hover:bg-cyber-red/10 hover:text-cyber-red transition-all duration-200"
-                onClick={() => handleResourceClick(demoVideoUrl)}
+                onClick={() => handleResourceClick(demoVideoUrl, 'Demo Video')}
               >
                 <Video className="mr-2 h-6 w-6" /> Watch Demo
               </Button>
             </div>
           )}
 
-          {((isValidUrl(demoVideoUrl) && isValidUrl(configFileUrl)) || 
-            (isValidUrl(tutorialUrl) && isValidUrl(configFileUrl) && !isValidUrl(demoVideoUrl))) && (
+          {((hasValidDemo && hasValidConfig) || 
+            (hasValidTutorial && hasValidConfig && !hasValidDemo)) && (
             <Separator className="bg-cyber/10" />
           )}
           
-          {isValidUrl(configFileUrl) && (
+          {hasValidConfig && (
             <div className="group">
               <h3 className="text-lg mb-2 flex items-center gap-2 text-foreground tracking-wide">
                 <Download className="text-cyber-blue" />
@@ -97,7 +114,7 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
               <Button 
                 variant="outline" 
                 className="w-full py-8 h-auto text-lg font-medium border-cyber-blue hover:bg-cyber-blue/10 hover:text-cyber-blue transition-all duration-200"
-                onClick={() => handleResourceClick(configFileUrl)}
+                onClick={() => handleResourceClick(configFileUrl, 'Configuration Files')}
               >
                 <Download className="mr-2 h-6 w-6" /> Download Files
               </Button>

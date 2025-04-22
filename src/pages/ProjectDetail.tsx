@@ -51,6 +51,22 @@ const ProjectDetail = () => {
     }
   };
 
+  console.log("ProjectDetail rendered with id:", id);
+  console.log("Project data:", project);
+  
+  if (project) {
+    console.log("Resource URLs:", {
+      youtubeUrl: project.youtube_url,
+      tutorialUrl: project.tutorial_url,
+      demoVideoUrl: project.demo_video_url,
+      configFileUrl: project.config_file_url,
+      youtubeValid: isValidUrl(project.youtube_url),
+      tutorialValid: isValidUrl(project.tutorial_url),
+      demoValid: isValidUrl(project.demo_video_url),
+      configValid: isValidUrl(project.config_file_url),
+    });
+  }
+
   return (
     <MainLayout>
       <div className="bg-gradient-to-b from-cyber-dark to-cyber-dark-blue py-16">
