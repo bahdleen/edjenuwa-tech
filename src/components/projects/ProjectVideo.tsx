@@ -30,39 +30,15 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
   }, [url]);
 
   const handleExternalClick = () => {
-    try {
-      // Make sure to use a properly formed URL
-      const safeUrl = isYouTubeUrl(url) 
-        ? (videoId ? `https://www.youtube.com/watch?v=${videoId}` : url)
-        : url;
-      
-      console.log("Opening external link (final fallback):", safeUrl);
-      
-      // Multiple different approaches to force the browser to open the link
-      
-      // 1. Try basic window.open
-      window.open(safeUrl, '_blank');
-      
-      // 2. DOM API approach
-      setTimeout(() => {
-        const link = document.createElement('a');
-        link.href = safeUrl;
-        link.target = '_blank';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }, 300);
-      
-      // 3. Last resort - direct location change
-      setTimeout(() => {
-        window.location.href = safeUrl;
-      }, 600);
-      
-      toast.success("Opening video link");
-    } catch (error) {
-      console.error("Error in final fallback:", error);
-      toast.error("Failed to open video link");
+    // Simple direct approach - direct location change
+    if (isYouTubeUrl(url) && videoId) {
+      const youtubeUrl = `https://www.youtube.com/watch?v=${videoId}`;
+      window.location.href = youtubeUrl;
+    } else {
+      window.location.href = url;
     }
+    
+    toast.success("Opening video link");
   };
 
   if (!url) {
@@ -99,10 +75,7 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
             variant="outline"
             className="mt-4 border-cyber hover:bg-cyber/10"
             onClick={() => {
-              window.open(url, '_blank');
-              setTimeout(() => {
-                window.location.href = url;
-              }, 500);
+              window.location.href = url;
             }}
           >
             Open YouTube Video
@@ -140,10 +113,7 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
           variant="outline"
           className="mt-4 border-cyber-red hover:bg-cyber-red/10"
           onClick={() => {
-            window.open(url, '_blank');
-            setTimeout(() => {
-              window.location.href = url;
-            }, 500);
+            window.location.href = url;
           }}
         >
           Open Video

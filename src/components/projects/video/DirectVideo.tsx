@@ -12,30 +12,17 @@ interface DirectVideoProps {
 }
 
 export const DirectVideo = ({ url, onError, hasError, onDirectClick }: DirectVideoProps) => {
-  const handleDirectClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    
+  const handleDirectClick = () => {
     try {
       console.log("Opening direct video link:", url);
       
-      // Simple direct approach first
-      window.open(url, '_blank');
+      // Direct navigation approach
+      window.location.href = url;
       
-      // Fallback with DOM API
-      setTimeout(() => {
-        const link = document.createElement('a');
-        link.href = url;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        link.click();
-        
-        toast.success("Opening video in new tab");
-      }, 300);
+      toast.success("Opening video");
     } catch (error) {
       console.error("Failed to open direct video link:", error);
       toast.error("Failed to open video link");
-      
-      // Final fallback
       onDirectClick();
     }
   };

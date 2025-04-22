@@ -12,32 +12,20 @@ interface YouTubeEmbedProps {
 }
 
 export const YouTubeEmbed = ({ videoId, url, onError, onDirectClick }: YouTubeEmbedProps) => {
-  const handleDirectClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    
+  const handleDirectClick = () => {
     try {
       console.log("Opening YouTube link directly:", url);
-      // Use the most direct approach possible
+      
+      // Format a clean YouTube URL
       const youtubeUrl = `https://www.youtube.com/watch?v=${videoId}`;
       
-      // Try window.open with simplest configuration 
-      window.open(youtubeUrl, '_blank');
+      // Directly change location to YouTube
+      window.location.href = youtubeUrl;
       
-      // Fallback if window.open doesn't work
-      setTimeout(() => {
-        const link = document.createElement('a');
-        link.href = youtubeUrl;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        link.click();
-        
-        toast.success("Opening YouTube in new tab");
-      }, 300);
+      toast.success("Opening YouTube video");
     } catch (error) {
       console.error("Failed to open YouTube link:", error);
       toast.error("Failed to open YouTube link");
-      
-      // Final fallback to the parent component's handler
       onDirectClick();
     }
   };
