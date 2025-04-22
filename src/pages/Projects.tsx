@@ -58,6 +58,7 @@ const Projects = () => {
 
   // Function to handle clicking on a project card
   const handleProjectClick = (projectId: string) => {
+    console.log("Navigating to project:", projectId);
     navigate(`/projects/${projectId}`);
   };
 
@@ -122,6 +123,14 @@ const Projects = () => {
                     key={project.id} 
                     className={`cyber-panel group transition-all duration-300 h-full flex flex-col bg-gradient-to-br ${categoryColors[project.category] || "from-cyber-dark-blue to-cyber/20 border-cyber/30 hover:border-cyber"} cursor-pointer hover:shadow-[0_0_20px_rgba(0,255,0,0.15)]`}
                     onClick={() => handleProjectClick(project.id)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleProjectClick(project.id);
+                      }
+                    }}
                   >
                     {project.image_url && (
                       <div className="aspect-video w-full overflow-hidden border-b border-cyber/20 relative">
