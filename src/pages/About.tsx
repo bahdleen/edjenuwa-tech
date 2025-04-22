@@ -1,16 +1,16 @@
-
+import React from 'react';
 import MainLayout from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { Download, BookOpen, Briefcase, Award, Shield, Database, Code, Cpu, Network } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const About = () => {
   const { data: profile, isLoading } = useQuery({
     queryKey: ['profile', 'public'],
     queryFn: async () => {
-      // Fetch the first profile (since this is a personal portfolio)
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -44,21 +44,20 @@ const About = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div className="md:col-span-1">
                   <div className="sticky top-10">
-                    {profile.avatar_url ? (
-                      <div className="cyber-border p-1 rounded-sm mb-6">
-                        <div className="rounded-sm overflow-hidden">
-                          <img 
-                            src={profile.avatar_url} 
-                            alt={profile.full_name || "Profile"} 
-                            className="w-full object-cover"
+                    <div className="w-full max-w-xs mx-auto mb-6">
+                      <div className="rounded-full overflow-hidden border-4 border-cyber/30 shadow-lg">
+                        <Avatar className="w-full h-full">
+                          <AvatarImage 
+                            src={profile.avatar_url || "/placeholder.svg"} 
+                            alt={profile.full_name || "Profile"}
+                            className="object-cover w-full h-full"
                           />
-                        </div>
+                          <AvatarFallback className="bg-cyber-dark border border-cyber/30 flex items-center justify-center">
+                            <UserRound className="w-1/2 h-1/2 text-cyber/50" />
+                          </AvatarFallback>
+                        </Avatar>
                       </div>
-                    ) : (
-                      <div className="w-full aspect-square rounded-sm bg-cyber-dark cyber-panel flex items-center justify-center mb-6">
-                        <span className="text-cyber font-mono">Image Loading...</span>
-                      </div>
-                    )}
+                    </div>
                     
                     {profile.resume_url && (
                       <Button className="w-full bg-cyber text-cyber-dark hover:bg-cyber/90" asChild>
@@ -99,16 +98,13 @@ const About = () => {
                     </CardContent>
                   </Card>
                   
-                  {/* Timeline Sections */}
                   <div className="space-y-6">
-                    {/* Work Experience */}
                     <section>
                       <div className="flex items-center gap-2 mb-4">
                         <Briefcase className="text-cyber" />
                         <h2 className="text-2xl font-bold font-mono">Work Experience</h2>
                       </div>
                       <div className="space-y-4">
-                        {/* This would be mapped from actual data */}
                         <TimelineItem 
                           title="Senior Network Security Engineer"
                           organization="Tech Security Solutions"
@@ -126,14 +122,12 @@ const About = () => {
                       </div>
                     </section>
                     
-                    {/* Education */}
                     <section>
                       <div className="flex items-center gap-2 mb-4">
                         <BookOpen className="text-cyber" />
                         <h2 className="text-2xl font-bold font-mono">Education</h2>
                       </div>
                       <div className="space-y-4">
-                        {/* This would be mapped from actual data */}
                         <TimelineItem 
                           title="M.S. in Cybersecurity"
                           organization="Tech University"
@@ -151,14 +145,12 @@ const About = () => {
                       </div>
                     </section>
                     
-                    {/* Certifications */}
                     <section>
                       <div className="flex items-center gap-2 mb-4">
                         <Award className="text-cyber" />
                         <h2 className="text-2xl font-bold font-mono">Certifications</h2>
                       </div>
                       <div className="space-y-4">
-                        {/* This would be mapped from actual data */}
                         <TimelineItem 
                           title="Certified Information Systems Security Professional (CISSP)"
                           organization="ISC²"
@@ -196,7 +188,6 @@ const About = () => {
   );
 };
 
-// Skill Bar Component
 const SkillBar = ({ 
   label, 
   percentage, 
@@ -227,7 +218,6 @@ const SkillBar = ({
   );
 };
 
-// Helper component for timeline items
 const TimelineItem = ({ 
   title, 
   organization, 

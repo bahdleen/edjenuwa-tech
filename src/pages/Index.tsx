@@ -1,4 +1,4 @@
-
+import React from 'react';
 import MainLayout from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -7,7 +7,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Shield, Lock, Server, Database, Network, Terminal } from "lucide-react";
+import { ArrowRight, Shield, Lock, Server, Database, Network, Terminal, UserRound } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const Index = () => {
   const { user } = useAuth();
@@ -40,7 +41,6 @@ const Index = () => {
     }
   });
 
-  // Map of category icons
   const categoryIcons: Record<string, React.ReactNode> = {
     "Cybersecurity": <Shield size={16} className="text-cyber-red" />,
     "Networking": <Network size={16} className="text-cyber-blue" />,
@@ -50,9 +50,7 @@ const Index = () => {
   return (
     <MainLayout>
       <div className="min-h-screen flex flex-col">
-        {/* Hero Section */}
         <div className="relative py-24 bg-cyber-dark overflow-hidden">
-          {/* Animated background elements */}
           <div className="absolute inset-0 overflow-hidden">
             <div className="absolute inset-0 bg-cyber-grid opacity-5"></div>
             {[...Array(10)].map((_, i) => (
@@ -74,18 +72,19 @@ const Index = () => {
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-3xl mx-auto space-y-8">
               <div className="flex flex-col md:flex-row gap-8 items-center">
-                {/* Profile Image */}
-                {profile?.avatar_url && (
-                  <div className="w-32 h-32 md:w-48 md:h-48 rounded-full overflow-hidden cyber-border p-1 bg-cyber-dark">
-                    <img 
-                      src={profile.avatar_url} 
-                      alt={profile.full_name || "Profile"} 
-                      className="w-full h-full object-cover rounded-full"
+                <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-cyber/30 shadow-lg">
+                  <Avatar className="w-full h-full">
+                    <AvatarImage 
+                      src={profile?.avatar_url || "/placeholder.svg"} 
+                      alt={profile?.full_name || "Profile Picture"}
+                      className="object-cover w-full h-full"
                     />
-                  </div>
-                )}
+                    <AvatarFallback className="bg-cyber-dark border border-cyber/30">
+                      <UserRound className="w-1/2 h-1/2 text-cyber/50" />
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
                 
-                {/* Welcome Text */}
                 <div className="space-y-4 text-center md:text-left">
                   <div className="inline-block px-3 py-1 text-xs font-mono bg-cyber-dark border border-cyber rounded-sm text-cyber mb-2">
                     SECURITY SPECIALIST
@@ -128,7 +127,6 @@ const Index = () => {
           </div>
         </div>
         
-        {/* Featured Projects */}
         {featuredProjects && featuredProjects.length > 0 && (
           <div className="py-16 bg-cyber-gray">
             <div className="container mx-auto px-4">
@@ -180,7 +178,6 @@ const Index = () => {
           </div>
         )}
 
-        {/* Services Section */}
         <div className="py-16 bg-cyber-dark-blue">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto space-y-12">
@@ -194,7 +191,6 @@ const Index = () => {
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Security Analysis Card */}
                 <Card className="cyber-panel border-cyber/30 hover:border-cyber transition-all duration-300">
                   <CardContent className="pt-6 pb-6 flex flex-col items-center text-center">
                     <Shield className="h-12 w-12 mb-4 text-cyber" />
@@ -203,7 +199,6 @@ const Index = () => {
                   </CardContent>
                 </Card>
                 
-                {/* Network Architecture Card */}
                 <Card className="cyber-panel border-cyber-blue/30 hover:border-cyber-blue transition-all duration-300">
                   <CardContent className="pt-6 pb-6 flex flex-col items-center text-center">
                     <Network className="h-12 w-12 mb-4 text-cyber-blue" />
@@ -212,7 +207,6 @@ const Index = () => {
                   </CardContent>
                 </Card>
                 
-                {/* AI Security Card */}
                 <Card className="cyber-panel border-cyber-red/30 hover:border-cyber-red transition-all duration-300">
                   <CardContent className="pt-6 pb-6 flex flex-col items-center text-center">
                     <Terminal className="h-12 w-12 mb-4 text-cyber-red" />
