@@ -6,8 +6,11 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+// Define valid table names that match the Supabase schema
+type ValidTableName = 'work_experiences' | 'education' | 'certifications' | 'profiles' | 'projects';
+
 type FormConfig = {
-  tableName: string;
+  tableName: ValidTableName;
   queryKey: string;
 };
 
@@ -25,7 +28,7 @@ export function useProfileForm<T extends { id?: string }>(config: FormConfig) {
         .order('start_date', { ascending: false });
       
       if (error) throw error;
-      return data as T[];
+      return (data || []) as T[];
     },
   });
 
