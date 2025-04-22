@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
@@ -149,12 +148,12 @@ const Contact = () => {
                         <span className="font-medium font-mono">GitHub</span>
                       </div>
                       <a 
-                        href="https://github.com" 
+                        href="https://github.com/bahdleen" 
                         target="_blank" 
                         rel="noreferrer"
                         className="text-muted-foreground hover:text-cyber transition-colors"
                       >
-                        github.com/anthonyedjenuwa
+                        github.com/bahdleen
                       </a>
                     </div>
                     
@@ -164,12 +163,12 @@ const Contact = () => {
                         <span className="font-medium font-mono">LinkedIn</span>
                       </div>
                       <a 
-                        href="https://linkedin.com" 
+                        href="https://linkedin.com/in/anthony-e-358226253" 
                         target="_blank" 
                         rel="noreferrer"
                         className="text-muted-foreground hover:text-cyber transition-colors"
                       >
-                        linkedin.com/in/anthonyedjenuwa
+                        linkedin.com/in/anthony-e-358226253
                       </a>
                     </div>
                   </CardContent>
