@@ -36,14 +36,15 @@ const Contact = () => {
         setEmail("");
         setMessage("");
       } else {
-        const error = await res.json().catch(() => ({}));
-        toast.error(
-          error?.error ||
-            "Failed to send message. Please try again or contact us directly at info@edjenuwa.tech"
-        );
+        const errorData = await res.json().catch(() => ({ error: "Unknown error occurred" }));
+        const errorMessage = errorData.error || "Failed to send message. Please try again or contact us directly at info@edjenuwa.tech";
+        
+        toast.error(errorMessage);
+        console.error("Form submission error:", errorMessage);
       }
     } catch (error) {
-      toast.error("Failed to send message. Please try again.");
+      console.error("Contact form error:", error);
+      toast.error("Failed to send message. Please try again or email us directly at info@edjenuwa.tech");
     } finally {
       setLoading(false);
     }

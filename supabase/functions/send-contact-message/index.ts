@@ -44,8 +44,15 @@ serve(async (req: Request) => {
       html,
     });
 
+    // Check for error in a more detailed way
     if (emailResponse.error) {
-      throw new Error(emailResponse.error);
+      // For free tier users, we might get an object as an error
+      const errorMessage = typeof emailResponse.error === 'object' 
+        ? "Email sending failed. This might be due to using Resend's free tier limitations." 
+        : String(emailResponse.error);
+        
+      console.error("Resend API error:", errorMessage);
+      throw new Error(errorMessage);
     }
 
     return new Response(JSON.stringify({ message: "sent" }), {
@@ -56,10 +63,9 @@ serve(async (req: Request) => {
     console.error("Error in send-contact-message:", error);
     return new Response(
       JSON.stringify({
-        error:
-          typeof error === "object" && error !== null && "message" in error
-            ? (error as any).message
-            : String(error),
+        error: typeof error === "object" && error !== null && "message" in error
+          ? (error as any).message
+          : "Email sending failed. Please try again or contact directly."
       }),
       {
         status: 500,
