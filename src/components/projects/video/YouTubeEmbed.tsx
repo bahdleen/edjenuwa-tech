@@ -2,6 +2,7 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { ExternalLink } from "lucide-react";
+import { toast } from "sonner";
 
 interface YouTubeEmbedProps {
   videoId: string;
@@ -16,10 +17,28 @@ export const YouTubeEmbed = ({ videoId, url, onError, onDirectClick }: YouTubeEm
     
     try {
       console.log("Opening YouTube link directly:", url);
-      // Open in new tab with security attributes
-      window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank', 'noopener,noreferrer');
+      // Force browser to open the link directly
+      const youtubeUrl = `https://www.youtube.com/watch?v=${videoId}`;
+      
+      // Try window.open first with fallbacks
+      const newWindow = window.open(youtubeUrl, '_blank');
+      
+      if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+        console.log("Popup blocked, trying location.href as fallback");
+        // Fallback if popup is blocked
+        window.location.href = youtubeUrl;
+        return;
+      }
+      
+      // Ensure opener is null for security
+      if (newWindow) {
+        newWindow.opener = null;
+      }
+      
+      toast.success("Opening YouTube in new tab");
     } catch (error) {
       console.error("Failed to open YouTube link:", error);
+      toast.error("Failed to open YouTube link");
       // Fallback to the parent component's handler
       onDirectClick();
     }
@@ -40,15 +59,22 @@ export const YouTubeEmbed = ({ videoId, url, onError, onDirectClick }: YouTubeEm
       ></iframe>
       
       <div className="mt-2 text-center">
-        <Button 
-          variant="outline" 
-          size="sm" 
+        <a 
+          href={`https://www.youtube.com/watch?v=${videoId}`}
+          target="_blank"
+          rel="noopener noreferrer"
           onClick={handleDirectClick}
-          className="border-cyber-red hover:bg-cyber-red/10 hover:text-cyber-red"
+          className="inline-block"
         >
-          <ExternalLink className="mr-2 h-4 w-4" /> 
-          Open directly in YouTube
-        </Button>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="border-cyber-red hover:bg-cyber-red/10 hover:text-cyber-red"
+          >
+            <ExternalLink className="mr-2 h-4 w-4" /> 
+            Open directly in YouTube
+          </Button>
+        </a>
       </div>
     </div>
   );

@@ -38,15 +38,13 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
       
       console.log("Opening external link:", safeUrl);
       
-      // Open in new tab with security attributes
-      window.open(safeUrl, '_blank', 'noopener,noreferrer');
-      console.log("Opened in new window:", safeUrl);
-    } catch (error) {
-      console.error("Error opening external link:", error);
-      toast.error("Failed to open video link");
+      // Try direct href navigation as a fallback approach
+      window.location.href = safeUrl;
       
-      // Ultimate fallback
-      window.location.href = url;
+      console.log("Navigation attempted to:", safeUrl);
+    } catch (error) {
+      console.error("Error in final fallback:", error);
+      toast.error("Failed to open video link");
     }
   };
 
@@ -80,13 +78,23 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
         <div className="w-full h-full flex flex-col items-center justify-center space-y-4 p-8">
           <ExternalLink className="text-cyber h-16 w-16" />
           <span className="text-lg text-muted-foreground">Click to watch video on YouTube</span>
-          <Button 
-            variant="outline"
-            onClick={handleExternalClick}
-            className="mt-4 border-cyber hover:bg-cyber/10"
+          <a 
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => {
+              e.preventDefault();
+              window.location.href = url;
+            }}
+            className="inline-block"
           >
-            Open YouTube Video
-          </Button>
+            <Button 
+              variant="outline"
+              className="mt-4 border-cyber hover:bg-cyber/10"
+            >
+              Open YouTube Video
+            </Button>
+          </a>
         </div>
       </div>
     );
@@ -116,13 +124,23 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
       <div className="w-full h-full flex flex-col items-center justify-center space-y-4 p-8">
         <Play className="text-cyber-red h-16 w-16" />
         <span className="text-lg text-muted-foreground">Click to watch video</span>
-        <Button 
-          variant="outline"
-          onClick={handleExternalClick}
-          className="mt-4 border-cyber-red hover:bg-cyber-red/10"
+        <a 
+          href={url}
+          target="_blank" 
+          rel="noopener noreferrer"
+          onClick={(e) => {
+            e.preventDefault();
+            window.location.href = url;
+          }}
+          className="inline-block"
         >
-          Open Video
-        </Button>
+          <Button 
+            variant="outline"
+            className="mt-4 border-cyber-red hover:bg-cyber-red/10"
+          >
+            Open Video
+          </Button>
+        </a>
       </div>
     </div>
   );
