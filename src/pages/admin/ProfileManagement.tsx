@@ -1,17 +1,18 @@
-
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import MainLayout from "@/components/layout/MainLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
+import { ProfileAvatarUpload } from "@/components/profile/ProfileAvatarUpload";
+import { ProfileFormFields } from "@/components/profile/ProfileFormFields";
+import { ProfileResumeUpload } from "@/components/profile/ProfileResumeUpload";
+import { useFileUpload } from "@/hooks/useFileUpload";
 
 type ProfileFormValues = {
   full_name: string;
@@ -21,6 +22,7 @@ type ProfileFormValues = {
 const ProfileManagement = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { uploadFile } = useFileUpload();
   const [loading, setLoading] = useState(false);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
@@ -33,7 +35,6 @@ const ProfileManagement = () => {
     },
   });
 
-  // Fetch profile data
   const { data: profile, isLoading: profileLoading, refetch } = useQuery({
     queryKey: ['profile', user?.id],
     queryFn: async () => {
@@ -51,7 +52,6 @@ const ProfileManagement = () => {
     enabled: !!user,
   });
 
-  // Set form values when profile data is loaded
   useEffect(() => {
     if (profile) {
       form.reset({
@@ -65,7 +65,6 @@ const ProfileManagement = () => {
     }
   }, [profile, form]);
 
-  // Preview avatar image when selected
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -76,26 +75,6 @@ const ProfileManagement = () => {
       };
       reader.readAsDataURL(file);
     }
-  };
-
-  const uploadFile = async (file: File, bucket: string, path: string) => {
-    if (!file) return null;
-
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${path}_${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
-    const filePath = `${path}/${fileName}`;
-
-    const { data, error } = await supabase.storage
-      .from(bucket)
-      .upload(filePath, file);
-
-    if (error) throw error;
-
-    const { data: urlData } = supabase.storage
-      .from(bucket)
-      .getPublicUrl(filePath);
-
-    return urlData.publicUrl;
   };
 
   const onSubmit = async (data: ProfileFormValues) => {
@@ -109,13 +88,11 @@ const ProfileManagement = () => {
       let avatarUrl = profile?.avatar_url;
       let resumeUrl = profile?.resume_url;
 
-      // Upload avatar if selected
       if (avatarFile) {
         const uploadedAvatarUrl = await uploadFile(avatarFile, 'profiles', 'avatars');
         if (uploadedAvatarUrl) avatarUrl = uploadedAvatarUrl;
       }
 
-      // Upload resume if selected
       if (resumeFile) {
         const uploadedResumeUrl = await uploadFile(resumeFile, 'profiles', 'resumes');
         if (uploadedResumeUrl) resumeUrl = uploadedResumeUrl;
@@ -168,79 +145,17 @@ const ProfileManagement = () => {
               ) : (
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                    <div className="flex flex-col items-center mb-6">
-                      <div className="w-32 h-32 rounded-full overflow-hidden bg-gray-200 mb-4">
-                        {avatarPreview ? (
-                          <img 
-                            src={avatarPreview} 
-                            alt="Profile" 
-                            className="w-full h-full object-cover" 
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gray-700 text-gray-300">
-                            No Photo
-                          </div>
-                        )}
-                      </div>
-                      <div>
-                        <Input 
-                          type="file" 
-                          accept="image/*" 
-                          onChange={handleAvatarChange}
-                          className="max-w-xs"
-                        />
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Recommended: 400x400 square image
-                        </p>
-                      </div>
-                    </div>
-
-                    <FormField
-                      control={form.control}
-                      name="full_name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Full Name</FormLabel>
-                          <FormControl>
-                            <Input {...field} placeholder="Your name" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                    <ProfileAvatarUpload 
+                      avatarPreview={avatarPreview} 
+                      onAvatarChange={handleAvatarChange}
                     />
-
-                    <FormField
-                      control={form.control}
-                      name="bio"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Bio</FormLabel>
-                          <FormControl>
-                            <Textarea 
-                              {...field} 
-                              placeholder="A short bio about yourself..." 
-                              className="min-h-[150px]" 
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                    
+                    <ProfileFormFields form={form} />
+                    
+                    <ProfileResumeUpload
+                      onResumeChange={(e) => setResumeFile(e.target.files?.[0] || null)}
+                      currentResumeUrl={profile?.resume_url}
                     />
-
-                    <div>
-                      <FormLabel htmlFor="resume">Resume (PDF)</FormLabel>
-                      <Input 
-                        id="resume" 
-                        type="file" 
-                        accept=".pdf"
-                        onChange={(e) => setResumeFile(e.target.files?.[0] || null)} 
-                      />
-                      {profile?.resume_url && (
-                        <p className="text-sm mt-1">
-                          Current resume: <a href={profile.resume_url} target="_blank" rel="noreferrer" className="text-blue-500 hover:underline">View</a>
-                        </p>
-                      )}
-                    </div>
 
                     <div className="flex gap-4 justify-end">
                       <Button 
