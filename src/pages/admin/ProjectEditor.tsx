@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Card, CardContent } from "@/components/ui/card";
+import { Form } from "@/components/ui/form";
 import MainLayout from "@/components/layout/MainLayout";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import { ProjectFormHeader } from "@/components/admin/project-editor/ProjectFormHeader";
+import { ProjectBasicInfo } from "@/components/admin/project-editor/ProjectBasicInfo";
+import { ProjectResources } from "@/components/admin/project-editor/ProjectResources";
+import { ProjectFormActions } from "@/components/admin/project-editor/ProjectFormActions";
 
 type ProjectFormValues = {
   title: string;
@@ -24,11 +24,8 @@ type ProjectFormValues = {
   image_url: string;
 };
 
-const categories = ["Cybersecurity", "Networking", "AI"];
-
 const ProjectEditor = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const isEditMode = id !== undefined && id !== "new";
   
   const [loading, setLoading] = useState(false);
@@ -231,19 +228,9 @@ const ProjectEditor = () => {
     <MainLayout>
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-3xl mx-auto space-y-8">
-          <div>
-            <h1 className="text-4xl font-bold tracking-tight">
-              <span className="text-cyber">{">"}</span> {isEditMode ? "Edit" : "Create"} Project
-            </h1>
-            <p className="text-muted-foreground">
-              {isEditMode ? "Update your project details" : "Add a new project to your portfolio"}
-            </p>
-          </div>
+          <ProjectFormHeader isEditMode={isEditMode} />
 
           <Card className="border-cyber/20 bg-cyber-dark-blue/50 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle>Project Details</CardTitle>
-            </CardHeader>
             <CardContent>
               {uploadProgress > 0 && uploadProgress < 100 && (
                 <div className="mb-4">
@@ -259,181 +246,21 @@ const ProjectEditor = () => {
               
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  <FormField
-                    control={form.control}
-                    name="title"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-foreground">Title</FormLabel>
-                        <FormControl>
-                          <Input 
-                            {...field} 
-                            placeholder="Project Title" 
-                            required 
-                            className="bg-cyber-dark border-cyber/20 focus:border-cyber/50" 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                  <ProjectBasicInfo form={form} />
+                  
+                  <ProjectResources
+                    tutorialFile={tutorialFile}
+                    configFile={configFile}
+                    demoVideo={demoVideo}
+                    imageFile={imageFile}
+                    setTutorialFile={setTutorialFile}
+                    setConfigFile={setConfigFile}
+                    setDemoVideo={setDemoVideo}
+                    setImageFile={setImageFile}
+                    project={project}
                   />
 
-                  <FormField
-                    control={form.control}
-                    name="category"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-foreground">Category</FormLabel>
-                        <Select 
-                          onValueChange={field.onChange} 
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger className="bg-cyber-dark border-cyber/20">
-                              <SelectValue placeholder="Select a category" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent className="bg-cyber-dark border-cyber/20">
-                            {categories.map((category) => (
-                              <SelectItem key={category} value={category}>
-                                {category}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-foreground">Description</FormLabel>
-                        <FormControl>
-                          <Textarea 
-                            {...field} 
-                            placeholder="Project description..." 
-                            className="min-h-[150px] bg-cyber-dark border-cyber/20 focus:border-cyber/50" 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="youtube_url"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-foreground">YouTube Video URL</FormLabel>
-                        <FormControl>
-                          <Input 
-                            {...field} 
-                            placeholder="https://youtube.com/..." 
-                            className="bg-cyber-dark border-cyber/20 focus:border-cyber/50" 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <FormLabel htmlFor="tutorialFile" className="text-foreground">Tutorial File (PDF)</FormLabel>
-                      <Input 
-                        id="tutorialFile" 
-                        type="file" 
-                        accept=".pdf,.md"
-                        onChange={(e) => setTutorialFile(e.target.files?.[0] || null)} 
-                        className="bg-cyber-dark border-cyber/20"
-                      />
-                      {project?.tutorial_url && (
-                        <p className="text-sm mt-1">
-                          Current: <a href={project.tutorial_url} target="_blank" rel="noreferrer" className="text-cyber hover:underline">View file</a>
-                        </p>
-                      )}
-                    </div>
-
-                    <div>
-                      <FormLabel htmlFor="configFile" className="text-foreground">Config File (ZIP/TAR)</FormLabel>
-                      <Input 
-                        id="configFile" 
-                        type="file" 
-                        accept=".zip,.tar,.gz"
-                        onChange={(e) => setConfigFile(e.target.files?.[0] || null)} 
-                        className="bg-cyber-dark border-cyber/20"
-                      />
-                      {project?.config_file_url && (
-                        <p className="text-sm mt-1">
-                          Current: <a href={project.config_file_url} target="_blank" rel="noreferrer" className="text-cyber hover:underline">View file</a>
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <FormLabel htmlFor="demoVideo" className="text-foreground">Demo Video</FormLabel>
-                      <Input 
-                        id="demoVideo" 
-                        type="file" 
-                        accept="video/*"
-                        onChange={(e) => setDemoVideo(e.target.files?.[0] || null)} 
-                        className="bg-cyber-dark border-cyber/20"
-                      />
-                      {project?.demo_video_url && (
-                        <p className="text-sm mt-1">
-                          Current: <a href={project.demo_video_url} target="_blank" rel="noreferrer" className="text-cyber hover:underline">View video</a>
-                        </p>
-                      )}
-                    </div>
-
-                    <div>
-                      <FormLabel htmlFor="imageFile" className="text-foreground">Project Image</FormLabel>
-                      <Input 
-                        id="imageFile" 
-                        type="file" 
-                        accept="image/*"
-                        onChange={(e) => setImageFile(e.target.files?.[0] || null)} 
-                        className="bg-cyber-dark border-cyber/20"
-                      />
-                      {project?.image_url && (
-                        <p className="text-sm mt-1">
-                          Current: <a href={project.image_url} target="_blank" rel="noreferrer" className="text-cyber hover:underline">View image</a>
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex gap-4 justify-end pt-4 border-t border-cyber/10">
-                    <Button 
-                      type="button" 
-                      variant="outline"
-                      onClick={() => navigate("/admin/projects")}
-                      className="border-cyber/50 text-cyber hover:bg-cyber/10"
-                    >
-                      Cancel
-                    </Button>
-                    <Button 
-                      type="submit" 
-                      disabled={loading}
-                      className="bg-cyber text-cyber-dark hover:bg-cyber/90"
-                    >
-                      {loading ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          {isEditMode ? "Updating..." : "Creating..."}
-                        </>
-                      ) : (
-                        isEditMode ? "Update Project" : "Create Project"
-                      )}
-                    </Button>
-                  </div>
+                  <ProjectFormActions loading={loading} isEditMode={isEditMode} />
                 </form>
               </Form>
             </CardContent>
