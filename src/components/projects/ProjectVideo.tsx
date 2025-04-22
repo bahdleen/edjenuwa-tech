@@ -2,6 +2,7 @@
 import React from 'react';
 import { toast } from "sonner";
 import { ExternalLink, Play } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface ProjectVideoProps {
   url: string;
@@ -79,26 +80,15 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
     }
   };
 
-  const handleVideoClick = (e: React.MouseEvent) => {
-    e.preventDefault();
+  const openVideo = () => {
     if (!url) {
       toast.error("No video URL provided");
       return;
     }
 
     try {
-      console.log("Opening video URL:", url);
-      
-      // Force the browser to navigate directly to the URL
+      // Simple but effective approach - open in current window
       window.location.href = url;
-      
-      // As a fallback, also try to open in a new tab
-      setTimeout(() => {
-        const newWindow = window.open(url, '_blank');
-        if (!newWindow) {
-          toast.error('Your browser blocked opening a new window. Please check your popup settings.');
-        }
-      }, 100);
     } catch (error) {
       console.error("Error opening video:", error);
       toast.error("Failed to open video");
@@ -124,50 +114,26 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
     );
   }
   
-  // For direct video files, provide a clickable link
-  if (isDirectVideoUrl(url)) {
-    return (
-      <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark">
-        <a 
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={handleVideoClick}
-          className="w-full h-full flex items-center justify-center hover:opacity-90 transition-opacity cursor-pointer"
-        >
-          <div className="flex flex-col items-center justify-center space-y-2">
-            <Play className="text-cyber-red h-8 w-8" />
-            <p className="text-muted-foreground">Click to watch demo video</p>
-          </div>
-        </a>
-      </div>
-    );
-  }
-  
-  // For non-YouTube videos or invalid YouTube URLs
+  // For direct video files or external links, use a button for better clickability
   return (
     <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark">
-      <a 
-        href={url}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={handleVideoClick}
-        className="w-full h-full flex items-center justify-center hover:opacity-90 transition-opacity cursor-pointer"
+      <Button 
+        variant="ghost"
+        onClick={openVideo}
+        className="w-full h-full flex flex-col items-center justify-center space-y-4 hover:bg-cyber-dark/80"
       >
-        <div className="flex flex-col items-center justify-center space-y-2">
-          {isYouTubeUrl(url) ? (
-            <>
-              <ExternalLink className="text-cyber h-6 w-6" />
-              <p className="text-muted-foreground">Click to watch video on YouTube</p>
-            </>
-          ) : (
-            <>
-              <Play className="text-cyber-red h-6 w-6" />
-              <p className="text-muted-foreground">Click to watch demo video</p>
-            </>
-          )}
-        </div>
-      </a>
+        {isYouTubeUrl(url) ? (
+          <>
+            <ExternalLink className="text-cyber h-16 w-16" />
+            <span className="text-lg text-muted-foreground">Click to watch video on YouTube</span>
+          </>
+        ) : (
+          <>
+            <Play className="text-cyber-red h-16 w-16" />
+            <span className="text-lg text-muted-foreground">Click to watch demo video</span>
+          </>
+        )}
+      </Button>
     </div>
   );
 };
