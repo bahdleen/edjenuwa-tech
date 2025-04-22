@@ -1,3 +1,4 @@
+
 import React from 'react';
 import MainLayout from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
@@ -50,7 +51,7 @@ const Index = () => {
   return (
     <MainLayout>
       <div className="min-h-screen flex flex-col">
-        <div className="relative py-24 bg-cyber-dark overflow-hidden">
+        <div className="relative py-16 sm:py-20 md:py-24 bg-cyber-dark overflow-hidden">
           <div className="absolute inset-0 overflow-hidden">
             <div className="absolute inset-0 bg-cyber-grid opacity-5"></div>
             {[...Array(10)].map((_, i) => (
@@ -70,9 +71,9 @@ const Index = () => {
           </div>
           
           <div className="container mx-auto px-4 relative z-10">
-            <div className="max-w-3xl mx-auto space-y-8">
+            <div className="max-w-4xl sm:max-w-5xl md:max-w-6xl mx-auto space-y-8">
               <div className="flex flex-col md:flex-row gap-8 items-center">
-                <div className="w-64 h-64 md:w-72 md:h-72 rounded-full overflow-hidden border-4 border-cyber/30 shadow-lg">
+                <div className="w-48 h-48 sm:w-56 sm:h-56 md:w-72 md:h-72 rounded-full overflow-hidden border-4 border-cyber/30 shadow-lg flex-shrink-0">
                   <Avatar className="w-full h-full">
                     <AvatarImage 
                       src={profile?.avatar_url || "/placeholder.svg"} 
@@ -85,36 +86,36 @@ const Index = () => {
                   </Avatar>
                 </div>
                 
-                <div className="space-y-4 text-center md:text-left">
-                  <div className="inline-block px-3 py-1 text-xs font-mono bg-cyber-dark border border-cyber rounded-sm text-cyber mb-2">
+                <div className="space-y-4 text-center md:text-left flex-1 min-w-0">
+                  <div className="inline-block px-3 py-1 text-xs sm:text-sm font-mono bg-cyber-dark border border-cyber rounded-sm text-cyber mb-2 truncate">
                     SECURITY SPECIALIST
                   </div>
-                  <h1 className="text-4xl md:text-5xl font-mono font-bold tracking-tight">
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl font-mono font-bold tracking-tight break-words">
                     <span className="text-cyber animate-pulse-glow">ANTHONY E.</span> <br />
                     <span className="text-white">EDJENUWA</span>
                   </h1>
                   <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-                    <Badge variant="outline" className="border-cyber bg-cyber-dark/50 text-cyber font-mono">
+                    <Badge variant="outline" className="border-cyber bg-cyber-dark/50 text-cyber font-mono text-xs sm:text-sm whitespace-nowrap">
                       <Lock size={12} className="mr-1" /> CYBERSECURITY
                     </Badge>
-                    <Badge variant="outline" className="border-cyber-accent bg-cyber-dark/50 text-cyber-accent font-mono">
+                    <Badge variant="outline" className="border-cyber-accent bg-cyber-dark/50 text-cyber-accent font-mono text-xs sm:text-sm whitespace-nowrap">
                       <Network size={12} className="mr-1" /> NETWORKING
                     </Badge>
-                    <Badge variant="outline" className="border-cyber-red bg-cyber-dark/50 text-cyber-red font-mono">
+                    <Badge variant="outline" className="border-cyber-red bg-cyber-dark/50 text-cyber-red font-mono text-xs sm:text-sm whitespace-nowrap">
                       <Terminal size={12} className="mr-1" /> AI
                     </Badge>
                   </div>
                 </div>
               </div>
               
-              <div className="space-y-6">
-                <p className="text-lg">
+              <div className="space-y-6 px-2 sm:px-0">
+                <p className="text-base sm:text-lg leading-relaxed sm:leading-loose break-words">
                   {profile?.bio || "Cybersecurity professional specializing in network infrastructure protection and AI-driven security analytics. Focused on developing defensive systems against emerging threats."}
                 </p>
                 
                 <div className="flex flex-wrap gap-4 justify-center md:justify-start">
                   <Button asChild size="lg" className="bg-cyber text-cyber-dark hover:bg-cyber/90 border-cyber">
-                    <Link to="/projects">
+                    <Link to="/projects" className="flex items-center">
                       View Projects <ArrowRight size={16} className="ml-1" />
                     </Link>
                   </Button>
@@ -128,7 +129,7 @@ const Index = () => {
         </div>
         
       {featuredProjects && featuredProjects.length > 0 && (
-        <div className="py-24 bg-cyber-dark relative overflow-hidden">
+        <div className="py-16 sm:py-20 md:py-24 bg-cyber-dark relative overflow-hidden">
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-cyber-grid opacity-5"></div>
             {[...Array(5)].map((_, i) => (
@@ -149,16 +150,16 @@ const Index = () => {
           
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-6xl mx-auto space-y-12">
-              <div className="space-y-4">
-                <h2 className="text-4xl font-bold tracking-tight font-mono text-center">
+              <div className="space-y-4 px-2 sm:px-0">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight font-mono text-center">
                   <span className="text-cyber">//</span> Featured Projects
                 </h2>
-                <p className="text-muted-foreground text-center text-lg max-w-2xl mx-auto">
+                <p className="text-muted-foreground text-center text-base sm:text-lg max-w-2xl mx-auto">
                   Recent security solutions and network implementations
                 </p>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
                 {featuredProjects.map((project) => (
                   <Link 
                     key={project.id} 
@@ -187,27 +188,27 @@ const Index = () => {
                           </div>
                         </div>
                       )}
-                      <CardContent className="p-6 space-y-4">
-                        <h3 className="text-xl font-bold font-mono group-hover:text-cyber transition-colors line-clamp-1">
+                      <CardContent className="p-4 sm:p-6 space-y-4">
+                        <h3 className="text-lg sm:text-xl font-bold font-mono group-hover:text-cyber transition-colors line-clamp-1">
                           {project.title}
                         </h3>
-                        <p className="text-muted-foreground line-clamp-2 text-sm">
+                        <p className="text-muted-foreground line-clamp-2 text-xs sm:text-sm">
                           {project.description}
                         </p>
                         <div className="pt-2 flex items-center justify-between">
                           <div className="flex gap-2">
                             {project.youtube_url && (
-                              <div className="p-1.5 rounded-full bg-cyber-dark/70 border border-cyber-red/40">
+                              <div className="p-1 rounded-full bg-cyber-dark/70 border border-cyber-red/40">
                                 <Youtube size={14} className="text-cyber-red" />
                               </div>
                             )}
                             {project.config_file_url && (
-                              <div className="p-1.5 rounded-full bg-cyber-dark/70 border border-cyber/40">
+                              <div className="p-1 rounded-full bg-cyber-dark/70 border border-cyber/40">
                                 <FileText size={14} className="text-cyber" />
                               </div>
                             )}
                             {project.demo_video_url && (
-                              <div className="p-1.5 rounded-full bg-cyber-dark/70 border border-cyber-blue/40">
+                              <div className="p-1 rounded-full bg-cyber-dark/70 border border-cyber-blue/40">
                                 <ExternalLink size={14} className="text-cyber-blue" />
                               </div>
                             )}
@@ -220,9 +221,9 @@ const Index = () => {
                 ))}
               </div>
               
-              <div className="text-center">
-                <Button asChild size="lg" className="bg-cyber text-cyber-dark hover:bg-cyber/90 font-mono">
-                  <Link to="/projects">
+              <div className="text-center px-2 sm:px-0">
+                <Button asChild size="lg" className="bg-cyber text-cyber-dark hover:bg-cyber/90 font-mono w-full sm:w-auto">
+                  <Link to="/projects" className="flex items-center justify-center">
                     View All Projects <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
@@ -232,40 +233,40 @@ const Index = () => {
         </div>
       )}
 
-        <div className="py-16 bg-cyber-dark-blue">
+        <div className="py-12 sm:py-16 md:py-20 bg-cyber-dark-blue">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto space-y-12">
-              <div className="text-center space-y-2">
-                <h2 className="text-3xl font-bold tracking-tight font-mono text-white">
+              <div className="text-center space-y-2 px-2 sm:px-0">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight font-mono text-white">
                   <span className="text-cyber">//</span> Security Specializations
                 </h2>
-                <p className="text-muted-foreground max-w-2xl mx-auto">
+                <p className="text-muted-foreground max-w-2xl mx-auto text-sm sm:text-base">
                   Expert services in cybersecurity, network infrastructure, and AI implementation
                 </p>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
                 <Card className="cyber-panel border-cyber/30 hover:border-cyber transition-all duration-300">
-                  <CardContent className="pt-6 pb-6 flex flex-col items-center text-center">
-                    <Shield className="h-12 w-12 mb-4 text-cyber" />
-                    <h3 className="text-xl font-bold mb-2 font-mono">Security Analysis</h3>
-                    <p className="text-muted-foreground">Comprehensive vulnerability scanning and penetration testing to identify security weaknesses</p>
+                  <CardContent className="pt-4 pb-4 sm:pt-6 sm:pb-6 flex flex-col items-center text-center px-4 sm:px-6">
+                    <Shield className="h-10 w-10 mb-3 sm:mb-4 text-cyber" />
+                    <h3 className="text-lg sm:text-xl font-bold mb-1 font-mono">Security Analysis</h3>
+                    <p className="text-muted-foreground text-xs sm:text-sm">Comprehensive vulnerability scanning and penetration testing to identify security weaknesses</p>
                   </CardContent>
                 </Card>
                 
                 <Card className="cyber-panel border-cyber-blue/30 hover:border-cyber-blue transition-all duration-300">
-                  <CardContent className="pt-6 pb-6 flex flex-col items-center text-center">
-                    <Network className="h-12 w-12 mb-4 text-cyber-blue" />
-                    <h3 className="text-xl font-bold mb-2 font-mono">Network Architecture</h3>
-                    <p className="text-muted-foreground">Design and implementation of secure, scalable networking infrastructure</p>
+                  <CardContent className="pt-4 pb-4 sm:pt-6 sm:pb-6 flex flex-col items-center text-center px-4 sm:px-6">
+                    <Network className="h-10 w-10 mb-3 sm:mb-4 text-cyber-blue" />
+                    <h3 className="text-lg sm:text-xl font-bold mb-1 font-mono">Network Architecture</h3>
+                    <p className="text-muted-foreground text-xs sm:text-sm">Design and implementation of secure, scalable networking infrastructure</p>
                   </CardContent>
                 </Card>
                 
                 <Card className="cyber-panel border-cyber-red/30 hover:border-cyber-red transition-all duration-300">
-                  <CardContent className="pt-6 pb-6 flex flex-col items-center text-center">
-                    <Terminal className="h-12 w-12 mb-4 text-cyber-red" />
-                    <h3 className="text-xl font-bold mb-2 font-mono">AI Security</h3>
-                    <p className="text-muted-foreground">Implementation of AI-driven security monitoring and threat detection systems</p>
+                  <CardContent className="pt-4 pb-4 sm:pt-6 sm:pb-6 flex flex-col items-center text-center px-4 sm:px-6">
+                    <Terminal className="h-10 w-10 mb-3 sm:mb-4 text-cyber-red" />
+                    <h3 className="text-lg sm:text-xl font-bold mb-1 font-mono">AI Security</h3>
+                    <p className="text-muted-foreground text-xs sm:text-sm">Implementation of AI-driven security monitoring and threat detection systems</p>
                   </CardContent>
                 </Card>
               </div>
