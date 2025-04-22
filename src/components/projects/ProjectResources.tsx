@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { FileText, Video, Download } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 interface ProjectResourcesProps {
   tutorialUrl?: string | null;
@@ -14,7 +15,6 @@ interface ProjectResourcesProps {
 export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: ProjectResourcesProps) => {
   if (!tutorialUrl && !demoVideoUrl && !configFileUrl) return null;
 
-  // Validate URL
   const isValidUrl = (url: string | null | undefined): boolean => {
     if (!url || url.trim() === '') return false;
     try {
@@ -26,7 +26,6 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
     }
   };
 
-  // Handle resource access with validation
   const handleResourceClick = (url: string | null | undefined, resourceType: string) => {
     if (!url) {
       toast.error(`No ${resourceType} URL provided`);
@@ -34,18 +33,7 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
     }
 
     try {
-      console.log(`Opening ${resourceType} URL:`, url);
-      
-      // Force the browser to navigate directly to the URL
-      window.location.href = url;
-      
-      // As a fallback, also try to open in a new tab
-      setTimeout(() => {
-        const newWindow = window.open(url, '_blank');
-        if (!newWindow) {
-          toast.error('Your browser blocked opening a new window. Please check your popup settings.');
-        }
-      }, 100);
+      window.open(url, '_blank', 'noopener,noreferrer');
     } catch (error) {
       console.error(`Error opening ${resourceType}:`, error);
       toast.error(`Failed to open ${resourceType}`);
@@ -55,30 +43,23 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
   return (
     <Card className="cyber-panel border-cyber/20 h-full bg-cyber-dark/60 backdrop-blur-sm">
       <CardContent className="p-6">
-        <h2 className="text-2xl font-bold font-mono mb-6">Project Resources</h2>
+        <h2 className="text-2xl font-bold mb-6 tracking-tight text-foreground">Project Resources</h2>
         
         <div className="space-y-6">
           {isValidUrl(tutorialUrl) && (
             <div className="group">
-              <h3 className="text-lg font-mono mb-2 flex items-center gap-2">
+              <h3 className="text-lg mb-2 flex items-center gap-2 text-foreground tracking-wide">
                 <FileText className="text-cyber" />
-                Technical Documentation
+                Documentation
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Detailed technical guide with step-by-step instructions</p>
-              <a 
-                href={tutorialUrl || '#'}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleResourceClick(tutorialUrl, 'documentation');
-                }}
-                className="block w-full py-2 text-center rounded-md bg-gradient-to-r from-cyber/70 to-cyber text-cyber-dark hover:bg-cyber/90 font-mono group-hover:shadow-[0_0_15px_rgba(0,255,0,0.3)] transition-all"
+              <Button 
+                variant="outline"
+                className="w-full py-6 font-medium border-cyber hover:bg-cyber/10 hover:text-cyber transition-all duration-200"
+                onClick={() => handleResourceClick(tutorialUrl, 'documentation')}
               >
-                <span className="flex items-center justify-center">
-                  <FileText className="mr-2" /> View Documentation
-                </span>
-              </a>
+                <FileText className="mr-2" /> View Documentation
+              </Button>
             </div>
           )}
           
@@ -88,25 +69,18 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
           
           {isValidUrl(demoVideoUrl) && (
             <div className="group">
-              <h3 className="text-lg font-mono mb-2 flex items-center gap-2">
+              <h3 className="text-lg mb-2 flex items-center gap-2 text-foreground tracking-wide">
                 <Video className="text-cyber-red" />
                 Demo Video
               </h3>
-              <p className="text-muted-foreground text-sm mb-3 font-medium">Short demonstration of project capabilities</p>
-              <a 
-                href={demoVideoUrl || '#'}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleResourceClick(demoVideoUrl, 'demo video');
-                }}
-                className="block w-full py-2 text-center rounded-md border-cyber-red/50 text-cyber-red hover:bg-cyber-red/10 font-mono group-hover:shadow-[0_0_15px_rgba(255,62,62,0.2)] transition-all border"
+              <p className="text-muted-foreground text-sm mb-3">Short demonstration of project capabilities</p>
+              <Button 
+                variant="outline"
+                className="w-full py-6 font-medium border-cyber-red hover:bg-cyber-red/10 hover:text-cyber-red transition-all duration-200"
+                onClick={() => handleResourceClick(demoVideoUrl, 'demo video')}
               >
-                <span className="flex items-center justify-center">
-                  <Video className="mr-2" /> Watch Demo
-                </span>
-              </a>
+                <Video className="mr-2" /> Watch Demo
+              </Button>
             </div>
           )}
 
@@ -116,25 +90,18 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
           
           {isValidUrl(configFileUrl) && (
             <div className="group">
-              <h3 className="text-lg font-mono mb-2 flex items-center gap-2">
+              <h3 className="text-lg mb-2 flex items-center gap-2 text-foreground tracking-wide">
                 <Download className="text-cyber-blue" />
                 Configuration Files
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Project configuration templates and setup files</p>
-              <a 
-                href={configFileUrl || '#'}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleResourceClick(configFileUrl, 'configuration file');
-                }}
-                className="block w-full py-2 text-center rounded-md border-cyber-blue/50 text-cyber-blue hover:bg-cyber-blue/10 font-mono group-hover:shadow-[0_0_15px_rgba(62,142,255,0.2)] transition-all border"
+              <Button 
+                variant="outline"
+                className="w-full py-6 font-medium border-cyber-blue hover:bg-cyber-blue/10 hover:text-cyber-blue transition-all duration-200"
+                onClick={() => handleResourceClick(configFileUrl, 'configuration file')}
               >
-                <span className="flex items-center justify-center">
-                  <Download className="mr-2" /> Download Files
-                </span>
-              </a>
+                <Download className="mr-2" /> Download Files
+              </Button>
             </div>
           )}
         </div>
@@ -142,3 +109,4 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
     </Card>
   );
 };
+
