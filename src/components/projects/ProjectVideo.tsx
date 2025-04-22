@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { ExternalLink, Play } from "lucide-react";
 
 interface ProjectVideoProps {
@@ -7,6 +7,8 @@ interface ProjectVideoProps {
 }
 
 export const ProjectVideo = ({ url }: ProjectVideoProps) => {
+  const [videoError, setVideoError] = useState(false);
+  
   const getVideoId = (url: string) => {
     if (!url) return '';
     
@@ -111,14 +113,29 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
   if (isDirectVideoUrl(url)) {
     return (
       <div className="aspect-video w-full cyber-border p-1 shadow-[0_0_15px_rgba(0,255,0,0.1)]">
-        <video
-          src={url}
-          controls
-          className="w-full h-full rounded-sm"
-          controlsList="nodownload"
-        >
-          Your browser does not support the video tag.
-        </video>
+        {!videoError ? (
+          <video
+            src={url}
+            controls
+            className="w-full h-full rounded-sm"
+            controlsList="nodownload"
+            onError={() => setVideoError(true)}
+          >
+            Your browser does not support the video tag.
+          </video>
+        ) : (
+          <div className="w-full h-full flex flex-col items-center justify-center bg-cyber-dark">
+            <Play className="text-cyber-red h-16 w-16 mb-4" />
+            <a 
+              href={url} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-lg text-muted-foreground hover:text-cyber underline"
+            >
+              Click to download video
+            </a>
+          </div>
+        )}
       </div>
     );
   }

@@ -26,11 +26,6 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
     }
   };
 
-  const handleResourceClick = (url: string) => {
-    if (!url) return;
-    window.open(url, '_blank', 'noopener,noreferrer');
-  };
-
   return (
     <Card className="cyber-panel border-cyber/20 h-full bg-cyber-dark/60 backdrop-blur-sm">
       <CardContent className="p-6">
@@ -48,6 +43,7 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
                 href={tutorialUrl as string}
                 target="_blank"
                 rel="noopener noreferrer"
+                download={tutorialUrl?.includes('.pdf') || tutorialUrl?.includes('.md')}
                 className="block w-full"
               >
                 <Button 
