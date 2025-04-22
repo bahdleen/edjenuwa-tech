@@ -6,12 +6,22 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useAuth } from '@/contexts/AuthContext';
+import { useEffect } from 'react';
 
 const Auth = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  // If user is already logged in, redirect to admin
+  useEffect(() => {
+    if (user) {
+      navigate('/admin');
+    }
+  }, [user, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,6 +32,7 @@ const Auth = () => {
         password,
       });
       if (error) throw error;
+      toast.success('Logged in successfully');
       navigate('/admin');
     } catch (error: any) {
       toast.error(error.message);
