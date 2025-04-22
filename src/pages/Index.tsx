@@ -46,7 +46,7 @@ const Index = () => {
           <div className="max-w-3xl mx-auto space-y-8">
             <div className="space-y-4">
               <h1 className="text-5xl font-bold tracking-tight">
-                <span className="text-green-500">{">"}</span> {profile?.full_name || "Welcome to my Portfolio"}
+                <span className="text-green-500">{">"}</span> {profile?.full_name || "Welcome to My Cybersecurity Portfolio"}
               </h1>
               <p className="text-muted-foreground text-xl">
                 Cybersecurity | Networking | AI
@@ -55,7 +55,7 @@ const Index = () => {
             
             <div className="space-y-6">
               <p className="text-lg">
-                Explore my projects and experiences in cybersecurity, networking, and artificial intelligence.
+                Explore my projects and experiences in the fields of cybersecurity, networking infrastructure, and artificial intelligence applications.
               </p>
               
               <div className="flex flex-wrap gap-4">
