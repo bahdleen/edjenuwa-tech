@@ -22,21 +22,28 @@ const ProjectDetail = () => {
       if (!id) throw new Error("Project ID is required");
       
       console.log("Fetching project with ID:", id);
+      // Use maybeSingle instead of single to prevent errors if no project found
       const { data, error } = await supabase
         .from('projects')
         .select('*')
         .eq('id', id)
-        .single();
+        .maybeSingle();
       
       if (error) {
         console.error("Supabase error:", error);
         throw error;
       }
       
+      if (!data) {
+        console.error("No project found with ID:", id);
+        return null;
+      }
+      
       console.log("Fetched project data:", data);
       return data;
     },
     enabled: !!id,
+    retry: 1, // Limit retries to avoid infinite loops
   });
 
   if (error) {
@@ -44,14 +51,13 @@ const ProjectDetail = () => {
     toast.error("Failed to load project details");
   }
 
-  // Check if URL is valid
+  // Moved isValidUrl function here for clarity
   const isValidUrl = (url: string | null | undefined): boolean => {
     if (!url || url.trim() === '') return false;
     try {
       new URL(url);
       return true;
     } catch (e) {
-      console.error("Invalid URL:", url, e);
       return false;
     }
   };
@@ -89,11 +95,16 @@ const ProjectDetail = () => {
                     </div>
                   )}
 
-                  <ProjectResources 
-                    tutorialUrl={project.tutorial_url}
-                    demoVideoUrl={project.demo_video_url}
-                    configFileUrl={project.config_file_url}
-                  />
+                  {/* Only render ProjectResources if at least one resource is valid */}
+                  {(isValidUrl(project.tutorial_url) || 
+                    isValidUrl(project.demo_video_url) || 
+                    isValidUrl(project.config_file_url)) && (
+                    <ProjectResources 
+                      tutorialUrl={project.tutorial_url}
+                      demoVideoUrl={project.demo_video_url}
+                      configFileUrl={project.config_file_url}
+                    />
+                  )}
                 </div>
                 
                 <div className="mt-8">

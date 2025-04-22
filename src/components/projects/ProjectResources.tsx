@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
-import { FileText, Video, Download, Youtube } from "lucide-react";
+import { FileText, Video, Download } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 
@@ -12,11 +12,8 @@ interface ProjectResourcesProps {
 }
 
 export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: ProjectResourcesProps) => {
-  console.log("ProjectResources props:", { tutorialUrl, demoVideoUrl, configFileUrl });
-  
   // Don't render if no resources are available
   if (!tutorialUrl && !demoVideoUrl && !configFileUrl) {
-    console.log("No resources available, not rendering");
     return null;
   }
 
@@ -26,18 +23,12 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
       new URL(url);
       return true;
     } catch (e) {
-      console.error("Invalid URL:", url, e);
       return false;
     }
   };
 
   const handleResourceClick = (url: string | null | undefined, type: string) => {
-    if (!url) {
-      console.error(`No URL provided for ${type}`);
-      return;
-    }
-    
-    console.log(`Opening ${type} resource URL:`, url);
+    if (!url) return;
     
     // Open the URL in a new tab
     window.open(url, '_blank', 'noopener,noreferrer');
@@ -47,7 +38,10 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
   const hasValidDemo = isValidUrl(demoVideoUrl);
   const hasValidConfig = isValidUrl(configFileUrl);
 
-  console.log("Valid resources:", { hasValidTutorial, hasValidDemo, hasValidConfig });
+  // If no valid resources, don't render anything
+  if (!hasValidTutorial && !hasValidDemo && !hasValidConfig) {
+    return null;
+  }
 
   return (
     <Card className="cyber-panel border-cyber/20 h-full bg-cyber-dark/60 backdrop-blur-sm">
