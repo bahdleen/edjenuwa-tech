@@ -37,10 +37,14 @@ const ProjectDetail = () => {
     toast.error("Failed to load project details");
   }
 
-  const handleExternalVideoLink = (e: React.MouseEvent) => {
-    if (project?.youtube_url) {
-      e.preventDefault();
-      window.open(project.youtube_url, '_blank', 'noopener,noreferrer');
+  // Check if URL is valid
+  const isValidUrl = (url: string | null | undefined): boolean => {
+    if (!url || url.trim() === '') return false;
+    try {
+      new URL(url);
+      return true;
+    } catch (e) {
+      return false;
     }
   };
 
@@ -60,7 +64,7 @@ const ProjectDetail = () => {
                 <ProjectDescription description={project.description} />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {project.youtube_url && (
+                  {isValidUrl(project.youtube_url) && (
                     <div className="space-y-4">
                       <h2 className="text-2xl font-bold font-mono flex items-center gap-2">
                         Watch
@@ -68,12 +72,14 @@ const ProjectDetail = () => {
                       <div className="text-sm text-muted-foreground mb-4 bg-cyber-dark/30 p-3 rounded-md">
                         <strong className="text-cyber">Complete walkthrough</strong> of the project implementation
                       </div>
-                      <div 
-                        onClick={handleExternalVideoLink}
-                        className="cursor-pointer hover:opacity-95 transition-opacity"
+                      <a 
+                        href={project.youtube_url || '#'} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="block"
                       >
-                        <ProjectVideo url={project.youtube_url} />
-                      </div>
+                        <ProjectVideo url={project.youtube_url || ''} />
+                      </a>
                     </div>
                   )}
 

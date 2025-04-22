@@ -49,22 +49,6 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
         }
       }
       
-      // If we couldn't extract the ID using parsed URL, try regex as fallback
-      const regexPatterns = [
-        /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
-        /(?:youtube\.com\/(?:live\/|watch\?v=))([^"&?\/\s]{11})/,
-        /(?:youtu\.be\/)([^"&?\/\s]{11})/
-      ];
-
-      for (const regex of regexPatterns) {
-        const match = url.match(regex);
-        if (match && match[1]) {
-          return match[1];
-        }
-      }
-      
-      // Everything failed, log an error
-      console.error("Could not extract video ID from URL:", url);
       return '';
     } catch (error) {
       console.error("Error parsing YouTube URL:", error);
@@ -76,24 +60,21 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
     toast.error("Failed to load video. Please try again later.");
   };
 
-  const handleExternalVideoLink = (e: React.MouseEvent) => {
-    e.preventDefault();
-    window.open(url, '_blank', 'noopener,noreferrer');
-  };
-
   const videoId = getVideoId(url);
   
   if (!videoId) {
     return (
-      <div 
-        onClick={handleExternalVideoLink} 
-        className="cursor-pointer aspect-video w-full cyber-border p-1 bg-cyber-dark flex items-center justify-center hover:opacity-90 transition-opacity"
+      <a 
+        href={url} 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className="block aspect-video w-full cyber-border p-1 bg-cyber-dark flex items-center justify-center hover:opacity-90 transition-opacity"
       >
         <div className="flex flex-col items-center justify-center space-y-2">
           <ExternalLink className="text-cyber h-6 w-6" />
           <p className="text-muted-foreground">Click to watch video on YouTube</p>
         </div>
-      </div>
+      </a>
     );
   }
   
