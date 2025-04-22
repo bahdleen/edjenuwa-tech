@@ -66,6 +66,15 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				cyber: {
+					DEFAULT: '#00ff00',
+					accent: '#0fa0ce',
+					red: '#ff3e3e',
+					dark: '#121212',
+					gray: '#1e1e1e',
+					'dark-blue': '#1a1f2c',
+					blue: '#0fa0ce'
 				}
 			},
 			borderRadius: {
@@ -89,11 +98,68 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'pulse-glow': {
+					'0%, 100%': { 
+						opacity: '1',
+						textShadow: '0 0 10px hsl(var(--primary))'
+					},
+					'50%': { 
+						opacity: '0.8',
+						textShadow: '0 0 20px hsl(var(--primary))'
+					}
+				},
+				'text-flicker': {
+					'0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100%': {
+						opacity: '1'
+					},
+					'20%, 21.999%, 63%, 63.999%, 65%, 69.999%': {
+						opacity: '0.8'
+					}
+				},
+				'scan-line': {
+					'0%': {
+						transform: 'translateY(0)'
+					},
+					'100%': {
+						transform: 'translateY(100%)'
+					}
+				},
+				'data-flow': {
+					'0%': {
+						transform: 'translateX(0)',
+						opacity: '0'
+					},
+					'10%': {
+						opacity: '1'
+					},
+					'90%': {
+						opacity: '1'
+					},
+					'100%': {
+						transform: 'translateX(100%)',
+						opacity: '0'
+					}
+				},
+				'gradient-bg': {
+					'0%': { backgroundPosition: '0% 50%' },
+					'50%': { backgroundPosition: '100% 50%' },
+					'100%': { backgroundPosition: '0% 50%' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pulse-glow': 'pulse-glow 3s infinite',
+				'text-flicker': 'text-flicker 3s linear infinite',
+				'scan-line': 'scan-line 4s linear infinite',
+				'data-flow': 'data-flow 15s linear infinite',
+				'gradient-bg': 'gradient-bg 8s ease infinite',
+			},
+			backgroundImage: {
+				'cyber-grid': "url(\"data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23003355' fill-opacity='0.1' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E\")",
+				'cyber-lines': "linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px)",
+				'cyber-gradient': 'linear-gradient(to right, #121212, #1a1f2c, #121212)',
 			}
 		}
 	},
