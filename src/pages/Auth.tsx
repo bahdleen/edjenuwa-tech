@@ -47,12 +47,17 @@ const Auth = () => {
       
       if (error) throw error;
       
-      // Don't navigate here - let the auth state listener handle it
+      // Auth state change listener will handle the redirection
       toast.success("Login successful!");
+      // Force navigation in case the listener doesn't trigger the redirect
+      setTimeout(() => {
+        navigate(from, { replace: true });
+      }, 500);
       
     } catch (error: any) {
       console.error("Login error:", error.message);
       toast.error(error.message || "Login failed");
+    } finally {
       setAuthLoading(false);
     }
   };
