@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { toast } from "sonner";
 import { ExternalLink, Play } from "lucide-react";
@@ -87,8 +88,17 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
 
     try {
       console.log("Opening video URL:", url);
-      // Use window.open directly with focus for more reliable opening
-      window.open(url, '_blank')?.focus();
+      
+      // Force the browser to navigate directly to the URL
+      window.location.href = url;
+      
+      // As a fallback, also try to open in a new tab
+      setTimeout(() => {
+        const newWindow = window.open(url, '_blank');
+        if (!newWindow) {
+          toast.error('Your browser blocked opening a new window. Please check your popup settings.');
+        }
+      }, 100);
     } catch (error) {
       console.error("Error opening video:", error);
       toast.error("Failed to open video");
@@ -117,37 +127,47 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
   // For direct video files, provide a clickable link
   if (isDirectVideoUrl(url)) {
     return (
-      <div 
-        onClick={handleVideoClick}
-        className="aspect-video w-full cyber-border p-1 bg-cyber-dark flex items-center justify-center hover:opacity-90 transition-opacity cursor-pointer"
-      >
-        <div className="flex flex-col items-center justify-center space-y-2">
-          <Play className="text-cyber-red h-8 w-8" />
-          <p className="text-muted-foreground">Click to watch demo video</p>
-        </div>
+      <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark">
+        <a 
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={handleVideoClick}
+          className="w-full h-full flex items-center justify-center hover:opacity-90 transition-opacity cursor-pointer"
+        >
+          <div className="flex flex-col items-center justify-center space-y-2">
+            <Play className="text-cyber-red h-8 w-8" />
+            <p className="text-muted-foreground">Click to watch demo video</p>
+          </div>
+        </a>
       </div>
     );
   }
   
   // For non-YouTube videos or invalid YouTube URLs
   return (
-    <div 
-      onClick={handleVideoClick}
-      className="aspect-video w-full cyber-border p-1 bg-cyber-dark flex items-center justify-center hover:opacity-90 transition-opacity cursor-pointer"
-    >
-      <div className="flex flex-col items-center justify-center space-y-2">
-        {isYouTubeUrl(url) ? (
-          <>
-            <ExternalLink className="text-cyber h-6 w-6" />
-            <p className="text-muted-foreground">Click to watch video on YouTube</p>
-          </>
-        ) : (
-          <>
-            <Play className="text-cyber-red h-6 w-6" />
-            <p className="text-muted-foreground">Click to watch demo video</p>
-          </>
-        )}
-      </div>
+    <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark">
+      <a 
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={handleVideoClick}
+        className="w-full h-full flex items-center justify-center hover:opacity-90 transition-opacity cursor-pointer"
+      >
+        <div className="flex flex-col items-center justify-center space-y-2">
+          {isYouTubeUrl(url) ? (
+            <>
+              <ExternalLink className="text-cyber h-6 w-6" />
+              <p className="text-muted-foreground">Click to watch video on YouTube</p>
+            </>
+          ) : (
+            <>
+              <Play className="text-cyber-red h-6 w-6" />
+              <p className="text-muted-foreground">Click to watch demo video</p>
+            </>
+          )}
+        </div>
+      </a>
     </div>
   );
 };

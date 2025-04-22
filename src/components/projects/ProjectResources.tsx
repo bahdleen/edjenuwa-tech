@@ -35,8 +35,17 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
 
     try {
       console.log(`Opening ${resourceType} URL:`, url);
-      // Use window.open directly with focus for more reliable opening
-      window.open(url, '_blank')?.focus();
+      
+      // Force the browser to navigate directly to the URL
+      window.location.href = url;
+      
+      // As a fallback, also try to open in a new tab
+      setTimeout(() => {
+        const newWindow = window.open(url, '_blank');
+        if (!newWindow) {
+          toast.error('Your browser blocked opening a new window. Please check your popup settings.');
+        }
+      }, 100);
     } catch (error) {
       console.error(`Error opening ${resourceType}:`, error);
       toast.error(`Failed to open ${resourceType}`);
@@ -56,14 +65,20 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
                 Technical Documentation
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Detailed technical guide with step-by-step instructions</p>
-              <button 
-                onClick={() => handleResourceClick(tutorialUrl, 'documentation')}
+              <a 
+                href={tutorialUrl || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleResourceClick(tutorialUrl, 'documentation');
+                }}
                 className="block w-full py-2 text-center rounded-md bg-gradient-to-r from-cyber/70 to-cyber text-cyber-dark hover:bg-cyber/90 font-mono group-hover:shadow-[0_0_15px_rgba(0,255,0,0.3)] transition-all"
               >
                 <span className="flex items-center justify-center">
                   <FileText className="mr-2" /> View Documentation
                 </span>
-              </button>
+              </a>
             </div>
           )}
           
@@ -78,14 +93,20 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
                 Demo Video
               </h3>
               <p className="text-muted-foreground text-sm mb-3 font-medium">Short demonstration of project capabilities</p>
-              <button 
-                onClick={() => handleResourceClick(demoVideoUrl, 'demo video')}
+              <a 
+                href={demoVideoUrl || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleResourceClick(demoVideoUrl, 'demo video');
+                }}
                 className="block w-full py-2 text-center rounded-md border-cyber-red/50 text-cyber-red hover:bg-cyber-red/10 font-mono group-hover:shadow-[0_0_15px_rgba(255,62,62,0.2)] transition-all border"
               >
                 <span className="flex items-center justify-center">
                   <Video className="mr-2" /> Watch Demo
                 </span>
-              </button>
+              </a>
             </div>
           )}
 
@@ -100,14 +121,20 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
                 Configuration Files
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Project configuration templates and setup files</p>
-              <button 
-                onClick={() => handleResourceClick(configFileUrl, 'configuration file')}
+              <a 
+                href={configFileUrl || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleResourceClick(configFileUrl, 'configuration file');
+                }}
                 className="block w-full py-2 text-center rounded-md border-cyber-blue/50 text-cyber-blue hover:bg-cyber-blue/10 font-mono group-hover:shadow-[0_0_15px_rgba(62,142,255,0.2)] transition-all border"
               >
                 <span className="flex items-center justify-center">
                   <Download className="mr-2" /> Download Files
                 </span>
-              </button>
+              </a>
             </div>
           )}
         </div>
