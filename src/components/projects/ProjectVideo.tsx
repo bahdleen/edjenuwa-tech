@@ -43,9 +43,16 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
   if (!videoId) {
     console.error("Invalid YouTube URL or could not extract video ID:", url);
     return (
-      <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark flex items-center justify-center">
-        <p className="text-muted-foreground">Unable to load video. Click to view on YouTube.</p>
-      </div>
+      <a 
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block w-full"
+      >
+        <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark flex items-center justify-center hover:opacity-90 transition-opacity cursor-pointer">
+          <p className="text-muted-foreground">Click to watch video on YouTube</p>
+        </div>
+      </a>
     );
   }
   
