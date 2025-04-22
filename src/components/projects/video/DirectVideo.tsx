@@ -18,26 +18,24 @@ export const DirectVideo = ({ url, onError, hasError, onDirectClick }: DirectVid
     try {
       console.log("Opening direct video link:", url);
       
-      // Try window.open first with fallbacks
-      const newWindow = window.open(url, '_blank');
+      // Simple direct approach first
+      window.open(url, '_blank');
       
-      if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-        console.log("Popup blocked, trying location.href as fallback");
-        // Fallback if popup is blocked
-        window.location.href = url;
-        return;
-      }
-      
-      // Ensure opener is null for security
-      if (newWindow) {
-        newWindow.opener = null;
-      }
-      
-      toast.success("Opening video in new tab");
+      // Fallback with DOM API
+      setTimeout(() => {
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.click();
+        
+        toast.success("Opening video in new tab");
+      }, 300);
     } catch (error) {
       console.error("Failed to open direct video link:", error);
       toast.error("Failed to open video link");
-      // Fallback to the parent component's handler
+      
+      // Final fallback
       onDirectClick();
     }
   };
@@ -45,21 +43,14 @@ export const DirectVideo = ({ url, onError, hasError, onDirectClick }: DirectVid
   if (hasError) {
     return (
       <div className="w-full h-full flex flex-col items-center justify-center bg-cyber-dark">
-        <a 
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
+        <Button 
+          variant="outline"
+          className="mt-4 border-cyber-red hover:bg-cyber-red/10"
           onClick={handleDirectClick}
-          className="inline-block"
         >
-          <Button 
-            variant="outline"
-            className="mt-4 border-cyber-red hover:bg-cyber-red/10"
-          >
-            <Play className="mr-2 h-6 w-6 text-cyber-red" />
-            Download/View Video
-          </Button>
-        </a>
+          <Play className="mr-2 h-6 w-6 text-cyber-red" />
+          Download/View Video
+        </Button>
       </div>
     );
   }
@@ -76,22 +67,15 @@ export const DirectVideo = ({ url, onError, hasError, onDirectClick }: DirectVid
         Your browser does not support the video tag.
       </video>
       <div className="mt-2 text-center">
-        <a 
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="border-cyber-red hover:bg-cyber-red/10 hover:text-cyber-red"
           onClick={handleDirectClick}
-          className="inline-block"
         >
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="border-cyber-red hover:bg-cyber-red/10 hover:text-cyber-red"
-          >
-            <Play className="mr-2 h-4 w-4" /> 
-            Open Video in New Tab
-          </Button>
-        </a>
+          <Play className="mr-2 h-4 w-4" /> 
+          Open Video in New Tab
+        </Button>
       </div>
     </div>
   );

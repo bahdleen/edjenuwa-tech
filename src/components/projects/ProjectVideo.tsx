@@ -36,12 +36,29 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
         ? (videoId ? `https://www.youtube.com/watch?v=${videoId}` : url)
         : url;
       
-      console.log("Opening external link:", safeUrl);
+      console.log("Opening external link (final fallback):", safeUrl);
       
-      // Try direct href navigation as a fallback approach
-      window.location.href = safeUrl;
+      // Multiple different approaches to force the browser to open the link
       
-      console.log("Navigation attempted to:", safeUrl);
+      // 1. Try basic window.open
+      window.open(safeUrl, '_blank');
+      
+      // 2. DOM API approach
+      setTimeout(() => {
+        const link = document.createElement('a');
+        link.href = safeUrl;
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }, 300);
+      
+      // 3. Last resort - direct location change
+      setTimeout(() => {
+        window.location.href = safeUrl;
+      }, 600);
+      
+      toast.success("Opening video link");
     } catch (error) {
       console.error("Error in final fallback:", error);
       toast.error("Failed to open video link");
@@ -78,23 +95,18 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
         <div className="w-full h-full flex flex-col items-center justify-center space-y-4 p-8">
           <ExternalLink className="text-cyber h-16 w-16" />
           <span className="text-lg text-muted-foreground">Click to watch video on YouTube</span>
-          <a 
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => {
-              e.preventDefault();
-              window.location.href = url;
+          <Button 
+            variant="outline"
+            className="mt-4 border-cyber hover:bg-cyber/10"
+            onClick={() => {
+              window.open(url, '_blank');
+              setTimeout(() => {
+                window.location.href = url;
+              }, 500);
             }}
-            className="inline-block"
           >
-            <Button 
-              variant="outline"
-              className="mt-4 border-cyber hover:bg-cyber/10"
-            >
-              Open YouTube Video
-            </Button>
-          </a>
+            Open YouTube Video
+          </Button>
         </div>
       </div>
     );
@@ -124,23 +136,18 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
       <div className="w-full h-full flex flex-col items-center justify-center space-y-4 p-8">
         <Play className="text-cyber-red h-16 w-16" />
         <span className="text-lg text-muted-foreground">Click to watch video</span>
-        <a 
-          href={url}
-          target="_blank" 
-          rel="noopener noreferrer"
-          onClick={(e) => {
-            e.preventDefault();
-            window.location.href = url;
+        <Button 
+          variant="outline"
+          className="mt-4 border-cyber-red hover:bg-cyber-red/10"
+          onClick={() => {
+            window.open(url, '_blank');
+            setTimeout(() => {
+              window.location.href = url;
+            }, 500);
           }}
-          className="inline-block"
         >
-          <Button 
-            variant="outline"
-            className="mt-4 border-cyber-red hover:bg-cyber-red/10"
-          >
-            Open Video
-          </Button>
-        </a>
+          Open Video
+        </Button>
       </div>
     </div>
   );

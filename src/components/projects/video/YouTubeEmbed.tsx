@@ -17,29 +17,27 @@ export const YouTubeEmbed = ({ videoId, url, onError, onDirectClick }: YouTubeEm
     
     try {
       console.log("Opening YouTube link directly:", url);
-      // Force browser to open the link directly
+      // Use the most direct approach possible
       const youtubeUrl = `https://www.youtube.com/watch?v=${videoId}`;
       
-      // Try window.open first with fallbacks
-      const newWindow = window.open(youtubeUrl, '_blank');
+      // Try window.open with simplest configuration 
+      window.open(youtubeUrl, '_blank');
       
-      if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-        console.log("Popup blocked, trying location.href as fallback");
-        // Fallback if popup is blocked
-        window.location.href = youtubeUrl;
-        return;
-      }
-      
-      // Ensure opener is null for security
-      if (newWindow) {
-        newWindow.opener = null;
-      }
-      
-      toast.success("Opening YouTube in new tab");
+      // Fallback if window.open doesn't work
+      setTimeout(() => {
+        const link = document.createElement('a');
+        link.href = youtubeUrl;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.click();
+        
+        toast.success("Opening YouTube in new tab");
+      }, 300);
     } catch (error) {
       console.error("Failed to open YouTube link:", error);
       toast.error("Failed to open YouTube link");
-      // Fallback to the parent component's handler
+      
+      // Final fallback to the parent component's handler
       onDirectClick();
     }
   };
@@ -59,22 +57,15 @@ export const YouTubeEmbed = ({ videoId, url, onError, onDirectClick }: YouTubeEm
       ></iframe>
       
       <div className="mt-2 text-center">
-        <a 
-          href={`https://www.youtube.com/watch?v=${videoId}`}
-          target="_blank"
-          rel="noopener noreferrer"
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="border-cyber-red hover:bg-cyber-red/10 hover:text-cyber-red"
           onClick={handleDirectClick}
-          className="inline-block"
         >
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="border-cyber-red hover:bg-cyber-red/10 hover:text-cyber-red"
-          >
-            <ExternalLink className="mr-2 h-4 w-4" /> 
-            Open directly in YouTube
-          </Button>
-        </a>
+          <ExternalLink className="mr-2 h-4 w-4" /> 
+          Open directly in YouTube
+        </Button>
       </div>
     </div>
   );
