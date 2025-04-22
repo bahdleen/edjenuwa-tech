@@ -36,6 +36,14 @@ const ProjectDetail = () => {
   if (error) {
     toast.error("Failed to load project details");
   }
+  
+  const handleVideoClick = (url: string) => {
+    if (url && url.trim() !== '') {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } else {
+      toast.error("Invalid video URL");
+    }
+  };
 
   return (
     <MainLayout>
@@ -61,14 +69,12 @@ const ProjectDetail = () => {
                       <div className="text-sm text-muted-foreground mb-4 bg-cyber-dark/30 p-3 rounded-md">
                         <strong className="text-cyber">Complete walkthrough</strong> of the project implementation
                       </div>
-                      <a 
-                        href={project.youtube_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block hover:opacity-90 transition-opacity"
+                      <div 
+                        onClick={() => handleVideoClick(project.youtube_url as string)}
+                        className="cursor-pointer hover:opacity-90 transition-opacity"
                       >
                         <ProjectVideo url={project.youtube_url} />
-                      </a>
+                      </div>
                     </div>
                   )}
 

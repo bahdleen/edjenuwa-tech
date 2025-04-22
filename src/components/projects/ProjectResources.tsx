@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileText, Youtube, ExternalLink, Download } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "sonner";
 
 interface ProjectResourcesProps {
   tutorialUrl?: string | null;
@@ -14,10 +15,11 @@ interface ProjectResourcesProps {
 export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: ProjectResourcesProps) => {
   if (!tutorialUrl && !demoVideoUrl && !configFileUrl) return null;
 
-  // Safe open URL function that handles null or empty values
-  const safeOpenUrl = (url: string | null | undefined) => {
+  const handleResourceClick = (url: string | null | undefined, resourceType: string) => {
     if (url && url.trim() !== '') {
       window.open(url, '_blank', 'noopener,noreferrer');
+    } else {
+      toast.error(`Unable to open ${resourceType}. Invalid URL provided.`);
     }
   };
 
@@ -34,18 +36,12 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
                 Technical Documentation
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Detailed technical guide with step-by-step instructions</p>
-              <a 
-                href={tutorialUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full"
+              <Button 
+                className="w-full bg-gradient-to-r from-cyber/70 to-cyber text-cyber-dark hover:bg-cyber/90 font-mono group-hover:shadow-[0_0_15px_rgba(0,255,0,0.3)] transition-all"
+                onClick={() => handleResourceClick(tutorialUrl, "documentation")}
               >
-                <Button 
-                  className="w-full bg-gradient-to-r from-cyber/70 to-cyber text-cyber-dark hover:bg-cyber/90 font-mono group-hover:shadow-[0_0_15px_rgba(0,255,0,0.3)] transition-all" 
-                >
-                  <FileText className="mr-2" /> View Documentation
-                </Button>
-              </a>
+                <FileText className="mr-2" /> View Documentation
+              </Button>
             </div>
           )}
           
@@ -60,19 +56,13 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
                 Demo Video
               </h3>
               <p className="text-muted-foreground text-sm mb-3 font-medium">Short demonstration of project capabilities</p>
-              <a 
-                href={demoVideoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full"
+              <Button 
+                variant="outline" 
+                className="w-full border-cyber-red/50 text-cyber-red hover:bg-cyber-red/10 font-mono group-hover:shadow-[0_0_15px_rgba(255,62,62,0.2)] transition-all"
+                onClick={() => handleResourceClick(demoVideoUrl, "demo video")}
               >
-                <Button 
-                  variant="outline" 
-                  className="w-full border-cyber-red/50 text-cyber-red hover:bg-cyber-red/10 font-mono group-hover:shadow-[0_0_15px_rgba(255,62,62,0.2)] transition-all"
-                >
-                  <ExternalLink className="mr-2" /> Watch Demo
-                </Button>
-              </a>
+                <ExternalLink className="mr-2" /> Watch Demo
+              </Button>
             </div>
           )}
 
@@ -87,19 +77,13 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
                 Configuration Files
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Project configuration templates and setup files</p>
-              <a 
-                href={configFileUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full"
+              <Button 
+                variant="outline" 
+                className="w-full border-cyber-blue/50 text-cyber-blue hover:bg-cyber-blue/10 font-mono group-hover:shadow-[0_0_15px_rgba(62,142,255,0.2)] transition-all"
+                onClick={() => handleResourceClick(configFileUrl, "configuration files")}
               >
-                <Button 
-                  variant="outline" 
-                  className="w-full border-cyber-blue/50 text-cyber-blue hover:bg-cyber-blue/10 font-mono group-hover:shadow-[0_0_15px_rgba(62,142,255,0.2)] transition-all"
-                >
-                  <Download className="mr-2" /> Download ZIP
-                </Button>
-              </a>
+                <Download className="mr-2" /> Download ZIP
+              </Button>
             </div>
           )}
         </div>

@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { toast } from "sonner";
 
 interface ProjectVideoProps {
   url: string;
@@ -38,21 +39,21 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
     return '';
   };
 
+  const handleVideoError = () => {
+    toast.error("Failed to load video. Please try again later.");
+  };
+
   const videoId = getVideoId(url);
   
   if (!videoId) {
     console.error("Invalid YouTube URL or could not extract video ID:", url);
     return (
-      <a 
-        href={url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="block w-full"
+      <div 
+        onClick={() => window.open(url, '_blank', 'noopener,noreferrer')}
+        className="aspect-video w-full cyber-border p-1 bg-cyber-dark flex items-center justify-center hover:opacity-90 transition-opacity cursor-pointer"
       >
-        <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark flex items-center justify-center hover:opacity-90 transition-opacity cursor-pointer">
-          <p className="text-muted-foreground">Click to watch video on YouTube</p>
-        </div>
-      </a>
+        <p className="text-muted-foreground">Click to watch video on YouTube</p>
+      </div>
     );
   }
   
@@ -66,6 +67,7 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
         className="rounded-sm"
+        onError={handleVideoError}
       ></iframe>
     </div>
   );
