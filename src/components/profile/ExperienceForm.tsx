@@ -1,4 +1,4 @@
-
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,7 +25,7 @@ type ExperienceFormValues = Omit<WorkExperience, 'id'>;
 export const ExperienceForm = () => {
   const { user } = useAuth();
   const form = useForm<ExperienceFormValues>();
-  const [editingId, setEditingId] = React.useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const { data: experiences, refetch } = useQuery({
     queryKey: ['work-experiences', user?.id],
