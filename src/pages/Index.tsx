@@ -72,7 +72,7 @@ const Index = () => {
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-3xl mx-auto space-y-8">
               <div className="flex flex-col md:flex-row gap-8 items-center">
-                <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-cyber/30 shadow-lg">
+                <div className="w-64 h-64 md:w-72 md:h-72 rounded-full overflow-hidden border-4 border-cyber/30 shadow-lg">
                   <Avatar className="w-full h-full">
                     <AvatarImage 
                       src={profile?.avatar_url || "/placeholder.svg"} 
