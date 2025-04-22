@@ -1,3 +1,4 @@
+
 import React from 'react';
 import MainLayout from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
@@ -24,14 +25,14 @@ const About = () => {
 
   return (
     <MainLayout>
-      <div className="bg-cyber-dark-blue py-16">
+      <div className="bg-gradient-to-b from-cyber-dark to-cyber-dark-blue py-16">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto space-y-8">
-            <div className="space-y-2">
-              <h1 className="text-4xl font-bold tracking-tight font-mono">
-                <span className="text-cyber">//</span> About Me
+          <div className="max-w-5xl mx-auto space-y-10">
+            <div className="space-y-2 text-center">
+              <h1 className="text-5xl font-bold tracking-tight font-mono">
+                <span className="text-cyber">&gt;</span> About Me
               </h1>
-              <p className="text-muted-foreground text-lg">
+              <p className="text-muted-foreground text-xl">
                 Cybersecurity Professional | Network Engineer | AI Specialist
               </p>
             </div>
@@ -41,11 +42,11 @@ const About = () => {
                 <p className="text-muted-foreground">Loading profile information...</p>
               </div>
             ) : profile ? (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
                 <div className="md:col-span-1">
                   <div className="sticky top-10">
-                    <div className="w-full max-w-xs mx-auto mb-6">
-                      <div className="rounded-full overflow-hidden border-4 border-cyber/30 shadow-lg">
+                    <div className="mx-auto mb-8 flex justify-center">
+                      <div className="w-64 h-64 rounded-full overflow-hidden border-4 border-cyber shadow-[0_0_15px_rgba(0,255,0,0.3)]">
                         <Avatar className="w-full h-full">
                           <AvatarImage 
                             src={profile.avatar_url || "/placeholder.svg"} 
@@ -53,42 +54,43 @@ const About = () => {
                             className="object-cover w-full h-full"
                           />
                           <AvatarFallback className="bg-cyber-dark border border-cyber/30 flex items-center justify-center">
-                            <UserRound className="w-1/2 h-1/2 text-cyber/50" />
+                            <UserRound className="w-1/3 h-1/3 text-cyber/50" />
                           </AvatarFallback>
                         </Avatar>
                       </div>
                     </div>
                     
                     {profile.resume_url && (
-                      <Button className="w-full bg-cyber text-cyber-dark hover:bg-cyber/90" asChild>
+                      <Button className="w-full bg-cyber text-cyber-dark hover:bg-cyber/90 my-4" asChild>
                         <a href={profile.resume_url} target="_blank" rel="noreferrer">
                           <Download className="mr-2" /> Download Resume
                         </a>
                       </Button>
                     )}
 
-                    <div className="mt-6 cyber-panel border-cyber/30 p-4">
-                      <h3 className="font-mono text-lg font-bold mb-3 text-white">Skills</h3>
-                      <div className="space-y-3">
-                        <SkillBar label="Network Security" percentage={95} icon={<Network size={16} className="text-cyber-blue" />} color="cyber-blue" />
-                        <SkillBar label="Penetration Testing" percentage={90} icon={<Shield size={16} className="text-cyber-red" />} color="cyber-red" />
-                        <SkillBar label="System Architecture" percentage={85} icon={<Database size={16} className="text-cyber" />} color="cyber" />
-                        <SkillBar label="Security Protocols" percentage={92} icon={<Shield size={16} className="text-cyber" />} color="cyber" />
-                        <SkillBar label="AI Integration" percentage={80} icon={<Cpu size={16} className="text-cyber-red" />} color="cyber-red" />
+                    <div className="mt-6 cyber-panel border-cyber/30 p-6 backdrop-blur-sm bg-cyber-dark/70">
+                      <h3 className="font-mono text-xl font-bold mb-5 text-white border-b border-cyber/30 pb-2">Technical Skills</h3>
+                      <div className="space-y-5">
+                        <SkillBar label="Network Security" percentage={95} icon={<Network size={18} className="text-cyber-blue" />} color="cyber-blue" />
+                        <SkillBar label="Penetration Testing" percentage={90} icon={<Shield size={18} className="text-cyber-red" />} color="cyber-red" />
+                        <SkillBar label="System Architecture" percentage={85} icon={<Database size={18} className="text-cyber" />} color="cyber" />
+                        <SkillBar label="Security Protocols" percentage={92} icon={<Shield size={18} className="text-cyber" />} color="cyber" />
+                        <SkillBar label="AI Integration" percentage={80} icon={<Cpu size={18} className="text-cyber-red" />} color="cyber-red" />
                       </div>
                     </div>
                   </div>
                 </div>
                 
                 <div className="md:col-span-2">
-                  <Card className="cyber-panel border-cyber/30 mb-8">
-                    <CardContent className="pt-6">
-                      <h2 className="text-2xl font-bold mb-4 font-mono">{profile.full_name || "About Me"}</h2>
+                  <Card className="cyber-panel border-cyber/30 mb-10 backdrop-blur-sm bg-cyber-dark/70 overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyber/20 via-cyber to-cyber/20"></div>
+                    <CardContent className="pt-8 px-8 pb-6">
+                      <h2 className="text-3xl font-bold mb-6 font-mono">{profile.full_name || "About Me"}</h2>
                       <div className="prose prose-invert max-w-none">
                         {profile.bio ? (
-                          <p className="whitespace-pre-line">{profile.bio}</p>
+                          <p className="whitespace-pre-line text-lg">{profile.bio}</p>
                         ) : (
-                          <p>
+                          <p className="text-lg">
                             Cybersecurity expert with over 8 years of experience in securing network infrastructure and implementing 
                             AI-driven security solutions. Specializing in vulnerability assessment, penetration testing, and developing 
                             secure architectural designs for enterprise environments.
@@ -98,13 +100,15 @@ const About = () => {
                     </CardContent>
                   </Card>
                   
-                  <div className="space-y-6">
+                  <div className="space-y-10">
                     <section>
-                      <div className="flex items-center gap-2 mb-4">
-                        <Briefcase className="text-cyber" />
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="p-2 rounded-full bg-cyber-dark/70 border border-cyber/20">
+                          <Briefcase className="text-cyber" size={22} />
+                        </div>
                         <h2 className="text-2xl font-bold font-mono">Work Experience</h2>
                       </div>
-                      <div className="space-y-4">
+                      <div className="space-y-6 backdrop-blur-sm bg-cyber-dark/30 p-6 rounded-md border border-cyber/10">
                         <TimelineItem 
                           title="Senior Network Security Engineer"
                           organization="Tech Security Solutions"
@@ -123,11 +127,13 @@ const About = () => {
                     </section>
                     
                     <section>
-                      <div className="flex items-center gap-2 mb-4">
-                        <BookOpen className="text-cyber" />
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="p-2 rounded-full bg-cyber-dark/70 border border-cyber/20">
+                          <BookOpen className="text-cyber" size={22} />
+                        </div>
                         <h2 className="text-2xl font-bold font-mono">Education</h2>
                       </div>
-                      <div className="space-y-4">
+                      <div className="space-y-6 backdrop-blur-sm bg-cyber-dark/30 p-6 rounded-md border border-cyber/10">
                         <TimelineItem 
                           title="M.S. in Cybersecurity"
                           organization="Tech University"
@@ -146,11 +152,13 @@ const About = () => {
                     </section>
                     
                     <section>
-                      <div className="flex items-center gap-2 mb-4">
-                        <Award className="text-cyber" />
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="p-2 rounded-full bg-cyber-dark/70 border border-cyber/20">
+                          <Award className="text-cyber" size={22} />
+                        </div>
                         <h2 className="text-2xl font-bold font-mono">Certifications</h2>
                       </div>
-                      <div className="space-y-4">
+                      <div className="space-y-6 backdrop-blur-sm bg-cyber-dark/30 p-6 rounded-md border border-cyber/10">
                         <TimelineItem 
                           title="Certified Information Systems Security Professional (CISSP)"
                           organization="ISC²"
@@ -200,17 +208,17 @@ const SkillBar = ({
   color?: string;
 }) => {
   return (
-    <div className="space-y-1">
+    <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
           {icon}
           <span className="text-sm font-mono">{label}</span>
         </div>
         <span className="text-xs text-muted-foreground font-mono">{percentage}%</span>
       </div>
-      <div className={`h-[3px] w-full bg-cyber-dark rounded-full overflow-hidden`}>
+      <div className="h-[4px] w-full bg-cyber-dark-blue rounded-full overflow-hidden border border-white/5">
         <div 
-          className={`h-full bg-${color} rounded-full`}
+          className={`h-full bg-${color} rounded-full shadow-[0_0_5px_rgba(0,255,0,0.5)]`}
           style={{ width: `${percentage}%` }}
         ></div>
       </div>
@@ -231,13 +239,13 @@ const TimelineItem = ({
   description?: string;
   icon?: React.ReactNode;
 }) => (
-  <div className="border-l-2 border-cyber/20 pl-4 pb-2 relative">
-    <div className="absolute left-[-9px] top-0 rounded-full bg-cyber-dark p-[2px] border border-cyber/30">
+  <div className="border-l-2 border-cyber/20 pl-6 pb-2 relative hover:border-cyber transition-colors duration-300">
+    <div className="absolute left-[-9px] top-1 rounded-full bg-cyber-dark p-[2px] border border-cyber/30 shadow-[0_0_5px_rgba(0,255,0,0.3)]">
       {icon || <div className="w-3 h-3 rounded-full bg-cyber"></div>}
     </div>
-    <h3 className="font-bold text-lg font-mono">{title}</h3>
+    <h3 className="font-bold text-xl font-mono">{title}</h3>
     <p className="text-cyber">{organization}</p>
-    <p className="text-sm text-muted-foreground mb-2 font-mono">{date}</p>
+    <p className="text-sm text-muted-foreground mb-3 font-mono">{date}</p>
     {description && <p className="text-muted-foreground">{description}</p>}
   </div>
 );

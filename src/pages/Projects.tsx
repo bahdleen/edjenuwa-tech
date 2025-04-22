@@ -6,7 +6,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, ExternalLink, FileText, Youtube, Shield, Network, Terminal } from "lucide-react";
+import { ArrowRight, ExternalLink, FileText, Youtube, Shield, Network, Terminal, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 type Project = {
@@ -44,60 +44,65 @@ const Projects = () => {
 
   // Map of category icons
   const categoryIcons: Record<string, React.ReactNode> = {
-    "Cybersecurity": <Shield size={16} className="text-cyber-red" />,
-    "Networking": <Network size={16} className="text-cyber-blue" />,
-    "AI": <Terminal size={16} className="text-cyber" />
+    "Cybersecurity": <Shield size={18} className="text-cyber-red" />,
+    "Networking": <Network size={18} className="text-cyber-blue" />,
+    "AI": <Terminal size={18} className="text-cyber" />
   };
 
   // Map of category colors
   const categoryColors: Record<string, string> = {
-    "Cybersecurity": "border-cyber-red/40 hover:border-cyber-red",
-    "Networking": "border-cyber-blue/40 hover:border-cyber-blue",
-    "AI": "border-cyber/40 hover:border-cyber"
+    "Cybersecurity": "from-cyber-dark-blue to-cyber-red/30 border-cyber-red/40 hover:border-cyber-red",
+    "Networking": "from-cyber-dark-blue to-cyber-blue/30 border-cyber-blue/40 hover:border-cyber-blue",
+    "AI": "from-cyber-dark-blue to-cyber/30 border-cyber/40 hover:border-cyber"
   };
 
   return (
     <MainLayout>
-      <div className="bg-cyber-dark-blue py-16">
+      <div className="bg-gradient-to-b from-cyber-dark to-cyber-dark-blue py-16">
         <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto space-y-8">
-            <div className="space-y-2">
-              <h1 className="text-4xl font-bold tracking-tight font-mono">
-                <span className="text-cyber">//</span> Security Projects
+          <div className="max-w-6xl mx-auto space-y-10">
+            <div className="space-y-2 text-center">
+              <h1 className="text-5xl font-bold tracking-tight font-mono">
+                <span className="text-cyber">&gt;</span> Security Projects
               </h1>
-              <p className="text-muted-foreground text-lg">
-                Professional work in cybersecurity, networking, and artificial intelligence
+              <p className="text-muted-foreground text-xl max-w-3xl mx-auto">
+                Professional work in cybersecurity, networking, and artificial intelligence with 
+                detailed explanations, tutorials, and configuration files
               </p>
             </div>
 
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex flex-wrap gap-3 justify-center">
               <Button 
                 variant={filter === null ? "default" : "outline"} 
                 onClick={() => setFilter(null)}
                 className={filter === null ? "bg-cyber text-cyber-dark" : "border-cyber text-cyber hover:bg-cyber/10"}
+                size="lg"
               >
-                All
+                All Projects
               </Button>
               <Button 
                 variant={filter === "Cybersecurity" ? "default" : "outline"} 
                 onClick={() => setFilter("Cybersecurity")}
                 className={filter === "Cybersecurity" ? "bg-cyber-red text-white" : "border-cyber-red/50 text-cyber-red hover:bg-cyber-red/10"}
+                size="lg"
               >
-                <Shield size={16} className="mr-1" /> Cybersecurity
+                <Shield size={18} className="mr-2" /> Cybersecurity
               </Button>
               <Button 
                 variant={filter === "Networking" ? "default" : "outline"} 
                 onClick={() => setFilter("Networking")}
                 className={filter === "Networking" ? "bg-cyber-blue text-white" : "border-cyber-blue/50 text-cyber-blue hover:bg-cyber-blue/10"}
+                size="lg"
               >
-                <Network size={16} className="mr-1" /> Networking
+                <Network size={18} className="mr-2" /> Networking
               </Button>
               <Button 
                 variant={filter === "AI" ? "default" : "outline"} 
                 onClick={() => setFilter("AI")}
                 className={filter === "AI" ? "bg-cyber text-cyber-dark" : "border-cyber/50 text-cyber hover:bg-cyber/10"}
+                size="lg"
               >
-                <Terminal size={16} className="mr-1" /> AI
+                <Terminal size={18} className="mr-2" /> AI
               </Button>
             </div>
 
@@ -106,20 +111,37 @@ const Projects = () => {
                 <p className="text-muted-foreground">Loading projects...</p>
               </div>
             ) : filteredProjects && filteredProjects.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {filteredProjects.map((project) => (
                   <Card 
                     key={project.id} 
-                    className={`cyber-panel group transition-all duration-300 h-full flex flex-col ${categoryColors[project.category] || "border-cyber/30 hover:border-cyber"}`}
+                    className={`cyber-panel group transition-all duration-300 h-full flex flex-col bg-gradient-to-br ${categoryColors[project.category] || "from-cyber-dark-blue to-cyber/20 border-cyber/30 hover:border-cyber"}`}
                   >
                     {project.image_url && (
                       <div className="aspect-video w-full overflow-hidden border-b border-cyber/20 relative">
-                        <div className="absolute inset-0 bg-gradient-to-t from-cyber-dark to-transparent opacity-70 z-10"></div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-cyber-dark to-transparent opacity-80 z-10"></div>
                         <img 
                           src={project.image_url} 
                           alt={project.title} 
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                         />
+                        <div className="absolute bottom-2 right-2 z-20 flex gap-2">
+                          {project.youtube_url && (
+                            <div className="p-1.5 rounded-full bg-cyber-dark/70 border border-cyber-red/40">
+                              <Youtube size={16} className="text-cyber-red" />
+                            </div>
+                          )}
+                          {project.config_file_url && (
+                            <div className="p-1.5 rounded-full bg-cyber-dark/70 border border-cyber/40">
+                              <FileText size={16} className="text-cyber" />
+                            </div>
+                          )}
+                          {project.demo_video_url && (
+                            <div className="p-1.5 rounded-full bg-cyber-dark/70 border border-cyber-blue/40">
+                              <ExternalLink size={16} className="text-cyber-blue" />
+                            </div>
+                          )}
+                        </div>
                       </div>
                     )}
                     <CardHeader className="pb-2">
@@ -134,43 +156,28 @@ const Projects = () => {
                     <CardContent className="flex-grow">
                       <p className="text-muted-foreground line-clamp-3">{project.description}</p>
                     </CardContent>
-                    <CardFooter className="flex justify-between border-t border-cyber/10 pt-4">
-                      <div className="flex gap-2">
-                        {project.youtube_url && (
-                          <a 
-                            href={project.youtube_url} 
-                            target="_blank" 
-                            rel="noreferrer" 
-                            className="text-muted-foreground hover:text-cyber transition-colors"
-                          >
-                            <Youtube size={18} />
-                          </a>
-                        )}
-                        {project.tutorial_url && (
-                          <a 
-                            href={project.tutorial_url} 
-                            target="_blank" 
-                            rel="noreferrer" 
-                            className="text-muted-foreground hover:text-cyber-red transition-colors"
-                          >
-                            <FileText size={18} />
-                          </a>
+                    <CardFooter className="flex justify-between border-t border-white/5 pt-4">
+                      <div className="flex gap-3">
+                        {(project.youtube_url || project.tutorial_url || project.config_file_url || project.demo_video_url) && (
+                          <Badge variant="outline" className="bg-cyber-dark/50 border-cyber/30 text-muted-foreground font-mono">
+                            Resources Available
+                          </Badge>
                         )}
                       </div>
                       <Button 
                         variant="outline" 
                         size="sm" 
                         onClick={() => navigate(`/projects/${project.id}`)}
-                        className="border-cyber/50 text-cyber hover:bg-cyber/10"
+                        className="border-cyber/50 text-cyber hover:bg-cyber/10 font-mono"
                       >
-                        View Details <ArrowRight size={14} className="ml-1" />
+                        <Eye size={14} className="mr-1" /> Details
                       </Button>
                     </CardFooter>
                   </Card>
                 ))}
               </div>
             ) : (
-              <div className="py-20 text-center cyber-panel border-cyber/30">
+              <div className="py-20 text-center cyber-panel border-cyber/30 bg-cyber-dark-blue/50 backdrop-blur-sm">
                 <p className="text-muted-foreground">
                   No projects found{filter ? ` in ${filter}` : ""}. Check back later!
                 </p>
