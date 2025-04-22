@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ExternalLink, Play } from "lucide-react";
 
 interface ProjectVideoProps {
@@ -8,7 +8,16 @@ interface ProjectVideoProps {
 
 export const ProjectVideo = ({ url }: ProjectVideoProps) => {
   const [videoError, setVideoError] = useState(false);
+  const [videoId, setVideoId] = useState<string>('');
   
+  useEffect(() => {
+    if (url) {
+      const id = getVideoId(url);
+      setVideoId(id);
+      console.log("YouTube video ID extracted:", id, "from URL:", url);
+    }
+  }, [url]);
+
   const getVideoId = (url: string) => {
     if (!url) return '';
     
@@ -20,8 +29,8 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
       if (urlObj.hostname.includes('youtube.com')) {
         // Handle youtube.com/watch?v=VIDEO_ID
         const searchParams = new URLSearchParams(urlObj.search);
-        const videoId = searchParams.get('v');
-        if (videoId) return videoId;
+        const id = searchParams.get('v');
+        if (id) return id;
         
         // Handle youtube.com/live/VIDEO_ID format
         if (urlObj.pathname.includes('/live/')) {
@@ -62,6 +71,7 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
       const urlObj = new URL(url);
       return urlObj.hostname.includes('youtube.com') || urlObj.hostname === 'youtu.be';
     } catch (error) {
+      console.error("Invalid YouTube URL:", url, error);
       return false;
     }
   };
@@ -76,12 +86,14 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
              urlObj.hostname.includes('storage.googleapis.com') || 
              urlObj.hostname.includes('supabase');
     } catch (error) {
+      console.error("Invalid direct video URL:", url, error);
       return false;
     }
   };
 
   // Handle empty URL case
   if (!url || url.trim() === '') {
+    console.log("No video URL provided");
     return (
       <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark flex items-center justify-center">
         <span className="text-muted-foreground">No video available</span>
@@ -89,10 +101,11 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
     );
   }
 
-  const videoId = getVideoId(url);
+  console.log("Rendering video component with URL:", url);
   
   // If it's a YouTube video with valid ID, embed it
   if (videoId && isYouTubeUrl(url)) {
+    console.log("Embedding YouTube video with ID:", videoId);
     return (
       <div className="aspect-video w-full cyber-border p-1 shadow-[0_0_15px_rgba(0,255,0,0.1)]">
         <iframe
@@ -111,6 +124,7 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
   
   // For direct video files
   if (isDirectVideoUrl(url)) {
+    console.log("Rendering direct video file:", url);
     return (
       <div className="aspect-video w-full cyber-border p-1 shadow-[0_0_15px_rgba(0,255,0,0.1)]">
         {!videoError ? (
@@ -119,7 +133,10 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
             controls
             className="w-full h-full rounded-sm"
             controlsList="nodownload"
-            onError={() => setVideoError(true)}
+            onError={() => {
+              console.error("Video failed to load:", url);
+              setVideoError(true);
+            }}
           >
             Your browser does not support the video tag.
           </video>
@@ -131,6 +148,9 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
               target="_blank" 
               rel="noopener noreferrer"
               className="text-lg text-muted-foreground hover:text-cyber underline"
+              onClick={(e) => {
+                console.log("Fallback video link clicked");
+              }}
             >
               Click to download video
             </a>
@@ -141,12 +161,18 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
   }
   
   // For other types of links (fallback)
+  console.log("Rendering fallback video link UI for:", url);
   return (
     <a 
       href={url} 
       target="_blank" 
       rel="noopener noreferrer"
       className="block w-full h-full cursor-pointer"
+      onClick={(e) => {
+        console.log("External video link clicked:", url);
+        e.preventDefault();
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }}
     >
       <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark">
         <div className="w-full h-full flex flex-col items-center justify-center space-y-4 hover:bg-cyber-dark/80 p-8">

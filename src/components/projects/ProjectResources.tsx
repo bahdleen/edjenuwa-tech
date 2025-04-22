@@ -40,11 +40,19 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Detailed technical guide with step-by-step instructions</p>
               <a 
-                href={tutorialUrl as string}
+                href={tutorialUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 download={tutorialUrl?.includes('.pdf') || tutorialUrl?.includes('.md')}
-                className="block w-full"
+                onClick={(e) => {
+                  console.log("Documentation link clicked", tutorialUrl);
+                  // If it's a download, we'll allow the default behavior
+                  if (!(tutorialUrl?.includes('.pdf') || tutorialUrl?.includes('.md'))) {
+                    // For non-download links, open in a new tab
+                    e.preventDefault();
+                    window.open(tutorialUrl, '_blank', 'noopener,noreferrer');
+                  }
+                }}
               >
                 <Button 
                   variant="outline" 
@@ -71,10 +79,14 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Short demonstration of project capabilities</p>
               <a 
-                href={demoVideoUrl as string}
+                href={demoVideoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block w-full"
+                onClick={(e) => {
+                  console.log("Demo video link clicked", demoVideoUrl);
+                  e.preventDefault();
+                  window.open(demoVideoUrl, '_blank', 'noopener,noreferrer');
+                }}
               >
                 <Button 
                   variant="outline" 
@@ -100,11 +112,14 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Project configuration templates and setup files</p>
               <a 
-                href={configFileUrl as string}
+                href={configFileUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block w-full"
                 download
+                onClick={(e) => {
+                  console.log("Config file link clicked", configFileUrl);
+                  // Allow default behavior for download
+                }}
               >
                 <Button 
                   variant="outline" 
