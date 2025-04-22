@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { toast } from "sonner";
 import { ExternalLink, Play } from "lucide-react";
@@ -88,14 +87,8 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
 
     try {
       console.log("Opening video URL:", url);
-      // Create a direct anchor for more reliable opening
-      const a = document.createElement('a');
-      a.href = url;
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      // Use window.open directly with focus for more reliable opening
+      window.open(url, '_blank')?.focus();
     } catch (error) {
       console.error("Error opening video:", error);
       toast.error("Failed to open video");
