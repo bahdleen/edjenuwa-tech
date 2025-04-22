@@ -99,25 +99,27 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
   
   // For direct video files or external links, use a proper link
   return (
-    <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark">
-      <a 
-        href={url} 
-        target="_blank" 
-        rel="noopener noreferrer"
-        className="w-full h-full flex flex-col items-center justify-center space-y-4 hover:bg-cyber-dark/80 block text-center p-8"
-      >
-        {isYouTubeUrl(url) ? (
-          <>
-            <ExternalLink className="text-cyber h-16 w-16" />
-            <span className="text-lg text-muted-foreground">Click to watch video on YouTube</span>
-          </>
-        ) : (
-          <>
-            <Play className="text-cyber-red h-16 w-16" />
-            <span className="text-lg text-muted-foreground">Click to watch demo video</span>
-          </>
-        )}
-      </a>
-    </div>
+    <a 
+      href={url} 
+      target="_blank" 
+      rel="noopener noreferrer"
+      className="block w-full h-full"
+    >
+      <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark">
+        <div className="w-full h-full flex flex-col items-center justify-center space-y-4 hover:bg-cyber-dark/80 p-8">
+          {isYouTubeUrl(url) ? (
+            <>
+              <ExternalLink className="text-cyber h-16 w-16" />
+              <span className="text-lg text-muted-foreground">Click to watch video on YouTube</span>
+            </>
+          ) : (
+            <>
+              <Play className="text-cyber-red h-16 w-16" />
+              <span className="text-lg text-muted-foreground">Click to watch demo video</span>
+            </>
+          )}
+        </div>
+      </div>
+    </a>
   );
 };

@@ -3,7 +3,6 @@ import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { FileText, Video, Download } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
 interface ProjectResourcesProps {
@@ -40,7 +39,7 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Detailed technical guide with step-by-step instructions</p>
               <a 
-                href={tutorialUrl || '#'} 
+                href={tutorialUrl || ''} 
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block w-full"
@@ -48,6 +47,7 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
                 <Button 
                   variant="outline" 
                   className="w-full py-8 h-auto text-lg font-medium border-cyber hover:bg-cyber/10 hover:text-cyber transition-all duration-200"
+                  type="button"
                 >
                   <FileText className="mr-2 h-6 w-6" /> View Documentation
                 </Button>
@@ -69,7 +69,7 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Short demonstration of project capabilities</p>
               <a 
-                href={demoVideoUrl || '#'} 
+                href={demoVideoUrl || ''} 
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block w-full"
@@ -77,6 +77,7 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
                 <Button 
                   variant="outline" 
                   className="w-full py-8 h-auto text-lg font-medium border-cyber-red hover:bg-cyber-red/10 hover:text-cyber-red transition-all duration-200"
+                  type="button"
                 >
                   <Video className="mr-2 h-6 w-6" /> Watch Demo
                 </Button>
@@ -97,7 +98,7 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Project configuration templates and setup files</p>
               <a 
-                href={configFileUrl || '#'} 
+                href={configFileUrl || ''} 
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block w-full"
@@ -105,6 +106,7 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
                 <Button 
                   variant="outline" 
                   className="w-full py-8 h-auto text-lg font-medium border-cyber-blue hover:bg-cyber-blue/10 hover:text-cyber-blue transition-all duration-200"
+                  type="button"
                 >
                   <Download className="mr-2 h-6 w-6" /> Download Files
                 </Button>
