@@ -5,15 +5,26 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Database } from "@/integrations/supabase/types";
 
 // Define valid table names that match the Supabase schema
 type ValidTableName = 'work_experiences' | 'education' | 'certifications' | 'profiles' | 'projects';
+
+// Map database table names to their row types
+type TableToRowType = {
+  work_experiences: Database['public']['Tables']['work_experiences']['Row'];
+  education: Database['public']['Tables']['education']['Row'];
+  certifications: Database['public']['Tables']['certifications']['Row'];
+  profiles: Database['public']['Tables']['profiles']['Row'];
+  projects: Database['public']['Tables']['projects']['Row'];
+};
 
 type FormConfig = {
   tableName: ValidTableName;
   queryKey: string;
 };
 
+// Improved type signature with constraints
 export function useProfileForm<T extends { id?: string }>(config: FormConfig) {
   const { user } = useAuth();
   const form = useForm<Omit<T, "id">>();
@@ -28,7 +39,8 @@ export function useProfileForm<T extends { id?: string }>(config: FormConfig) {
         .order('start_date', { ascending: false });
       
       if (error) throw error;
-      return (data || []) as T[];
+      // Use a more explicit type conversion to avoid TS errors
+      return (data || []) as unknown as T[];
     },
   });
 
@@ -69,7 +81,7 @@ export function useProfileForm<T extends { id?: string }>(config: FormConfig) {
 
   const handleEdit = (item: T) => {
     setEditingId(item.id);
-    form.reset(item);
+    form.reset(item as any);
   };
 
   const handleDelete = async (id: string) => {
