@@ -21,13 +21,18 @@ const ProjectDetail = () => {
     queryFn: async () => {
       if (!id) throw new Error("Project ID is required");
       
+      console.log("Fetching project with ID:", id);
       const { data, error } = await supabase
         .from('projects')
         .select('*')
         .eq('id', id)
         .single();
       
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase error:", error);
+        throw error;
+      }
+      
       console.log("Fetched project data:", data);
       return data;
     },
@@ -50,22 +55,6 @@ const ProjectDetail = () => {
       return false;
     }
   };
-
-  console.log("ProjectDetail rendered with id:", id);
-  console.log("Project data:", project);
-  
-  if (project) {
-    console.log("Resource URLs:", {
-      youtubeUrl: project.youtube_url,
-      tutorialUrl: project.tutorial_url,
-      demoVideoUrl: project.demo_video_url,
-      configFileUrl: project.config_file_url,
-      youtubeValid: isValidUrl(project.youtube_url),
-      tutorialValid: isValidUrl(project.tutorial_url),
-      demoValid: isValidUrl(project.demo_video_url),
-      configValid: isValidUrl(project.config_file_url),
-    });
-  }
 
   return (
     <MainLayout>
@@ -100,13 +89,11 @@ const ProjectDetail = () => {
                     </div>
                   )}
 
-                  <div className="space-y-6">
-                    <ProjectResources 
-                      tutorialUrl={project.tutorial_url}
-                      demoVideoUrl={project.demo_video_url}
-                      configFileUrl={project.config_file_url}
-                    />
-                  </div>
+                  <ProjectResources 
+                    tutorialUrl={project.tutorial_url}
+                    demoVideoUrl={project.demo_video_url}
+                    configFileUrl={project.config_file_url}
+                  />
                 </div>
                 
                 <div className="mt-8">

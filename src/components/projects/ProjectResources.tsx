@@ -39,12 +39,8 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
     
     console.log(`Opening ${type} resource URL:`, url);
     
-    // Force the link to open in a new tab with security attributes
-    const link = document.createElement('a');
-    link.href = url;
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-    link.click();
+    // Open the URL in a new tab
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   const hasValidTutorial = isValidUrl(tutorialUrl);

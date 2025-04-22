@@ -29,7 +29,7 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
       // Handle youtu.be URLs
       if (url.includes('youtu.be')) {
         const segments = new URL(url).pathname.split('/');
-        const id = segments[segments.length - 1];
+        const id = segments[segments.length - 1].split('?')[0];
         console.log("youtu.be format detected, ID:", id);
         return id;
       }
@@ -126,10 +126,6 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
           target="_blank" 
           rel="noopener noreferrer"
           className="w-full h-full flex flex-col items-center justify-center space-y-4 hover:bg-cyber-dark/80 p-8 block"
-          onClick={(e) => {
-            e.preventDefault();
-            window.open(url, '_blank', 'noopener,noreferrer');
-          }}
         >
           <ExternalLink className="text-cyber h-16 w-16" />
           <span className="text-lg text-muted-foreground">Click to watch video on YouTube</span>
@@ -163,10 +159,6 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
               target="_blank" 
               rel="noopener noreferrer"
               className="flex flex-col items-center justify-center space-y-4"
-              onClick={(e) => {
-                e.preventDefault();
-                window.open(url, '_blank', 'noopener,noreferrer');
-              }}
             >
               <Play className="text-cyber-red h-16 w-16" />
               <span className="text-lg text-muted-foreground hover:text-cyber underline">
@@ -188,10 +180,6 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
         target="_blank" 
         rel="noopener noreferrer"
         className="w-full h-full flex flex-col items-center justify-center space-y-4 hover:bg-cyber-dark/80 p-8 block"
-        onClick={(e) => {
-          e.preventDefault();
-          window.open(url, '_blank', 'noopener,noreferrer');
-        }}
       >
         <Play className="text-cyber-red h-16 w-16" />
         <span className="text-lg text-muted-foreground">Click to watch video</span>
