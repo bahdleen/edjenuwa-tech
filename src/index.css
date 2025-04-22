@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -59,12 +58,12 @@
 
 @layer components {
   .cyber-border {
-    @apply relative border border-cyber overflow-hidden;
+    @apply relative border border-cyber overflow-hidden before:-z-10;
     @apply before:absolute before:inset-0 before:p-[1px] before:bg-gradient-to-r before:from-cyber/20 before:via-cyber before:to-cyber/20 before:animate-gradient-bg;
   }
   
   .cyber-panel {
-    @apply bg-cyber-dark border-cyber/30 border rounded-sm;
+    @apply bg-cyber-dark border-cyber/30 border rounded-sm before:-z-10;
     @apply relative overflow-hidden;
     @apply before:absolute before:inset-0 before:bg-cyber-grid before:opacity-20;
   }
