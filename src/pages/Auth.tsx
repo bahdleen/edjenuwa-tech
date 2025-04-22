@@ -46,10 +46,14 @@ const Auth = () => {
       
       if (error) throw error;
       
+      // Auth state change listener in AuthContext will handle the state update
+      // We don't need to manually set user state here
+      
       // The redirect will be handled by the useEffect above
     } catch (error: any) {
       console.error("Login error:", error.message);
       toast.error(error.message || "Login failed");
+    } finally {
       setAuthLoading(false);
     }
   };
@@ -58,7 +62,10 @@ const Auth = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-cyber-dark to-cyber-dark-blue flex items-center justify-center">
-        <p className="text-cyber animate-pulse">Checking authentication status...</p>
+        <div className="text-center">
+          <Shield className="h-12 w-12 text-cyber mx-auto animate-pulse mb-4" />
+          <p className="text-cyber animate-pulse text-lg">Checking authentication status...</p>
+        </div>
       </div>
     );
   }
@@ -67,7 +74,10 @@ const Auth = () => {
   if (user) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-cyber-dark to-cyber-dark-blue flex items-center justify-center">
-        <p className="text-cyber">You are already logged in. Redirecting...</p>
+        <div className="text-center">
+          <Shield className="h-12 w-12 text-cyber mx-auto mb-4" />
+          <p className="text-cyber">You are already logged in. Redirecting to dashboard...</p>
+        </div>
       </div>
     );
   }
@@ -101,6 +111,7 @@ const Auth = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   className="pl-10 bg-cyber-dark border-cyber/30 focus:border-cyber focus:ring-cyber font-mono"
+                  disabled={authLoading}
                 />
                 <User className="h-4 w-4 text-muted-foreground absolute left-3 top-3" />
               </div>
@@ -115,6 +126,7 @@ const Auth = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   className="pl-10 bg-cyber-dark border-cyber/30 focus:border-cyber focus:ring-cyber font-mono"
+                  disabled={authLoading}
                 />
                 <Key className="h-4 w-4 text-muted-foreground absolute left-3 top-3" />
               </div>
