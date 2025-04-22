@@ -1,8 +1,6 @@
 
 import React from 'react';
-import { toast } from "sonner";
 import { ExternalLink, Play } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 interface ProjectVideoProps {
   url: string;
@@ -80,16 +78,6 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
     }
   };
 
-  const openVideo = () => {
-    if (!url) {
-      toast.error("No video URL provided");
-      return;
-    }
-
-    // Open YouTube video in a new tab
-    window.open(url, '_blank', 'noopener,noreferrer');
-  };
-
   const videoId = getVideoId(url);
   
   // If it's a YouTube video with valid ID, embed it
@@ -109,7 +97,7 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
     );
   }
   
-  // For direct video files or external links, use a button for better clickability
+  // For direct video files or external links, use a proper link
   return (
     <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark">
       <a 

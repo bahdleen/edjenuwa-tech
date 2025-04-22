@@ -88,6 +88,16 @@ const ProjectDetail = () => {
                     />
                   </div>
                 </div>
+                
+                <div className="mt-8">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => navigate('/projects')}
+                    className="border-cyber/50 text-cyber hover:bg-cyber/10"
+                  >
+                    <ArrowLeft size={16} className="mr-1" /> Back to Projects
+                  </Button>
+                </div>
               </>
             ) : (
               <div className="py-20 text-center cyber-panel border-cyber/30 backdrop-blur-sm bg-cyber-dark/70">
