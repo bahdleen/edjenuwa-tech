@@ -45,16 +45,16 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl }: ProjectResources
             <div className="group">
               <h3 className="text-lg font-mono mb-2 flex items-center gap-2">
                 <Youtube className="text-cyber-red" />
-                Full Demo Video
+                Demo Video
               </h3>
-              <p className="text-muted-foreground text-sm mb-3">Complete walkthrough of the project implementation</p>
+              <p className="text-muted-foreground text-sm mb-3 font-medium">Complete walkthrough of the project implementation</p>
               <Button 
                 variant="outline" 
                 className="w-full border-cyber-red/50 text-cyber-red hover:bg-cyber-red/10 font-mono group-hover:shadow-[0_0_15px_rgba(255,62,62,0.2)] transition-all" 
                 asChild
               >
                 <a href={demoVideoUrl} target="_blank" rel="noreferrer">
-                  <ExternalLink className="mr-2" /> View Full Demo
+                  <ExternalLink className="mr-2" /> Watch
                 </a>
               </Button>
             </div>
