@@ -5,9 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Download, ExternalLink, FileText, Youtube, Shield, Network, Terminal, Lock, AlertTriangle } from "lucide-react";
+import { ArrowLeft, ExternalLink, FileText, Youtube } from "lucide-react";
 import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
 const ProjectDetail = () => {
@@ -34,13 +33,6 @@ const ProjectDetail = () => {
   if (error) {
     toast.error("Failed to load project details");
   }
-
-  // Map of category icons
-  const categoryIcons: Record<string, React.ReactNode> = {
-    "Cybersecurity": <Shield size={20} className="text-cyber-red" />,
-    "Networking": <Network size={20} className="text-cyber-blue" />,
-    "AI": <Terminal size={20} className="text-cyber" />
-  };
 
   const renderYouTubeEmbed = (url: string) => {
     let videoId = "";
@@ -80,20 +72,14 @@ const ProjectDetail = () => {
             ) : project ? (
               <>
                 <div className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={() => navigate('/projects')}
-                      className="border-cyber/50 text-cyber hover:bg-cyber/10"
-                    >
-                      <ArrowLeft size={16} className="mr-1" /> Back to Projects
-                    </Button>
-                    <div className="flex items-center gap-1 ml-2">
-                      {categoryIcons[project.category] || <Shield size={18} />}
-                      <span className="text-muted-foreground font-mono">{project.category}</span>
-                    </div>
-                  </div>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => navigate('/projects')}
+                    className="border-cyber/50 text-cyber hover:bg-cyber/10"
+                  >
+                    <ArrowLeft size={16} className="mr-1" /> Back to Projects
+                  </Button>
                   <h1 className="text-5xl font-bold tracking-tight mt-4 font-mono">
                     <span className="text-cyber">&gt;</span> {project.title}
                   </h1>
@@ -121,34 +107,25 @@ const ProjectDetail = () => {
                 </Card>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-6">
-                    {project.youtube_url && (
-                      <div className="space-y-4">
-                        <h2 className="text-2xl font-bold font-mono flex items-center gap-2">
-                          <Youtube className="text-cyber-red" size={24} />
-                          <span>Video Demonstration</span>
-                        </h2>
+                  {/* Video Section */}
+                  {project.youtube_url && (
+                    <div className="space-y-4">
+                      <h2 className="text-2xl font-bold font-mono flex items-center gap-2">
+                        <Youtube className="text-cyber-red" size={24} />
+                        <span>Video Demonstration</span>
+                      </h2>
+                      <a 
+                        href={project.youtube_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block hover:opacity-90 transition-opacity"
+                      >
                         {renderYouTubeEmbed(project.youtube_url)}
-                      </div>
-                    )}
+                      </a>
+                    </div>
+                  )}
 
-                    {/* Security Status Box */}
-                    <Card className="cyber-panel border-cyber-red/30 bg-gradient-to-br from-cyber-dark to-cyber-red/10">
-                      <CardContent className="pt-6 flex flex-col md:flex-row items-center gap-4">
-                        <div className="p-3 bg-cyber-dark rounded-full border border-cyber-red/30 shadow-[0_0_10px_rgba(255,0,0,0.1)]">
-                          <AlertTriangle className="h-8 w-8 text-cyber-red" />
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-bold font-mono mb-1 text-cyber-red">Security Advisory</h3>
-                          <p className="text-muted-foreground">
-                            This project demonstrates security concepts that should be implemented with caution in production environments.
-                            Always follow proper security protocols and best practices.
-                          </p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-
+                  {/* Resources Section */}
                   <div className="space-y-6">
                     <Card className="cyber-panel border-cyber/20 h-full bg-cyber-dark/60 backdrop-blur-sm">
                       <CardContent className="p-6">
@@ -167,36 +144,13 @@ const ProjectDetail = () => {
                                 asChild
                               >
                                 <a href={project.tutorial_url} target="_blank" rel="noreferrer">
-                                  <Download className="mr-2" /> Download Documentation
+                                  <FileText className="mr-2" /> View Documentation
                                 </a>
                               </Button>
                             </div>
                           )}
                           
-                          {project.tutorial_url && project.config_file_url && (
-                            <Separator className="bg-cyber/10" />
-                          )}
-                          
-                          {project.config_file_url && (
-                            <div className="group">
-                              <h3 className="text-lg font-mono mb-2 flex items-center gap-2">
-                                <Terminal className="text-cyber-blue" />
-                                Configuration Files
-                              </h3>
-                              <p className="text-muted-foreground text-sm mb-3">Complete configuration package for implementation</p>
-                              <Button 
-                                variant="outline" 
-                                className="w-full border-cyber-blue/50 text-cyber-blue hover:bg-cyber-blue/10 font-mono group-hover:shadow-[0_0_15px_rgba(15,160,206,0.2)] transition-all" 
-                                asChild
-                              >
-                                <a href={project.config_file_url} target="_blank" rel="noreferrer">
-                                  <Download className="mr-2" /> Download Config Files
-                                </a>
-                              </Button>
-                            </div>
-                          )}
-                          
-                          {project.config_file_url && project.demo_video_url && (
+                          {project.tutorial_url && project.demo_video_url && (
                             <Separator className="bg-cyber/10" />
                           )}
                           
@@ -219,7 +173,7 @@ const ProjectDetail = () => {
                             </div>
                           )}
                           
-                          {(!project.tutorial_url && !project.config_file_url && !project.demo_video_url) && (
+                          {(!project.tutorial_url && !project.demo_video_url) && (
                             <p className="text-center text-muted-foreground py-6">
                               No additional resources available for this project.
                             </p>
