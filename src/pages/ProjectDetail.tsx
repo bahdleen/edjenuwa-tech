@@ -4,7 +4,7 @@ import MainLayout from "@/components/layout/MainLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { ProjectHeader } from "@/components/projects/ProjectHeader";
 import { ProjectVideo } from "@/components/projects/ProjectVideo";
@@ -61,6 +61,7 @@ const ProjectDetail = () => {
           <div className="max-w-5xl mx-auto space-y-10">
             {isLoading ? (
               <div className="py-20 text-center cyber-panel border-cyber/30">
+                <Loader2 className="h-8 w-8 animate-spin text-cyber mx-auto mb-4" />
                 <p className="text-muted-foreground">Loading project details...</p>
               </div>
             ) : project ? (

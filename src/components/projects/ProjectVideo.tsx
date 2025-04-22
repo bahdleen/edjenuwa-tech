@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { toast } from "sonner";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Play } from "lucide-react";
 
 interface ProjectVideoProps {
   url: string;
@@ -12,7 +12,7 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
     if (!url) return '';
     
     try {
-      // Create URL object for easy parsing
+      // Check if it's a YouTube URL first
       const urlObj = new URL(url);
       
       // Standard YouTube URL patterns
@@ -56,60 +56,69 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
     }
   };
 
-  const handleVideoError = () => {
-    toast.error("Failed to load video. Please try again later.");
+  const isYouTubeUrl = (url: string) => {
+    try {
+      const urlObj = new URL(url);
+      return urlObj.hostname.includes('youtube.com') || urlObj.hostname === 'youtu.be';
+    } catch (error) {
+      return false;
+    }
   };
 
-  const handleExternalLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    // Prevent default behavior if URL is invalid
+  const handleVideoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
     if (!url) {
-      e.preventDefault();
       toast.error("No video URL provided");
       return;
     }
 
     try {
-      // Validate URL
-      new URL(url);
-      // Let the default behavior handle valid URLs
+      // Open the video in a new tab
+      window.open(url, '_blank', 'noopener,noreferrer');
     } catch (error) {
-      e.preventDefault();
-      console.error("Invalid video URL:", url, error);
-      toast.error("Invalid video URL");
+      console.error("Error opening video:", error);
+      toast.error("Failed to open video");
     }
   };
 
   const videoId = getVideoId(url);
   
-  if (!videoId) {
+  // If it's a YouTube video with valid ID, embed it
+  if (videoId && isYouTubeUrl(url)) {
     return (
-      <a 
-        href={url} 
-        target="_blank" 
-        rel="noopener noreferrer" 
-        onClick={handleExternalLinkClick}
-        className="block aspect-video w-full cyber-border p-1 bg-cyber-dark flex items-center justify-center hover:opacity-90 transition-opacity"
-      >
-        <div className="flex flex-col items-center justify-center space-y-2">
-          <ExternalLink className="text-cyber h-6 w-6" />
-          <p className="text-muted-foreground">Click to watch video on YouTube</p>
-        </div>
-      </a>
+      <div className="aspect-video w-full cyber-border p-1 shadow-[0_0_15px_rgba(0,255,0,0.1)]">
+        <iframe
+          width="100%"
+          height="100%"
+          src={`https://www.youtube.com/embed/${videoId}`}
+          title="YouTube video player"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="rounded-sm"
+        ></iframe>
+      </div>
     );
   }
   
+  // For non-YouTube videos or invalid YouTube URLs
   return (
-    <div className="aspect-video w-full cyber-border p-1 shadow-[0_0_15px_rgba(0,255,0,0.1)]">
-      <iframe
-        width="100%"
-        height="100%"
-        src={`https://www.youtube.com/embed/${videoId}`}
-        title="YouTube video player"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-        className="rounded-sm"
-        onError={handleVideoError}
-      ></iframe>
+    <div 
+      onClick={handleVideoClick}
+      className="aspect-video w-full cyber-border p-1 bg-cyber-dark flex items-center justify-center hover:opacity-90 transition-opacity cursor-pointer"
+    >
+      <div className="flex flex-col items-center justify-center space-y-2">
+        {isYouTubeUrl(url) ? (
+          <>
+            <ExternalLink className="text-cyber h-6 w-6" />
+            <p className="text-muted-foreground">Click to watch video on YouTube</p>
+          </>
+        ) : (
+          <>
+            <Play className="text-cyber-red h-6 w-6" />
+            <p className="text-muted-foreground">Click to watch demo video</p>
+          </>
+        )}
+      </div>
     </div>
   );
 };
