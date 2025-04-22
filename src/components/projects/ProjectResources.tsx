@@ -26,31 +26,14 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
     }
   };
 
-  const handleDocumentClick = () => {
-    console.log("Tutorial URL clicked:", tutorialUrl);
-    if (!tutorialUrl) return;
-    
-    // For PDF or MD files, trigger download
-    if (tutorialUrl.includes('.pdf') || tutorialUrl.includes('.md')) {
-      console.log("Downloading documentation file");
-      window.open(tutorialUrl, '_blank');
-    } else {
-      // For other types, open in new tab
-      console.log("Opening documentation in new tab");
-      window.open(tutorialUrl, '_blank');
+  const handleResourceClick = (url: string | null | undefined) => {
+    if (!url) {
+      console.error("No URL provided");
+      return;
     }
-  };
-
-  const handleDemoVideoClick = () => {
-    console.log("Demo video clicked:", demoVideoUrl);
-    if (!demoVideoUrl) return;
-    window.open(demoVideoUrl, '_blank');
-  };
-
-  const handleConfigFileClick = () => {
-    console.log("Config file clicked:", configFileUrl);
-    if (!configFileUrl) return;
-    window.open(configFileUrl, '_blank');
+    
+    console.log("Opening resource URL:", url);
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -69,8 +52,7 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
               <Button 
                 variant="outline" 
                 className="w-full py-8 h-auto text-lg font-medium border-cyber hover:bg-cyber/10 hover:text-cyber transition-all duration-200"
-                type="button"
-                onClick={handleDocumentClick}
+                onClick={() => handleResourceClick(tutorialUrl)}
               >
                 <FileText className="mr-2 h-6 w-6" /> View Documentation
               </Button>
@@ -93,8 +75,7 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
               <Button 
                 variant="outline" 
                 className="w-full py-8 h-auto text-lg font-medium border-cyber-red hover:bg-cyber-red/10 hover:text-cyber-red transition-all duration-200"
-                type="button"
-                onClick={handleDemoVideoClick}
+                onClick={() => handleResourceClick(demoVideoUrl)}
               >
                 <Video className="mr-2 h-6 w-6" /> Watch Demo
               </Button>
@@ -116,8 +97,7 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
               <Button 
                 variant="outline" 
                 className="w-full py-8 h-auto text-lg font-medium border-cyber-blue hover:bg-cyber-blue/10 hover:text-cyber-blue transition-all duration-200"
-                type="button"
-                onClick={handleConfigFileClick}
+                onClick={() => handleResourceClick(configFileUrl)}
               >
                 <Download className="mr-2 h-6 w-6" /> Download Files
               </Button>
