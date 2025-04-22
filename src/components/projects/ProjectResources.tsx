@@ -26,6 +26,25 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
     }
   };
 
+  // Handle resource click with validation
+  const handleResourceClick = (url: string | null | undefined, resourceType: string) => {
+    if (!url) {
+      toast.error(`No ${resourceType} URL provided`);
+      return;
+    }
+
+    try {
+      // Validate URL before opening
+      new URL(url);
+      
+      // Force open in new tab with native browser functionality
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } catch (error) {
+      console.error(`Invalid ${resourceType} URL:`, url, error);
+      toast.error(`Invalid ${resourceType} URL`);
+    }
+  };
+
   return (
     <Card className="cyber-panel border-cyber/20 h-full bg-cyber-dark/60 backdrop-blur-sm">
       <CardContent className="p-6">
@@ -40,9 +59,13 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Detailed technical guide with step-by-step instructions</p>
               <a 
-                href={tutorialUrl || '#'}
+                href={tutorialUrl || '#'} 
                 target="_blank" 
-                rel="noopener noreferrer"
+                rel="noopener noreferrer" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleResourceClick(tutorialUrl, 'documentation');
+                }}
                 className="block w-full py-2 text-center rounded-md bg-gradient-to-r from-cyber/70 to-cyber text-cyber-dark hover:bg-cyber/90 font-mono group-hover:shadow-[0_0_15px_rgba(0,255,0,0.3)] transition-all"
               >
                 <span className="flex items-center justify-center">
@@ -64,9 +87,13 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
               </h3>
               <p className="text-muted-foreground text-sm mb-3 font-medium">Short demonstration of project capabilities</p>
               <a 
-                href={demoVideoUrl || '#'}
+                href={demoVideoUrl || '#'} 
                 target="_blank" 
                 rel="noopener noreferrer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleResourceClick(demoVideoUrl, 'demo video');
+                }}
                 className="block w-full py-2 text-center rounded-md border-cyber-red/50 text-cyber-red hover:bg-cyber-red/10 font-mono group-hover:shadow-[0_0_15px_rgba(255,62,62,0.2)] transition-all border"
               >
                 <span className="flex items-center justify-center">
@@ -88,9 +115,13 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Project configuration templates and setup files</p>
               <a 
-                href={configFileUrl || '#'}
+                href={configFileUrl || '#'} 
                 target="_blank" 
                 rel="noopener noreferrer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleResourceClick(configFileUrl, 'configuration file');
+                }}
                 className="block w-full py-2 text-center rounded-md border-cyber-blue/50 text-cyber-blue hover:bg-cyber-blue/10 font-mono group-hover:shadow-[0_0_15px_rgba(62,142,255,0.2)] transition-all border"
               >
                 <span className="flex items-center justify-center">

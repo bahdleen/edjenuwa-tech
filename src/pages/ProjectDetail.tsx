@@ -48,6 +48,12 @@ const ProjectDetail = () => {
     }
   };
 
+  // Safe open URL in new tab
+  const openUrlInNewTab = (url: string | null | undefined) => {
+    if (!isValidUrl(url)) return;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
   return (
     <MainLayout>
       <div className="bg-gradient-to-b from-cyber-dark to-cyber-dark-blue py-16">
@@ -72,14 +78,12 @@ const ProjectDetail = () => {
                       <div className="text-sm text-muted-foreground mb-4 bg-cyber-dark/30 p-3 rounded-md">
                         <strong className="text-cyber">Complete walkthrough</strong> of the project implementation
                       </div>
-                      <a 
-                        href={project.youtube_url || '#'} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="block"
+                      <div 
+                        onClick={() => isValidUrl(project.youtube_url) && openUrlInNewTab(project.youtube_url)}
+                        className={isValidUrl(project.youtube_url) ? "cursor-pointer" : ""}
                       >
                         <ProjectVideo url={project.youtube_url || ''} />
-                      </a>
+                      </div>
                     </div>
                   )}
 

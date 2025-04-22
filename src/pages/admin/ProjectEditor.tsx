@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -111,7 +110,10 @@ const ProjectEditor = () => {
       // Upload the file
       const { data, error } = await supabase.storage
         .from(bucket)
-        .upload(filePath, file);
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: true // Important: Ensure file overwriting is enabled
+        });
 
       if (error) throw error;
 
@@ -166,10 +168,30 @@ const ProjectEditor = () => {
       console.log("Saving project with data:", updatedData);
 
       if (isEditMode) {
-        // Update existing project
+        // Update existing project - preserve existing values if not changed
+        const dataToUpdate = { ...updatedData };
+        
+        // Only keep non-empty fields when updating
+        Object.keys(dataToUpdate).forEach(key => {
+          // Keep existing values if not changed (for file URLs)
+          if (
+            (key === 'tutorial_url' || key === 'config_file_url' || 
+             key === 'demo_video_url' || key === 'image_url') && 
+            !dataToUpdate[key as keyof ProjectFormValues] && 
+            project?.[key as keyof ProjectFormValues]
+          ) {
+            dataToUpdate[key as keyof ProjectFormValues] = project[key as keyof ProjectFormValues];
+          }
+          
+          // Remove empty fields to prevent overwriting with nulls
+          if (dataToUpdate[key as keyof ProjectFormValues] === '') {
+            delete dataToUpdate[key as keyof ProjectFormValues];
+          }
+        });
+
         const { error } = await supabase
           .from('projects')
-          .update(updatedData)
+          .update(dataToUpdate)
           .eq('id', id);
 
         if (error) throw error;

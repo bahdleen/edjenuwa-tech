@@ -60,6 +60,25 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
     toast.error("Failed to load video. Please try again later.");
   };
 
+  const handleExternalLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    // Prevent default behavior if URL is invalid
+    if (!url) {
+      e.preventDefault();
+      toast.error("No video URL provided");
+      return;
+    }
+
+    try {
+      // Validate URL
+      new URL(url);
+      // Let the default behavior handle valid URLs
+    } catch (error) {
+      e.preventDefault();
+      console.error("Invalid video URL:", url, error);
+      toast.error("Invalid video URL");
+    }
+  };
+
   const videoId = getVideoId(url);
   
   if (!videoId) {
@@ -68,6 +87,7 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
         href={url} 
         target="_blank" 
         rel="noopener noreferrer" 
+        onClick={handleExternalLinkClick}
         className="block aspect-video w-full cyber-border p-1 bg-cyber-dark flex items-center justify-center hover:opacity-90 transition-opacity"
       >
         <div className="flex flex-col items-center justify-center space-y-2">
