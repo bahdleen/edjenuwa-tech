@@ -21,6 +21,9 @@ const Contact = () => {
     e.preventDefault();
     setLoading(true);
 
+    console.log("Submitting form with data:", { name, email, message });
+    console.log("Sending request to:", CONTACT_API_ENDPOINT);
+
     // Send to the provided API endpoint
     try {
       const res = await fetch(CONTACT_API_ENDPOINT, {
@@ -31,14 +34,29 @@ const Contact = () => {
         body: JSON.stringify({ name, email, message }),
       });
 
+      console.log("Response status:", res.status);
+      
+      // Log full response for debugging
+      const responseText = await res.text();
+      console.log("Response body:", responseText);
+      
+      let responseData;
+      try {
+        // Try to parse the response as JSON if possible
+        responseData = JSON.parse(responseText);
+        console.log("Parsed response data:", responseData);
+      } catch (parseError) {
+        console.log("Response is not JSON format");
+      }
+
       if (res.ok) {
         toast.success("Your message has been sent successfully.");
         setName("");
         setEmail("");
         setMessage("");
       } else {
-        const errorData = await res.json().catch(() => ({ error: "Unknown error occurred" }));
-        const errorMessage = errorData.error || "Failed to send message. Please try again or contact us directly at info@edjenuwa.tech";
+        const errorMessage = responseData?.error || 
+          `Failed to send message (Status: ${res.status}). Please try again or contact us directly at info@edjenuwa.tech`;
         
         toast.error(errorMessage);
         console.error("Form submission error:", errorMessage);
@@ -213,4 +231,3 @@ const Contact = () => {
 };
 
 export default Contact;
-
