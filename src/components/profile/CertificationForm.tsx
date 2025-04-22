@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
+import { Pencil, Trash2 } from "lucide-react";
 
 type Certification = {
   id: string;
@@ -24,6 +25,7 @@ type CertificationFormValues = Omit<Certification, 'id'>;
 export const CertificationForm = () => {
   const { user } = useAuth();
   const form = useForm<CertificationFormValues>();
+  const [editingId, setEditingId] = React.useState<string | null>(null);
 
   const { data: certifications, refetch } = useQuery({
     queryKey: ['certifications', user?.id],
@@ -40,18 +42,32 @@ export const CertificationForm = () => {
 
   const onSubmit = async (data: CertificationFormValues) => {
     try {
-      const { error } = await supabase
-        .from('certifications')
-        .insert([
-          {
+      if (editingId) {
+        const { error } = await supabase
+          .from('certifications')
+          .update({
             ...data,
-            user_id: user?.id,
-          },
-        ]);
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', editingId);
 
-      if (error) throw error;
+        if (error) throw error;
+        toast.success("Certification updated successfully");
+        setEditingId(null);
+      } else {
+        const { error } = await supabase
+          .from('certifications')
+          .insert([
+            {
+              ...data,
+              user_id: user?.id,
+            },
+          ]);
 
-      toast.success("Certification added successfully");
+        if (error) throw error;
+        toast.success("Certification added successfully");
+      }
+
       form.reset();
       refetch();
     } catch (error: any) {
@@ -59,10 +75,41 @@ export const CertificationForm = () => {
     }
   };
 
+  const handleEdit = (certification: Certification) => {
+    setEditingId(certification.id);
+    form.reset({
+      title: certification.title,
+      organization: certification.organization,
+      issue_date: certification.issue_date,
+      expiry_date: certification.expiry_date,
+      description: certification.description,
+    });
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('certifications')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      toast.success("Certification deleted successfully");
+      refetch();
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
+  const handleCancel = () => {
+    setEditingId(null);
+    form.reset();
+  };
+
   return (
     <Card className="mb-8">
       <CardHeader>
-        <CardTitle>Certifications</CardTitle>
+        <CardTitle>{editingId ? 'Edit Certification' : 'Add Certification'}</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -134,7 +181,14 @@ export const CertificationForm = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit">Add Certification</Button>
+            <div className="flex gap-2">
+              <Button type="submit">{editingId ? 'Update Certification' : 'Add Certification'}</Button>
+              {editingId && (
+                <Button type="button" variant="outline" onClick={handleCancel}>
+                  Cancel
+                </Button>
+              )}
+            </div>
           </form>
         </Form>
 
@@ -143,8 +197,28 @@ export const CertificationForm = () => {
             <h3 className="font-semibold">Current Certifications</h3>
             {certifications.map((cert) => (
               <div key={cert.id} className="p-4 border rounded-lg">
-                <h4 className="font-medium">{cert.title}</h4>
-                <p className="text-sm text-muted-foreground">{cert.organization}</p>
+                <div className="flex justify-between items-start mb-2">
+                  <div>
+                    <h4 className="font-medium">{cert.title}</h4>
+                    <p className="text-sm text-muted-foreground">{cert.organization}</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handleEdit(cert)}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handleDelete(cert.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
                 <p className="text-sm">
                   Issued: {new Date(cert.issue_date).toLocaleDateString()}
                   {cert.expiry_date && ` - Expires: ${new Date(cert.expiry_date).toLocaleDateString()}`}

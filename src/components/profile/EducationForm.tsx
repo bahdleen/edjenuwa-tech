@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
+import { Pencil, Trash2 } from "lucide-react";
 
 type Education = {
   id: string;
@@ -24,6 +25,7 @@ type EducationFormValues = Omit<Education, 'id'>;
 export const EducationForm = () => {
   const { user } = useAuth();
   const form = useForm<EducationFormValues>();
+  const [editingId, setEditingId] = React.useState<string | null>(null);
 
   const { data: educations, refetch } = useQuery({
     queryKey: ['educations', user?.id],
@@ -40,18 +42,32 @@ export const EducationForm = () => {
 
   const onSubmit = async (data: EducationFormValues) => {
     try {
-      const { error } = await supabase
-        .from('education')
-        .insert([
-          {
+      if (editingId) {
+        const { error } = await supabase
+          .from('education')
+          .update({
             ...data,
-            user_id: user?.id,
-          },
-        ]);
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', editingId);
 
-      if (error) throw error;
+        if (error) throw error;
+        toast.success("Education updated successfully");
+        setEditingId(null);
+      } else {
+        const { error } = await supabase
+          .from('education')
+          .insert([
+            {
+              ...data,
+              user_id: user?.id,
+            },
+          ]);
 
-      toast.success("Education added successfully");
+        if (error) throw error;
+        toast.success("Education added successfully");
+      }
+
       form.reset();
       refetch();
     } catch (error: any) {
@@ -59,10 +75,41 @@ export const EducationForm = () => {
     }
   };
 
+  const handleEdit = (education: Education) => {
+    setEditingId(education.id);
+    form.reset({
+      degree: education.degree,
+      institution: education.institution,
+      start_date: education.start_date,
+      end_date: education.end_date,
+      description: education.description,
+    });
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('education')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      toast.success("Education deleted successfully");
+      refetch();
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
+  const handleCancel = () => {
+    setEditingId(null);
+    form.reset();
+  };
+
   return (
     <Card className="mb-8">
       <CardHeader>
-        <CardTitle>Education</CardTitle>
+        <CardTitle>{editingId ? 'Edit Education' : 'Add Education'}</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -134,7 +181,14 @@ export const EducationForm = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit">Add Education</Button>
+            <div className="flex gap-2">
+              <Button type="submit">{editingId ? 'Update Education' : 'Add Education'}</Button>
+              {editingId && (
+                <Button type="button" variant="outline" onClick={handleCancel}>
+                  Cancel
+                </Button>
+              )}
+            </div>
           </form>
         </Form>
 
@@ -143,8 +197,28 @@ export const EducationForm = () => {
             <h3 className="font-semibold">Current Education</h3>
             {educations.map((edu) => (
               <div key={edu.id} className="p-4 border rounded-lg">
-                <h4 className="font-medium">{edu.degree}</h4>
-                <p className="text-sm text-muted-foreground">{edu.institution}</p>
+                <div className="flex justify-between items-start mb-2">
+                  <div>
+                    <h4 className="font-medium">{edu.degree}</h4>
+                    <p className="text-sm text-muted-foreground">{edu.institution}</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handleEdit(edu)}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handleDelete(edu.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
                 <p className="text-sm">
                   {new Date(edu.start_date).toLocaleDateString()} - 
                   {edu.end_date ? new Date(edu.end_date).toLocaleDateString() : 'Present'}
