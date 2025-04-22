@@ -29,46 +29,24 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
     }
   }, [url]);
 
-  const handleExternalClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
+  const handleExternalClick = () => {
     try {
       // Make sure to use a properly formed URL
       const safeUrl = isYouTubeUrl(url) 
-        ? url 
-        : `https://www.youtube.com/watch?v=${videoId}`;
+        ? (videoId ? `https://www.youtube.com/watch?v=${videoId}` : url)
+        : url;
       
       console.log("Opening external link:", safeUrl);
       
-      // Force open in a new window with no opener relationship
-      const newWindow = window.open();
-      if (newWindow) {
-        newWindow.opener = null;
-        newWindow.location.href = safeUrl;
-        console.log("Opened in new window:", safeUrl);
-      } else {
-        // Fallback to direct navigation if popup is blocked
-        window.location.href = safeUrl;
-        console.log("Redirecting to URL in current window (popup may be blocked):", safeUrl);
-      }
+      // Open in new tab with security attributes
+      window.open(safeUrl, '_blank', 'noopener,noreferrer');
+      console.log("Opened in new window:", safeUrl);
     } catch (error) {
       console.error("Error opening external link:", error);
       toast.error("Failed to open video link");
-    }
-  };
-
-  const handleDirectYouTubeLink = () => {
-    if (!videoId) {
-      toast.error("Invalid YouTube video");
-      return;
-    }
-    
-    try {
-      const youtubeUrl = `https://www.youtube.com/watch?v=${videoId}`;
-      console.log("Opening direct YouTube link:", youtubeUrl);
-      window.location.href = youtubeUrl;
-    } catch (error) {
-      console.error("Error opening YouTube link:", error);
-      toast.error("Failed to open YouTube video");
+      
+      // Ultimate fallback
+      window.location.href = url;
     }
   };
 
@@ -89,7 +67,7 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
           setVideoError(true);
           toast.error("Failed to load YouTube video");
         }}
-        onDirectClick={handleDirectYouTubeLink}
+        onDirectClick={handleExternalClick}
       />
     );
   }
@@ -104,9 +82,7 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
           <span className="text-lg text-muted-foreground">Click to watch video on YouTube</span>
           <Button 
             variant="outline"
-            onClick={() => {
-              window.location.href = url;
-            }}
+            onClick={handleExternalClick}
             className="mt-4 border-cyber hover:bg-cyber/10"
           >
             Open YouTube Video
@@ -128,9 +104,7 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
           setVideoError(true);
           toast.error("Failed to load video");
         }}
-        onDirectClick={() => {
-          window.location.href = url;
-        }}
+        onDirectClick={handleExternalClick}
       />
     );
   }
@@ -144,9 +118,7 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
         <span className="text-lg text-muted-foreground">Click to watch video</span>
         <Button 
           variant="outline"
-          onClick={() => {
-            window.location.href = url;
-          }}
+          onClick={handleExternalClick}
           className="mt-4 border-cyber-red hover:bg-cyber-red/10"
         >
           Open Video

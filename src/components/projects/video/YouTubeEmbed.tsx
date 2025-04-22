@@ -11,6 +11,20 @@ interface YouTubeEmbedProps {
 }
 
 export const YouTubeEmbed = ({ videoId, url, onError, onDirectClick }: YouTubeEmbedProps) => {
+  const handleDirectClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    
+    try {
+      console.log("Opening YouTube link directly:", url);
+      // Open in new tab with security attributes
+      window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank', 'noopener,noreferrer');
+    } catch (error) {
+      console.error("Failed to open YouTube link:", error);
+      // Fallback to the parent component's handler
+      onDirectClick();
+    }
+  };
+
   return (
     <div className="aspect-video w-full cyber-border p-1 shadow-[0_0_15px_rgba(0,255,0,0.1)]">
       <iframe
@@ -29,7 +43,7 @@ export const YouTubeEmbed = ({ videoId, url, onError, onDirectClick }: YouTubeEm
         <Button 
           variant="outline" 
           size="sm" 
-          onClick={onDirectClick}
+          onClick={handleDirectClick}
           className="border-cyber-red hover:bg-cyber-red/10 hover:text-cyber-red"
         >
           <ExternalLink className="mr-2 h-4 w-4" /> 
