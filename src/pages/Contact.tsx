@@ -30,8 +30,15 @@ const Contact = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Accept": "application/json",
         },
-        body: JSON.stringify({ name, email, message }),
+        mode: "cors",
+        body: JSON.stringify({ 
+          name, 
+          email, 
+          message,
+          subject: `Contact Form Submission from ${name}` 
+        }),
       });
 
       console.log("Response status:", res.status);
