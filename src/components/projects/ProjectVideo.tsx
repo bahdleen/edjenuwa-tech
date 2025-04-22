@@ -87,8 +87,15 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
     }
 
     try {
-      // Open the video in a new tab
-      window.open(url, '_blank', 'noopener,noreferrer');
+      console.log("Opening video URL:", url);
+      // Create a direct anchor for more reliable opening
+      const a = document.createElement('a');
+      a.href = url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     } catch (error) {
       console.error("Error opening video:", error);
       toast.error("Failed to open video");

@@ -34,8 +34,15 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
     }
 
     try {
-      // Open URL in new tab to view/download the resource
-      window.open(url, '_blank', 'noopener,noreferrer');
+      console.log(`Opening ${resourceType} URL:`, url);
+      // Create a temporary anchor element to trigger download
+      const a = document.createElement('a');
+      a.href = url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     } catch (error) {
       console.error(`Error opening ${resourceType}:`, error);
       toast.error(`Failed to open ${resourceType}`);
