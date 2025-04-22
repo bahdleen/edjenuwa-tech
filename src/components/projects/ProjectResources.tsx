@@ -2,16 +2,17 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Youtube, ExternalLink } from "lucide-react";
+import { FileText, Youtube, ExternalLink, Download } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 interface ProjectResourcesProps {
   tutorialUrl?: string | null;
   demoVideoUrl?: string | null;
+  configFileUrl?: string | null;
 }
 
-export const ProjectResources = ({ tutorialUrl, demoVideoUrl }: ProjectResourcesProps) => {
-  if (!tutorialUrl && !demoVideoUrl) return null;
+export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: ProjectResourcesProps) => {
+  if (!tutorialUrl && !demoVideoUrl && !configFileUrl) return null;
 
   return (
     <Card className="cyber-panel border-cyber/20 h-full bg-cyber-dark/60 backdrop-blur-sm">
@@ -28,16 +29,14 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl }: ProjectResources
               <p className="text-muted-foreground text-sm mb-3">Detailed technical guide with step-by-step instructions</p>
               <Button 
                 className="w-full bg-gradient-to-r from-cyber/70 to-cyber text-cyber-dark hover:bg-cyber/90 font-mono group-hover:shadow-[0_0_15px_rgba(0,255,0,0.3)] transition-all" 
-                asChild
+                onClick={() => window.open(tutorialUrl, '_blank')}
               >
-                <a href={tutorialUrl} target="_blank" rel="noreferrer">
-                  <FileText className="mr-2" /> View Documentation
-                </a>
+                <FileText className="mr-2" /> View Documentation
               </Button>
             </div>
           )}
           
-          {tutorialUrl && demoVideoUrl && (
+          {((tutorialUrl && demoVideoUrl) || (tutorialUrl && configFileUrl) || (demoVideoUrl && configFileUrl)) && (
             <Separator className="bg-cyber/10" />
           )}
           
@@ -47,15 +46,34 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl }: ProjectResources
                 <Youtube className="text-cyber-red" />
                 Demo Video
               </h3>
-              <p className="text-muted-foreground text-sm mb-3 font-medium">Complete walkthrough of the project implementation</p>
+              <p className="text-muted-foreground text-sm mb-3 font-medium">Short demonstration of project capabilities</p>
               <Button 
                 variant="outline" 
-                className="w-full border-cyber-red/50 text-cyber-red hover:bg-cyber-red/10 font-mono group-hover:shadow-[0_0_15px_rgba(255,62,62,0.2)] transition-all" 
-                asChild
+                className="w-full border-cyber-red/50 text-cyber-red hover:bg-cyber-red/10 font-mono group-hover:shadow-[0_0_15px_rgba(255,62,62,0.2)] transition-all"
+                onClick={() => window.open(demoVideoUrl, '_blank')}
               >
-                <a href={demoVideoUrl} target="_blank" rel="noreferrer">
-                  <ExternalLink className="mr-2" /> Watch
-                </a>
+                <ExternalLink className="mr-2" /> Watch Demo
+              </Button>
+            </div>
+          )}
+
+          {((demoVideoUrl && configFileUrl) || (tutorialUrl && configFileUrl && !demoVideoUrl)) && (
+            <Separator className="bg-cyber/10" />
+          )}
+          
+          {configFileUrl && (
+            <div className="group">
+              <h3 className="text-lg font-mono mb-2 flex items-center gap-2">
+                <Download className="text-cyber-blue" />
+                Configuration Files
+              </h3>
+              <p className="text-muted-foreground text-sm mb-3">Project configuration templates and setup files</p>
+              <Button 
+                variant="outline" 
+                className="w-full border-cyber-blue/50 text-cyber-blue hover:bg-cyber-blue/10 font-mono group-hover:shadow-[0_0_15px_rgba(62,142,255,0.2)] transition-all"
+                onClick={() => window.open(configFileUrl, '_blank')}
+              >
+                <Download className="mr-2" /> Download ZIP
               </Button>
             </div>
           )}

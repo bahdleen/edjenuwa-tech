@@ -7,14 +7,47 @@ interface ProjectVideoProps {
 
 export const ProjectVideo = ({ url }: ProjectVideoProps) => {
   const getVideoId = (url: string) => {
-    const regex = /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-    const match = url.match(regex);
-    return match && match[1] ? match[1] : '';
+    const regexPatterns = [
+      /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
+      /(?:youtube\.com\/(?:live\/|watch\?v=))([^"&?\/\s]{11})/,
+      /(?:youtube\.com\/(?:live))\/([^"&?\/\s]{11})/,
+      /(?:youtu\.be\/)([^"&?\/\s]{11})/
+    ];
+
+    for (const regex of regexPatterns) {
+      const match = url.match(regex);
+      if (match && match[1]) {
+        return match[1];
+      }
+    }
+
+    // Extract video ID from YouTube live URL format
+    if (url.includes('youtube.com/live/')) {
+      const urlObj = new URL(url);
+      const pathParts = urlObj.pathname.split('/');
+      const videoIdIndex = pathParts.findIndex(part => part === 'live') + 1;
+      if (videoIdIndex < pathParts.length) {
+        const possibleId = pathParts[videoIdIndex].split('?')[0];
+        if (possibleId && possibleId.length >= 11) {
+          return possibleId;
+        }
+      }
+    }
+
+    console.log("Could not extract video ID from URL:", url);
+    return '';
   };
 
   const videoId = getVideoId(url);
   
-  if (!videoId) return null;
+  if (!videoId) {
+    console.error("Invalid YouTube URL or could not extract video ID:", url);
+    return (
+      <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark flex items-center justify-center">
+        <p className="text-muted-foreground">Unable to load video. Click to view on YouTube.</p>
+      </div>
+    );
+  }
   
   return (
     <div className="aspect-video w-full cyber-border p-1 shadow-[0_0_15px_rgba(0,255,0,0.1)]">

@@ -76,6 +76,7 @@ const ProjectDetail = () => {
                     <ProjectResources 
                       tutorialUrl={project.tutorial_url}
                       demoVideoUrl={project.demo_video_url}
+                      configFileUrl={project.config_file_url}
                     />
                   </div>
                 </div>
