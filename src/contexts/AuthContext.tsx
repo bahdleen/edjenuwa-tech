@@ -42,9 +42,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setLoading(false);
         
         if (event === 'SIGNED_IN') {
-          toast.success("Signed in successfully");
+          toast.success("Authentication successful");
         } else if (event === 'SIGNED_OUT') {
-          toast.success("Signed out successfully");
+          toast.success("Session terminated successfully");
         }
       }
     );
