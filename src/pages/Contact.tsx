@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
@@ -152,7 +151,7 @@ const Contact = () => {
                           rel="noreferrer"
                           className="text-muted-foreground hover:text-cyber transition-colors font-medium font-mono flex items-center gap-2"
                         >
-                          github.com/bahdleen
+                          GitHub
                         </a>
                       </div>
                     </div>
@@ -166,7 +165,7 @@ const Contact = () => {
                           rel="noreferrer"
                           className="text-muted-foreground hover:text-cyber transition-colors font-medium font-mono flex items-center gap-2"
                         >
-                          linkedin.com/in/anthony-e-358226253
+                          LinkedIn
                         </a>
                       </div>
                     </div>
