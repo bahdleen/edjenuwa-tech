@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,14 +14,18 @@ const Auth = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
+  
+  // Get the page the user was trying to access before being redirected to login
+  const from = location.state?.from?.pathname || '/admin';
 
-  // If user is already logged in, redirect to admin
+  // If user is already logged in, redirect to intended destination or admin
   useEffect(() => {
     if (user) {
-      navigate('/admin');
+      navigate(from);
     }
-  }, [user, navigate]);
+  }, [user, navigate, from]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +37,7 @@ const Auth = () => {
       });
       if (error) throw error;
       toast.success('Logged in successfully');
-      navigate('/admin');
+      navigate(from);
     } catch (error: any) {
       toast.error(error.message);
     } finally {

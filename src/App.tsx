@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
@@ -28,6 +28,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
+            {/* Public Routes */}
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/projects" element={<Projects />} />
@@ -35,7 +36,7 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             
-            {/* Admin Routes */}
+            {/* Admin Routes - All Protected */}
             <Route path="/admin" element={
               <ProtectedRoute>
                 <Admin />
@@ -62,6 +63,14 @@ const App = () => (
               </ProtectedRoute>
             } />
             
+            {/* Redirect any unknown admin paths to the admin dashboard */}
+            <Route path="/admin/*" element={
+              <ProtectedRoute>
+                <Navigate to="/admin" replace />
+              </ProtectedRoute>
+            } />
+            
+            {/* 404 Route */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
