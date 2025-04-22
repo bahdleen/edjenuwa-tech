@@ -56,8 +56,11 @@ const ProjectDetail = () => {
                   {project.youtube_url && (
                     <div className="space-y-4">
                       <h2 className="text-2xl font-bold font-mono flex items-center gap-2">
-                        Video Demonstration
+                        Watch
                       </h2>
+                      <div className="text-sm text-muted-foreground mb-4 bg-cyber-dark/30 p-3 rounded-md">
+                        <strong className="text-cyber">Complete walkthrough</strong> of the project implementation
+                      </div>
                       <a 
                         href={project.youtube_url}
                         target="_blank"
