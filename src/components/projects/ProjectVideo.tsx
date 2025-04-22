@@ -98,6 +98,7 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
           height="100%"
           src={`https://www.youtube.com/embed/${videoId}`}
           title="YouTube video player"
+          frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
           className="rounded-sm"
@@ -106,28 +107,29 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
     );
   }
   
-  // For direct video files or external links
+  // For direct video files
+  if (isDirectVideoUrl(url)) {
+    return (
+      <div className="aspect-video w-full cyber-border p-1 shadow-[0_0_15px_rgba(0,255,0,0.1)]">
+        <video
+          src={url}
+          controls
+          className="w-full h-full rounded-sm"
+          controlsList="nodownload"
+        >
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    );
+  }
+  
+  // For other types of links (fallback)
   return (
     <a 
       href={url} 
       target="_blank" 
       rel="noopener noreferrer"
       className="block w-full h-full cursor-pointer"
-      onClick={(e) => {
-        // Only open if URL is valid
-        if (!url || url.trim() === '') {
-          e.preventDefault();
-          return;
-        }
-        
-        // Try to validate URL
-        try {
-          new URL(url);
-        } catch (error) {
-          e.preventDefault();
-          console.error("Invalid URL:", url);
-        }
-      }}
     >
       <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark">
         <div className="w-full h-full flex flex-col items-center justify-center space-y-4 hover:bg-cyber-dark/80 p-8">

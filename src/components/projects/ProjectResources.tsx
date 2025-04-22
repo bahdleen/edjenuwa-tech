@@ -26,6 +26,11 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
     }
   };
 
+  const handleResourceClick = (url: string) => {
+    if (!url) return;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
   return (
     <Card className="cyber-panel border-cyber/20 h-full bg-cyber-dark/60 backdrop-blur-sm">
       <CardContent className="p-6">
@@ -39,14 +44,20 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
                 Documentation
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Detailed technical guide with step-by-step instructions</p>
-              <Button 
-                variant="outline" 
-                className="w-full py-8 h-auto text-lg font-medium border-cyber hover:bg-cyber/10 hover:text-cyber transition-all duration-200"
-                type="button"
-                onClick={() => window.open(tutorialUrl as string, '_blank', 'noopener,noreferrer')}
+              <a 
+                href={tutorialUrl as string}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full"
               >
-                <FileText className="mr-2 h-6 w-6" /> View Documentation
-              </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full py-8 h-auto text-lg font-medium border-cyber hover:bg-cyber/10 hover:text-cyber transition-all duration-200"
+                  type="button"
+                >
+                  <FileText className="mr-2 h-6 w-6" /> View Documentation
+                </Button>
+              </a>
             </div>
           )}
           
@@ -63,14 +74,20 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
                 Demo Video
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Short demonstration of project capabilities</p>
-              <Button 
-                variant="outline" 
-                className="w-full py-8 h-auto text-lg font-medium border-cyber-red hover:bg-cyber-red/10 hover:text-cyber-red transition-all duration-200"
-                type="button"
-                onClick={() => window.open(demoVideoUrl as string, '_blank', 'noopener,noreferrer')}
+              <a 
+                href={demoVideoUrl as string}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full"
               >
-                <Video className="mr-2 h-6 w-6" /> Watch Demo
-              </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full py-8 h-auto text-lg font-medium border-cyber-red hover:bg-cyber-red/10 hover:text-cyber-red transition-all duration-200"
+                  type="button"
+                >
+                  <Video className="mr-2 h-6 w-6" /> Watch Demo
+                </Button>
+              </a>
             </div>
           )}
 
@@ -86,14 +103,21 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
                 Configuration Files
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Project configuration templates and setup files</p>
-              <Button 
-                variant="outline" 
-                className="w-full py-8 h-auto text-lg font-medium border-cyber-blue hover:bg-cyber-blue/10 hover:text-cyber-blue transition-all duration-200"
-                type="button"
-                onClick={() => window.open(configFileUrl as string, '_blank', 'noopener,noreferrer')}
+              <a 
+                href={configFileUrl as string}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full"
+                download
               >
-                <Download className="mr-2 h-6 w-6" /> Download Files
-              </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full py-8 h-auto text-lg font-medium border-cyber-blue hover:bg-cyber-blue/10 hover:text-cyber-blue transition-all duration-200"
+                  type="button"
+                >
+                  <Download className="mr-2 h-6 w-6" /> Download Files
+                </Button>
+              </a>
             </div>
           )}
         </div>
