@@ -56,6 +56,11 @@ const Projects = () => {
     "AI": "from-cyber-dark-blue to-cyber/30 border-cyber/40 hover:border-cyber"
   };
 
+  // Function to handle clicking on a project card
+  const handleProjectClick = (projectId: string) => {
+    navigate(`/projects/${projectId}`);
+  };
+
   return (
     <MainLayout>
       <div className="bg-gradient-to-b from-cyber-dark to-cyber-dark-blue py-16">
@@ -115,7 +120,8 @@ const Projects = () => {
                 {filteredProjects.map((project) => (
                   <Card 
                     key={project.id} 
-                    className={`cyber-panel group transition-all duration-300 h-full flex flex-col bg-gradient-to-br ${categoryColors[project.category] || "from-cyber-dark-blue to-cyber/20 border-cyber/30 hover:border-cyber"}`}
+                    className={`cyber-panel group transition-all duration-300 h-full flex flex-col bg-gradient-to-br ${categoryColors[project.category] || "from-cyber-dark-blue to-cyber/20 border-cyber/30 hover:border-cyber"} cursor-pointer hover:shadow-[0_0_20px_rgba(0,255,0,0.15)]`}
+                    onClick={() => handleProjectClick(project.id)}
                   >
                     {project.image_url && (
                       <div className="aspect-video w-full overflow-hidden border-b border-cyber/20 relative">
@@ -167,7 +173,10 @@ const Projects = () => {
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        onClick={() => navigate(`/projects/${project.id}`)}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent card click handler from firing
+                          navigate(`/projects/${project.id}`);
+                        }}
                         className="border-cyber/50 text-cyber hover:bg-cyber/10 font-mono"
                       >
                         <Eye size={14} className="mr-1" /> Details
