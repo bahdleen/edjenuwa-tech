@@ -78,6 +78,15 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
     }
   };
 
+  // Make sure we have a valid URL
+  if (!url || url.trim() === '') {
+    return (
+      <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark flex items-center justify-center">
+        <span className="text-muted-foreground">No video available</span>
+      </div>
+    );
+  }
+
   const videoId = getVideoId(url);
   
   // If it's a YouTube video with valid ID, embed it
@@ -103,7 +112,7 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
       href={url} 
       target="_blank" 
       rel="noopener noreferrer"
-      className="block w-full h-full"
+      className="block w-full h-full cursor-pointer"
     >
       <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark">
         <div className="w-full h-full flex flex-col items-center justify-center space-y-4 hover:bg-cyber-dark/80 p-8">

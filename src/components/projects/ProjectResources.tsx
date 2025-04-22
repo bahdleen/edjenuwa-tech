@@ -25,6 +25,10 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
     }
   };
 
+  const handleLinkClick = (url: string) => {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
   return (
     <Card className="cyber-panel border-cyber/20 h-full bg-cyber-dark/60 backdrop-blur-sm">
       <CardContent className="p-6">
@@ -39,10 +43,13 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Detailed technical guide with step-by-step instructions</p>
               <a 
-                href={tutorialUrl || ''} 
+                href={tutorialUrl || '#'} 
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block w-full"
+                onClick={(e) => {
+                  if (!tutorialUrl) e.preventDefault();
+                }}
               >
                 <Button 
                   variant="outline" 
@@ -69,10 +76,13 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Short demonstration of project capabilities</p>
               <a 
-                href={demoVideoUrl || ''} 
+                href={demoVideoUrl || '#'} 
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block w-full"
+                onClick={(e) => {
+                  if (!demoVideoUrl) e.preventDefault();
+                }}
               >
                 <Button 
                   variant="outline" 
@@ -98,10 +108,13 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
               </h3>
               <p className="text-muted-foreground text-sm mb-3">Project configuration templates and setup files</p>
               <a 
-                href={configFileUrl || ''} 
+                href={configFileUrl || '#'} 
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block w-full"
+                onClick={(e) => {
+                  if (!configFileUrl) e.preventDefault();
+                }}
               >
                 <Button 
                   variant="outline" 
