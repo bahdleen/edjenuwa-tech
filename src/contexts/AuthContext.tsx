@@ -35,8 +35,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, newSession) => {
         console.log("Auth state changed:", event, newSession?.user?.email);
-        setSession(newSession);
+        
+        // Update state synchronously to avoid deadlocks
         setUser(newSession?.user ?? null);
+        setSession(newSession);
         setLoading(false);
         
         if (event === 'SIGNED_IN') {
@@ -50,8 +52,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
       console.log("Initial session check:", currentSession?.user?.email);
-      setSession(currentSession);
       setUser(currentSession?.user ?? null);
+      setSession(currentSession);
       setLoading(false);
     }).catch(error => {
       console.error("Error getting session:", error);

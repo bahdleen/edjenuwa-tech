@@ -37,6 +37,7 @@ const Auth = () => {
     }
     
     setAuthLoading(true);
+    
     try {
       console.log("Attempting login with:", email);
       const { error } = await supabase.auth.signInWithPassword({
@@ -46,13 +47,12 @@ const Auth = () => {
       
       if (error) throw error;
       
-      toast.success("Login successful! Redirecting to dashboard...");
+      // Don't navigate here - let the auth state listener handle it
+      toast.success("Login successful!");
       
-      // The redirect will be handled by the useEffect hook that watches for user state changes
     } catch (error: any) {
       console.error("Login error:", error.message);
       toast.error(error.message || "Login failed");
-    } finally {
       setAuthLoading(false);
     }
   };
@@ -111,6 +111,7 @@ const Auth = () => {
                   required
                   className="pl-10 bg-cyber-dark border-cyber/30 focus:border-cyber focus:ring-cyber font-mono"
                   disabled={authLoading}
+                  data-testid="email-input"
                 />
                 <User className="h-4 w-4 text-muted-foreground absolute left-3 top-3" />
               </div>
@@ -126,6 +127,7 @@ const Auth = () => {
                   required
                   className="pl-10 bg-cyber-dark border-cyber/30 focus:border-cyber focus:ring-cyber font-mono"
                   disabled={authLoading}
+                  data-testid="password-input"
                 />
                 <Key className="h-4 w-4 text-muted-foreground absolute left-3 top-3" />
               </div>
@@ -135,6 +137,7 @@ const Auth = () => {
               type="submit" 
               className="w-full bg-cyber text-cyber-dark hover:bg-cyber/90 font-mono shadow-[0_0_10px_rgba(0,255,0,0.1)] hover:shadow-[0_0_15px_rgba(0,255,0,0.2)] transition-all" 
               disabled={authLoading}
+              data-testid="login-button"
             >
               {authLoading ? (
                 <>
