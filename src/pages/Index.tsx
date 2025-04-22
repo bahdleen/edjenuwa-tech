@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Shield, Lock, Server, Database, Network, Terminal, UserRound } from "lucide-react";
+import { ArrowRight, Shield, Lock, Server, Database, Network, Terminal, UserRound, Youtube, FileText, ExternalLink, Eye } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const Index = () => {
@@ -127,56 +127,110 @@ const Index = () => {
           </div>
         </div>
         
-        {featuredProjects && featuredProjects.length > 0 && (
-          <div className="py-16 bg-cyber-gray">
-            <div className="container mx-auto px-4">
-              <div className="max-w-6xl mx-auto space-y-8">
-                <div className="space-y-2">
-                  <h2 className="text-3xl font-bold tracking-tight font-mono text-white">
-                    <span className="text-cyber">//</span> Featured Projects
-                  </h2>
-                  <p className="text-muted-foreground">
-                    Recent security solutions and network implementations
-                  </p>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {featuredProjects.map((project) => (
-                    <Card key={project.id} className="cyber-panel group hover:border-cyber/50 transition-all duration-300">
+      {featuredProjects && featuredProjects.length > 0 && (
+        <div className="py-24 bg-cyber-dark relative overflow-hidden">
+          <div className="absolute inset-0">
+            <div className="absolute inset-0 bg-cyber-grid opacity-5"></div>
+            {[...Array(5)].map((_, i) => (
+              <div 
+                key={i} 
+                className="absolute h-px bg-cyber/20 w-full" 
+                style={{
+                  top: `${Math.random() * 100}%`,
+                  left: `-100%`,
+                  animationDelay: `${Math.random() * 15}s`,
+                  animationDuration: `${15 + Math.random() * 10}s`
+                }}
+              >
+                <div className="animate-data-flow w-20 h-full bg-cyber/40"></div>
+              </div>
+            ))}
+          </div>
+          
+          <div className="container mx-auto px-4 relative z-10">
+            <div className="max-w-6xl mx-auto space-y-12">
+              <div className="space-y-4">
+                <h2 className="text-4xl font-bold tracking-tight font-mono text-center">
+                  <span className="text-cyber">//</span> Featured Projects
+                </h2>
+                <p className="text-muted-foreground text-center text-lg max-w-2xl mx-auto">
+                  Recent security solutions and network implementations
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {featuredProjects.map((project) => (
+                  <Link 
+                    key={project.id} 
+                    to={`/projects/${project.id}`}
+                    className="group transition-all duration-300"
+                  >
+                    <Card className="cyber-panel h-full bg-gradient-to-br from-cyber-dark-blue to-cyber-dark border-cyber/30 hover:border-cyber group-hover:shadow-[0_0_30px_rgba(0,255,0,0.1)] transition-all duration-500">
                       {project.image_url && (
                         <div className="aspect-video w-full overflow-hidden border-b border-cyber/20 relative">
-                          <div className="absolute inset-0 bg-gradient-to-t from-cyber-dark to-transparent opacity-70 z-10"></div>
+                          <div className="absolute inset-0 bg-gradient-to-t from-cyber-dark via-cyber-dark/60 to-transparent opacity-90 z-10 transition-opacity group-hover:opacity-70"></div>
                           <img 
                             src={project.image_url} 
                             alt={project.title} 
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                           />
+                          <div className="absolute bottom-4 left-4 z-20">
+                            <Badge variant="outline" className={`
+                              ${project.category === "Cybersecurity" ? "border-cyber-red bg-cyber-dark/50 text-cyber-red" : ""}
+                              ${project.category === "Networking" ? "border-cyber-blue bg-cyber-dark/50 text-cyber-blue" : ""}
+                              ${project.category === "AI" ? "border-cyber bg-cyber-dark/50 text-cyber" : ""}
+                              font-mono text-xs px-2 py-1
+                            `}>
+                              {categoryIcons[project.category]}
+                              <span className="ml-1">{project.category}</span>
+                            </Badge>
+                          </div>
                         </div>
                       )}
-                      <CardContent className="p-6 relative">
-                        <div className="mb-3 flex items-center gap-1 text-xs">
-                          {categoryIcons[project.category] || <Shield size={16} />}
-                          <span className="text-muted-foreground font-mono">{project.category}</span>
+                      <CardContent className="p-6 space-y-4">
+                        <h3 className="text-xl font-bold font-mono group-hover:text-cyber transition-colors line-clamp-1">
+                          {project.title}
+                        </h3>
+                        <p className="text-muted-foreground line-clamp-2 text-sm">
+                          {project.description}
+                        </p>
+                        <div className="pt-2 flex items-center justify-between">
+                          <div className="flex gap-2">
+                            {project.youtube_url && (
+                              <div className="p-1.5 rounded-full bg-cyber-dark/70 border border-cyber-red/40">
+                                <Youtube size={14} className="text-cyber-red" />
+                              </div>
+                            )}
+                            {project.config_file_url && (
+                              <div className="p-1.5 rounded-full bg-cyber-dark/70 border border-cyber/40">
+                                <FileText size={14} className="text-cyber" />
+                              </div>
+                            )}
+                            {project.demo_video_url && (
+                              <div className="p-1.5 rounded-full bg-cyber-dark/70 border border-cyber-blue/40">
+                                <ExternalLink size={14} className="text-cyber-blue" />
+                              </div>
+                            )}
+                          </div>
+                          <Eye size={16} className="text-cyber opacity-0 group-hover:opacity-100 transition-opacity" />
                         </div>
-                        <h3 className="font-bold text-xl mb-3 text-white font-mono group-hover:text-cyber transition-colors">{project.title}</h3>
-                        <p className="text-muted-foreground line-clamp-2 mb-4">{project.description}</p>
-                        <Button asChild className="w-full bg-cyber-dark hover:bg-cyber hover:text-cyber-dark border border-cyber/30 group-hover:border-cyber transition-all">
-                          <Link to={`/projects/${project.id}`}>View Details <ArrowRight size={16} className="ml-1" /></Link>
-                        </Button>
                       </CardContent>
                     </Card>
-                  ))}
-                </div>
-                
-                <div className="text-center mt-8">
-                  <Button variant="outline" asChild className="border-cyber text-cyber hover:bg-cyber/10">
-                    <Link to="/projects">View All Projects <ArrowRight size={16} className="ml-1" /></Link>
-                  </Button>
-                </div>
+                  </Link>
+                ))}
+              </div>
+              
+              <div className="text-center">
+                <Button asChild size="lg" className="bg-cyber text-cyber-dark hover:bg-cyber/90 font-mono">
+                  <Link to="/projects">
+                    View All Projects <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
               </div>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
         <div className="py-16 bg-cyber-dark-blue">
           <div className="container mx-auto px-4">
