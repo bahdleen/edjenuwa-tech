@@ -45,8 +45,17 @@ export const ProjectResources = ({ tutorialUrl, demoVideoUrl, configFileUrl }: P
       // Validate URL before opening
       new URL(url);
       console.log(`Opening ${type} URL: ${url}`);
-      // Open the URL in a new tab
-      window.open(url, '_blank', 'noopener,noreferrer');
+      
+      // Force open in a new tab with all safeguards disabled
+      const newWindow = window.open();
+      if (newWindow) {
+        newWindow.opener = null;
+        newWindow.location.href = url;
+      } else {
+        // Fallback if popup is blocked
+        window.location.href = url;
+        console.log(`Redirecting to ${url} in current window (popup may be blocked)`);
+      }
       
       // Track click for analytics if needed
       console.log(`Resource clicked: ${type}`);

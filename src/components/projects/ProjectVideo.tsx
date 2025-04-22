@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { ExternalLink, Play } from "lucide-react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 interface ProjectVideoProps {
   url: string;
@@ -83,10 +84,39 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
         : `https://www.youtube.com/watch?v=${videoId}`;
       
       console.log("Opening external link:", safeUrl);
-      window.open(safeUrl, '_blank', 'noopener,noreferrer');
+      
+      // Force open in a new window with no opener relationship
+      const newWindow = window.open();
+      if (newWindow) {
+        newWindow.opener = null;
+        newWindow.location.href = safeUrl;
+        console.log("Opened in new window:", safeUrl);
+      } else {
+        // Fallback to direct navigation if popup is blocked
+        window.location.href = safeUrl;
+        console.log("Redirecting to URL in current window (popup may be blocked):", safeUrl);
+      }
     } catch (error) {
       console.error("Error opening external link:", error);
       toast.error("Failed to open video link");
+    }
+  };
+
+  const handleDirectYouTubeLink = () => {
+    if (!videoId) {
+      toast.error("Invalid YouTube video");
+      return;
+    }
+    
+    try {
+      const youtubeUrl = `https://www.youtube.com/watch?v=${videoId}`;
+      console.log("Opening direct YouTube link:", youtubeUrl);
+      
+      // Direct navigation approach
+      window.location.href = youtubeUrl;
+    } catch (error) {
+      console.error("Error opening YouTube link:", error);
+      toast.error("Failed to open YouTube video");
     }
   };
 
@@ -143,6 +173,19 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
             toast.error("Failed to load YouTube video");
           }}
         ></iframe>
+        
+        {/* Added dedicated button to directly open YouTube */}
+        <div className="mt-2 text-center">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={handleDirectYouTubeLink}
+            className="border-cyber-red hover:bg-cyber-red/10 hover:text-cyber-red"
+          >
+            <ExternalLink className="mr-2 h-4 w-4" /> 
+            Open directly in YouTube
+          </Button>
+        </div>
       </div>
     );
   }
@@ -152,16 +195,20 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
     console.log("Rendering YouTube fallback link");
     return (
       <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark">
-        <a 
-          href={url} 
-          target="_blank" 
-          rel="noopener noreferrer"
-          onClick={handleExternalClick}
-          className="w-full h-full flex flex-col items-center justify-center space-y-4 hover:bg-cyber-dark/80 p-8 block"
-        >
+        <div className="w-full h-full flex flex-col items-center justify-center space-y-4 p-8">
           <ExternalLink className="text-cyber h-16 w-16" />
           <span className="text-lg text-muted-foreground">Click to watch video on YouTube</span>
-        </a>
+          <Button 
+            variant="outline"
+            onClick={() => {
+              // Direct navigation
+              window.location.href = url;
+            }}
+            className="mt-4 border-cyber hover:bg-cyber/10"
+          >
+            Open YouTube Video
+          </Button>
+        </div>
       </div>
     );
   }
@@ -187,17 +234,17 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
           </video>
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center bg-cyber-dark">
-            <a 
-              href={url} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex flex-col items-center justify-center space-y-4"
+            <Button 
+              variant="outline"
+              onClick={() => {
+                // Direct navigation
+                window.location.href = url;
+              }}
+              className="mt-4 border-cyber-red hover:bg-cyber-red/10"
             >
-              <Play className="text-cyber-red h-16 w-16" />
-              <span className="text-lg text-muted-foreground hover:text-cyber underline">
-                Click to download video
-              </span>
-            </a>
+              <Play className="mr-2 h-6 w-6 text-cyber-red" />
+              Download/View Video
+            </Button>
           </div>
         )}
       </div>
@@ -208,16 +255,20 @@ export const ProjectVideo = ({ url }: ProjectVideoProps) => {
   console.log("Rendering generic video link fallback");
   return (
     <div className="aspect-video w-full cyber-border p-1 bg-cyber-dark">
-      <a 
-        href={url} 
-        target="_blank" 
-        rel="noopener noreferrer"
-        onClick={handleExternalClick}
-        className="w-full h-full flex flex-col items-center justify-center space-y-4 hover:bg-cyber-dark/80 p-8 block"
-      >
+      <div className="w-full h-full flex flex-col items-center justify-center space-y-4 p-8">
         <Play className="text-cyber-red h-16 w-16" />
         <span className="text-lg text-muted-foreground">Click to watch video</span>
-      </a>
+        <Button 
+          variant="outline"
+          onClick={() => {
+            // Direct navigation
+            window.location.href = url;
+          }}
+          className="mt-4 border-cyber-red hover:bg-cyber-red/10"
+        >
+          Open Video
+        </Button>
+      </div>
     </div>
   );
 };
