@@ -26,6 +26,7 @@ type ProjectFormValues = {
 
 const ProjectEditor = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const isEditMode = id !== undefined && id !== "new";
   
   const [loading, setLoading] = useState(false);
@@ -35,7 +36,6 @@ const ProjectEditor = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
 
-  // Initialize the form
   const form = useForm<ProjectFormValues>({
     defaultValues: {
       title: "",
@@ -49,7 +49,6 @@ const ProjectEditor = () => {
     },
   });
 
-  // Fetch project if in edit mode
   const { data: project, isLoading: projectLoading } = useQuery({
     queryKey: ['project', id],
     queryFn: async () => {
@@ -67,7 +66,6 @@ const ProjectEditor = () => {
     enabled: isEditMode,
   });
 
-  // Set form values when project data is loaded
   useEffect(() => {
     if (project) {
       form.reset({
@@ -93,30 +91,27 @@ const ProjectEditor = () => {
 
       setUploadProgress(25);
       
-      // Check if the bucket exists and create it if it doesn't
       const { data: buckets } = await supabase.storage.listBuckets();
       if (!buckets?.find(b => b.name === bucket)) {
         await supabase.storage.createBucket(bucket, {
           public: true,
-          fileSizeLimit: 100 * 1024 * 1024, // 100MB limit
+          fileSizeLimit: 100 * 1024 * 1024,
         });
       }
 
       setUploadProgress(50);
       
-      // Upload the file
       const { data, error } = await supabase.storage
         .from(bucket)
         .upload(filePath, file, {
           cacheControl: '3600',
-          upsert: true // Important: Ensure file overwriting is enabled
+          upsert: true
         });
 
       if (error) throw error;
 
       setUploadProgress(75);
       
-      // Get the public URL
       const { data: urlData } = supabase.storage
         .from(bucket)
         .getPublicUrl(filePath);
@@ -138,25 +133,21 @@ const ProjectEditor = () => {
     try {
       let updatedData = { ...data };
 
-      // Upload tutorial file if selected
       if (tutorialFile) {
         const tutorialUrl = await uploadFile(tutorialFile, 'project-files', 'tutorials');
         if (tutorialUrl) updatedData.tutorial_url = tutorialUrl;
       }
 
-      // Upload config file if selected
       if (configFile) {
         const configUrl = await uploadFile(configFile, 'project-files', 'configs');
         if (configUrl) updatedData.config_file_url = configUrl;
       }
 
-      // Upload demo video if selected
       if (demoVideo) {
         const demoUrl = await uploadFile(demoVideo, 'project-files', 'demos');
         if (demoUrl) updatedData.demo_video_url = demoUrl;
       }
 
-      // Upload image if selected
       if (imageFile) {
         const imageUrl = await uploadFile(imageFile, 'project-files', 'images');
         if (imageUrl) updatedData.image_url = imageUrl;
@@ -165,12 +156,9 @@ const ProjectEditor = () => {
       console.log("Saving project with data:", updatedData);
 
       if (isEditMode) {
-        // Update existing project - preserve existing values if not changed
         const dataToUpdate = { ...updatedData };
         
-        // Only keep non-empty fields when updating
         Object.keys(dataToUpdate).forEach(key => {
-          // Keep existing values if not changed (for file URLs)
           if (
             (key === 'tutorial_url' || key === 'config_file_url' || 
              key === 'demo_video_url' || key === 'image_url') && 
@@ -180,7 +168,6 @@ const ProjectEditor = () => {
             dataToUpdate[key as keyof ProjectFormValues] = project[key as keyof ProjectFormValues];
           }
           
-          // Remove empty fields to prevent overwriting with nulls
           if (dataToUpdate[key as keyof ProjectFormValues] === '') {
             delete dataToUpdate[key as keyof ProjectFormValues];
           }
@@ -194,7 +181,6 @@ const ProjectEditor = () => {
         if (error) throw error;
         toast.success("Project updated successfully");
       } else {
-        // Create new project
         const { error } = await supabase
           .from('projects')
           .insert([updatedData]);
