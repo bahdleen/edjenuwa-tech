@@ -1,13 +1,15 @@
 
 import { useParams, useNavigate } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, ExternalLink, FileText, Youtube } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
-import { Separator } from "@/components/ui/separator";
+import { ProjectHeader } from "@/components/projects/ProjectHeader";
+import { ProjectVideo } from "@/components/projects/ProjectVideo";
+import { ProjectResources } from "@/components/projects/ProjectResources";
 
 const ProjectDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -34,32 +36,6 @@ const ProjectDetail = () => {
     toast.error("Failed to load project details");
   }
 
-  const renderYouTubeEmbed = (url: string) => {
-    let videoId = "";
-    const regex = /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-    const match = url.match(regex);
-    
-    if (match && match[1]) {
-      videoId = match[1];
-    }
-    
-    if (!videoId) return null;
-    
-    return (
-      <div className="aspect-video w-full cyber-border p-1 shadow-[0_0_15px_rgba(0,255,0,0.1)]">
-        <iframe
-          width="100%"
-          height="100%"
-          src={`https://www.youtube.com/embed/${videoId}`}
-          title="YouTube video player"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          className="rounded-sm"
-        ></iframe>
-      </div>
-    );
-  };
-
   return (
     <MainLayout>
       <div className="bg-gradient-to-b from-cyber-dark to-cyber-dark-blue py-16">
@@ -71,19 +47,7 @@ const ProjectDetail = () => {
               </div>
             ) : project ? (
               <>
-                <div className="space-y-4">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => navigate('/projects')}
-                    className="border-cyber/50 text-cyber hover:bg-cyber/10"
-                  >
-                    <ArrowLeft size={16} className="mr-1" /> Back to Projects
-                  </Button>
-                  <h1 className="text-5xl font-bold tracking-tight mt-4 font-mono">
-                    <span className="text-cyber">&gt;</span> {project.title}
-                  </h1>
-                </div>
+                <ProjectHeader title={project.title} />
 
                 {project.image_url && (
                   <div className="cyber-border p-1 rounded-sm overflow-hidden shadow-[0_0_30px_rgba(0,255,0,0.1)]">
@@ -107,12 +71,10 @@ const ProjectDetail = () => {
                 </Card>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Video Section */}
                   {project.youtube_url && (
                     <div className="space-y-4">
                       <h2 className="text-2xl font-bold font-mono flex items-center gap-2">
-                        <Youtube className="text-cyber-red" size={24} />
-                        <span>Video Demonstration</span>
+                        Video Demonstration
                       </h2>
                       <a 
                         href={project.youtube_url}
@@ -120,67 +82,16 @@ const ProjectDetail = () => {
                         rel="noopener noreferrer"
                         className="block hover:opacity-90 transition-opacity"
                       >
-                        {renderYouTubeEmbed(project.youtube_url)}
+                        <ProjectVideo url={project.youtube_url} />
                       </a>
                     </div>
                   )}
 
-                  {/* Resources Section */}
                   <div className="space-y-6">
-                    <Card className="cyber-panel border-cyber/20 h-full bg-cyber-dark/60 backdrop-blur-sm">
-                      <CardContent className="p-6">
-                        <h2 className="text-2xl font-bold font-mono mb-6">Project Resources</h2>
-                        
-                        <div className="space-y-6">
-                          {project.tutorial_url && (
-                            <div className="group">
-                              <h3 className="text-lg font-mono mb-2 flex items-center gap-2">
-                                <FileText className="text-cyber" />
-                                Technical Documentation
-                              </h3>
-                              <p className="text-muted-foreground text-sm mb-3">Detailed technical guide with step-by-step instructions</p>
-                              <Button 
-                                className="w-full bg-gradient-to-r from-cyber/70 to-cyber text-cyber-dark hover:bg-cyber/90 font-mono group-hover:shadow-[0_0_15px_rgba(0,255,0,0.3)] transition-all" 
-                                asChild
-                              >
-                                <a href={project.tutorial_url} target="_blank" rel="noreferrer">
-                                  <FileText className="mr-2" /> View Documentation
-                                </a>
-                              </Button>
-                            </div>
-                          )}
-                          
-                          {project.tutorial_url && project.demo_video_url && (
-                            <Separator className="bg-cyber/10" />
-                          )}
-                          
-                          {project.demo_video_url && (
-                            <div className="group">
-                              <h3 className="text-lg font-mono mb-2 flex items-center gap-2">
-                                <Youtube className="text-cyber-red" />
-                                Full Demo Video
-                              </h3>
-                              <p className="text-muted-foreground text-sm mb-3">Complete walkthrough of the project implementation</p>
-                              <Button 
-                                variant="outline" 
-                                className="w-full border-cyber-red/50 text-cyber-red hover:bg-cyber-red/10 font-mono group-hover:shadow-[0_0_15px_rgba(255,62,62,0.2)] transition-all" 
-                                asChild
-                              >
-                                <a href={project.demo_video_url} target="_blank" rel="noreferrer">
-                                  <ExternalLink className="mr-2" /> View Full Demo
-                                </a>
-                              </Button>
-                            </div>
-                          )}
-                          
-                          {(!project.tutorial_url && !project.demo_video_url) && (
-                            <p className="text-center text-muted-foreground py-6">
-                              No additional resources available for this project.
-                            </p>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
+                    <ProjectResources 
+                      tutorialUrl={project.tutorial_url}
+                      demoVideoUrl={project.demo_video_url}
+                    />
                   </div>
                 </div>
               </>
