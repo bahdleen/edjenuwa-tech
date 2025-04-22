@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { Download } from "lucide-react";
+import { Download, BookOpen, Briefcase, Award } from "lucide-react";
 
 const About = () => {
   const { data: profile, isLoading } = useQuery({
@@ -28,7 +28,7 @@ const About = () => {
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="space-y-2">
             <h1 className="text-4xl font-bold tracking-tight">
-              <span className="text-green-500">{">"}</span> About Me
+              About Me
             </h1>
             <p className="text-muted-foreground text-lg">
               Cybersecurity & Networking Engineer | AI Enthusiast
@@ -80,6 +80,81 @@ const About = () => {
                     </div>
                   </CardContent>
                 </Card>
+                
+                {/* Timeline Sections */}
+                <div className="mt-8 space-y-6">
+                  {/* Work Experience */}
+                  <section>
+                    <div className="flex items-center gap-2 mb-4">
+                      <Briefcase className="text-primary" />
+                      <h2 className="text-2xl font-bold">Work Experience</h2>
+                    </div>
+                    <div className="space-y-4">
+                      {/* This would be mapped from actual data */}
+                      <TimelineItem 
+                        title="Senior Network Security Engineer"
+                        organization="Tech Security Solutions"
+                        date="2020 - Present"
+                        description="Implemented advanced network security protocols and led security audits for enterprise clients."
+                      />
+                      <TimelineItem 
+                        title="Network Engineer"
+                        organization="Global Networks Inc."
+                        date="2018 - 2020"
+                        description="Designed and managed network infrastructure for mid-sized businesses."
+                      />
+                    </div>
+                  </section>
+                  
+                  {/* Education */}
+                  <section>
+                    <div className="flex items-center gap-2 mb-4">
+                      <BookOpen className="text-primary" />
+                      <h2 className="text-2xl font-bold">Education</h2>
+                    </div>
+                    <div className="space-y-4">
+                      {/* This would be mapped from actual data */}
+                      <TimelineItem 
+                        title="M.S. in Cybersecurity"
+                        organization="Tech University"
+                        date="2016 - 2018"
+                        description="Specialized in network security and penetration testing."
+                      />
+                      <TimelineItem 
+                        title="B.S. in Computer Science"
+                        organization="State University"
+                        date="2012 - 2016"
+                        description="Focus on computer networks and systems programming."
+                      />
+                    </div>
+                  </section>
+                  
+                  {/* Certifications */}
+                  <section>
+                    <div className="flex items-center gap-2 mb-4">
+                      <Award className="text-primary" />
+                      <h2 className="text-2xl font-bold">Certifications</h2>
+                    </div>
+                    <div className="space-y-4">
+                      {/* This would be mapped from actual data */}
+                      <TimelineItem 
+                        title="Certified Information Systems Security Professional (CISSP)"
+                        organization="ISC²"
+                        date="2019"
+                      />
+                      <TimelineItem 
+                        title="Cisco Certified Network Professional (CCNP)"
+                        organization="Cisco"
+                        date="2018"
+                      />
+                      <TimelineItem 
+                        title="Certified Ethical Hacker (CEH)"
+                        organization="EC-Council"
+                        date="2017"
+                      />
+                    </div>
+                  </section>
+                </div>
               </div>
             </div>
           ) : (
@@ -94,5 +169,25 @@ const About = () => {
     </MainLayout>
   );
 };
+
+// Helper component for timeline items
+const TimelineItem = ({ 
+  title, 
+  organization, 
+  date, 
+  description 
+}: { 
+  title: string; 
+  organization: string; 
+  date: string; 
+  description?: string;
+}) => (
+  <div className="border-l-2 border-primary/20 pl-4 pb-2">
+    <h3 className="font-bold text-lg">{title}</h3>
+    <p className="text-primary">{organization}</p>
+    <p className="text-sm text-muted-foreground mb-2">{date}</p>
+    {description && <p className="text-muted-foreground">{description}</p>}
+  </div>
+);
 
 export default About;

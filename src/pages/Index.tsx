@@ -44,21 +44,35 @@ const Index = () => {
         {/* Hero Section */}
         <div className="container mx-auto px-4 py-24 flex-grow flex flex-col justify-center">
           <div className="max-w-3xl mx-auto space-y-8">
-            <div className="space-y-4">
-              <h1 className="text-5xl font-bold tracking-tight">
-                <span className="text-green-500">{">"}</span> {profile?.full_name || "Welcome to My Cybersecurity Portfolio"}
-              </h1>
-              <p className="text-muted-foreground text-xl">
-                Cybersecurity | Networking | AI
-              </p>
+            <div className="flex flex-col md:flex-row gap-8 items-center">
+              {/* Profile Image */}
+              {profile?.avatar_url && (
+                <div className="w-32 h-32 md:w-48 md:h-48 rounded-full overflow-hidden bg-secondary/30">
+                  <img 
+                    src={profile.avatar_url} 
+                    alt={profile.full_name || "Profile"} 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+              
+              {/* Welcome Text */}
+              <div className="space-y-4 text-center md:text-left">
+                <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+                  {profile?.full_name || "Anthony E. Edjenuwa"}
+                </h1>
+                <p className="text-muted-foreground text-xl">
+                  Cybersecurity | Networking | AI
+                </p>
+              </div>
             </div>
             
             <div className="space-y-6">
               <p className="text-lg">
-                Explore my projects and experiences in the fields of cybersecurity, networking infrastructure, and artificial intelligence applications.
+                {profile?.bio || "Welcome to my portfolio website showcasing my work in cybersecurity, networking infrastructure, and artificial intelligence applications."}
               </p>
               
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-4 justify-center md:justify-start">
                 <Button asChild size="lg">
                   <Link to="/projects">View Projects</Link>
                 </Button>
@@ -86,7 +100,7 @@ const Index = () => {
               <div className="max-w-6xl mx-auto space-y-8">
                 <div className="space-y-2">
                   <h2 className="text-3xl font-bold tracking-tight">
-                    <span className="text-green-500">{">"}</span> Featured Projects
+                    Featured Projects
                   </h2>
                   <p className="text-muted-foreground">
                     Check out some of my latest work

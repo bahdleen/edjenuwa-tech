@@ -24,6 +24,7 @@ const MainLayout = ({ children, className }: MainLayoutProps) => {
     { name: "Home", path: "/" },
     { name: "Projects", path: "/projects" },
     { name: "About", path: "/about" },
+    { name: "Contact", path: "/contact" },
   ];
 
   return (
@@ -37,7 +38,7 @@ const MainLayout = ({ children, className }: MainLayoutProps) => {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <Link to="/" className="font-bold text-xl">
-              <span className="text-green-500">{">"}</span> Portfolio
+              <span className="text-primary">Anthony E. Edjenuwa</span>
             </Link>
 
             {/* Desktop Navigation */}
@@ -120,7 +121,10 @@ const MainLayout = ({ children, className }: MainLayoutProps) => {
           <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
               <p className="text-sm text-muted-foreground">
-                © {new Date().getFullYear()} | Cybersecurity • Networking • AI
+                © {new Date().getFullYear()} | Anthony E. Edjenuwa
+              </p>
+              <p className="text-sm text-muted-foreground">
+                edjenuwa.tech
               </p>
             </div>
             <div className="flex gap-6">
