@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
@@ -21,17 +22,23 @@ const Contact = () => {
     setLoading(true);
 
     try {
+      const payload = {
+        to: "bahdleen@outlook.com",
+        subject: subject,
+        text: `New message from: ${name} (${email})\n\n${message}`
+      };
+      
+      console.log("Sending request with payload:", payload);
+      
       const res = await fetch(CONTACT_API_ENDPOINT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          to: "bahdleen@outlook.com",
-          subject: subject,
-          text: `New message from: ${name} (${email})\n\n${message}`
-        }),
+        body: JSON.stringify(payload),
       });
+      
+      console.log("Response status:", res.status);
       
       if (res.ok) {
         toast.success("Your message has been sent successfully!");
@@ -41,7 +48,8 @@ const Contact = () => {
         setMessage("");
       } else {
         const errorData = await res.text();
-        toast.error(`Failed to send message: ${errorData}`);
+        console.error("API error response:", errorData);
+        toast.error(`Failed to send message: ${errorData || res.statusText}`);
       }
     } catch (error) {
       console.error("Contact form error:", error);
