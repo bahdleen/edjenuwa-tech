@@ -1,19 +1,18 @@
-
 import { useState } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Mail, Send, Github, Linkedin, Shield, Lock, Terminal, Server } from "lucide-react";
+import { Mail, Send, Github, Linkedin, Shield, Lock, Terminal } from "lucide-react";
 import { toast } from "sonner";
 
-// Update API endpoint to provided URL
 const CONTACT_API_ENDPOINT = "https://email-num2cpomh-anthonys-projects-aaa16846.vercel.app/api/send-email";
 
 const Contact = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -21,56 +20,32 @@ const Contact = () => {
     e.preventDefault();
     setLoading(true);
 
-    console.log("Submitting form with data:", { name, email, message });
-    console.log("Sending request to:", CONTACT_API_ENDPOINT);
-
-    // Send to the provided API endpoint
     try {
       const res = await fetch(CONTACT_API_ENDPOINT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json",
         },
-        mode: "cors",
-        body: JSON.stringify({ 
-          name, 
-          email, 
-          message,
-          subject: `Contact Form Submission from ${name}` 
+        body: JSON.stringify({
+          to: "bahdleen@outlook.com",
+          subject: subject,
+          text: `New message from: ${name} (${email})\n\n${message}`
         }),
       });
-
-      console.log("Response status:", res.status);
       
-      // Log full response for debugging
-      const responseText = await res.text();
-      console.log("Response body:", responseText);
-      
-      let responseData;
-      try {
-        // Try to parse the response as JSON if possible
-        responseData = JSON.parse(responseText);
-        console.log("Parsed response data:", responseData);
-      } catch (parseError) {
-        console.log("Response is not JSON format");
-      }
-
       if (res.ok) {
-        toast.success("Your message has been sent successfully.");
+        toast.success("Your message has been sent successfully!");
         setName("");
         setEmail("");
+        setSubject("");
         setMessage("");
       } else {
-        const errorMessage = responseData?.error || 
-          `Failed to send message (Status: ${res.status}). Please try again or contact us directly at info@edjenuwa.tech`;
-        
-        toast.error(errorMessage);
-        console.error("Form submission error:", errorMessage);
+        const errorData = await res.text();
+        toast.error(`Failed to send message: ${errorData}`);
       }
     } catch (error) {
       console.error("Contact form error:", error);
-      toast.error("Failed to send message. Please try again or email us directly at info@edjenuwa.tech");
+      toast.error("Failed to send message. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -125,6 +100,20 @@ const Contact = () => {
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           placeholder="Your email address"
+                          required
+                          className="bg-cyber-dark border-cyber/30 focus:border-cyber focus:ring-1 focus:ring-cyber placeholder:text-muted-foreground/50"
+                        />
+                      </div>
+
+                      <div>
+                        <label htmlFor="subject" className="block text-sm font-medium mb-1 font-mono">
+                          Subject Line
+                        </label>
+                        <Input
+                          id="subject"
+                          value={subject}
+                          onChange={(e) => setSubject(e.target.value)}
+                          placeholder="Message subject"
                           required
                           className="bg-cyber-dark border-cyber/30 focus:border-cyber focus:ring-1 focus:ring-cyber placeholder:text-muted-foreground/50"
                         />
