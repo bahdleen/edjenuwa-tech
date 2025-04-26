@@ -22,13 +22,15 @@ const Contact = () => {
     setLoading(true);
 
     try {
+      // Format payload according to the exact specifications
       const payload = {
         to: "bahdleen@outlook.com",
         subject: subject,
         text: `New message from: ${name} (${email})\n\n${message}`
       };
       
-      console.log("Sending request with payload:", payload);
+      console.log("Sending request to:", CONTACT_API_ENDPOINT);
+      console.log("With payload:", payload);
       
       const res = await fetch(CONTACT_API_ENDPOINT, {
         method: "POST",
@@ -38,7 +40,10 @@ const Contact = () => {
         body: JSON.stringify(payload),
       });
       
-      console.log("Response status:", res.status);
+      console.log("Response received:", {
+        status: res.status,
+        statusText: res.statusText
+      });
       
       if (res.ok) {
         toast.success("Your message has been sent successfully!");
@@ -47,9 +52,15 @@ const Contact = () => {
         setSubject("");
         setMessage("");
       } else {
-        const errorData = await res.text();
-        console.error("API error response:", errorData);
-        toast.error(`Failed to send message: ${errorData || res.statusText}`);
+        let errorMessage = "Failed to send message";
+        try {
+          const errorData = await res.text();
+          console.error("API error response:", errorData);
+          errorMessage = `${errorMessage}: ${errorData || res.statusText}`;
+        } catch (parseError) {
+          console.error("Error parsing error response:", parseError);
+        }
+        toast.error(errorMessage);
       }
     } catch (error) {
       console.error("Contact form error:", error);
